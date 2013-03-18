@@ -1,5 +1,6 @@
 \documentclass[11pt]{article}
 \usepackage{amsmath}
+\usepackage{amsthm}
 \usepackage{graphicx}
 \usepackage{color}
 \usepackage[labelsep=quad,indention=10pt]{caption}
@@ -49,13 +50,68 @@ The job-shop dynamic scheduling problem has been researched in the recent years,
 
 \textit{(Write more about job-shop problem details)}
 
-\textit{(Add CPU scheduling problem summary and state of the art)}
+\subsection{Fair scheduling: Processor sharing approach}
+
+Another approach to scheduling problem is the proportional fair scheduling studied at level of processor sharing, this problem is very common in computer science and developing of Operating System's kernels~\cite{li09} including real-time systems and in the past, in the 90's was studied in network sharing~\cite{parekh93}. 
+
+In this problem fairness is an essential requirement of the scheduler designed for the operating system. The conventional approach is to assign to each task a weight and the scheduler ensures that each task receive time proportional to his weight~\cite{parekh93}. Since perfect fairness requires infinitesimal small scheduling quanta, which is unfeasible, all practical schedulers approximate it with the goal of obtaining small error bounds.
+
+Most of the modern operating system have been adopted an imprecise notion of fairness that seeks prevention of the starvation and be ``reasonable'' fair at the same time~\cite{li09}. In these designs the scheduler dispatches threads in the order of threat priorities. For each thread, it assigns the threads a time slice that determines how long the thread can run once the thread dispatched. A higher priority thread receives a larger time slice, how much larger is often determined empirically, not a proportional function of the thread's priority. To facilitate fairness the scheduler also dynamically adjusts priorities, allowing the priority of a thread to decay over time or boosting it if the thread have not run for a while. Similar to time slices, the parameters of these adjustments are determined empirically using heuristic methods.  
+
+\subsubsection{Fair scheduling theory}
+Generalized Processor Sharing (GPS) is an idealized scheduling algorithm that achieves perfect fairness. All practical schedulers approximate GPS and use it as reference to measure fairness.
+
+Consider a system with $P$ CPUs and $N$ threads. Each thread $i$, $1 \leq i \leq N$, has a weight $w_i$. A scheduler is perfectly fair if:
+\begin{enumerate}
+	\item It is work conservative i.e., it never leaves a CPU idle if there are runnable threads.
+	\item it allocates CPU time to threads in exact proportion to their weights.
+\end{enumerate}
+Such a scheduler is common referred to a GPS~\cite{parekh93}.
+
+\newtheorem{gps-model}{Definition}
+\begin{gps-model}
+A GPS scheduler is one for which
+$$\frac{S_i(t_1, t_2)}{S_j(t_1, t_2)} \geq \frac{w_i}{w_j}, j=1, 2, ..., N$$
+holds for any thread $i$ that is continuously runnable in $[t_1, t_2]$ and $w_i$ and $w_j$ are fixed in that interval. 
+\end{gps-model}
+
+\newtheorem{gps-props}{Property}
+\begin{gps-props}
+If both threads $i$ and $j$ are continuously runnable with fixed weights in $[t_1, t_2]$, then GPS satisfies 
+$$\frac{S_i(t_1, t_2)}{S_j(t_1, t_2)} = \frac{w_i}{w_j}$$
+\end{gps-props}
+
+\begin{gps-props}
+If the set of runnable threads, $\Phi$, and their weights remain unchanged throughout  the interval $[t_1, t_2]$, then for any thread $i \in \Phi$, GPS satisfies
+$$S_i(t_1, t_2) = \frac{w_i}{\sum_{j \in \Phi} w_j}(t_2 - t_1)P$$
+\end{gps-props}
+
+For multiprocessor some weights assignments can be unfeasible  and thus no GPS scheduler can exist, then Chandra et al.~\cite{chandra00} introduced the following definition:
+
+\begin{gps-model}
+In any given interval $[t_1, t_2]$, the weight $w_i$ of thread $i$ is unfeasible if
+$$\frac{w_i}{\sum_{j \in \Phi}w_j} > \frac{1}{P},$$
+where $\Phi$ is the set of runnable threads that remain unchanged in $[t_1, t_2]$ and P is the number of CPUs.
+\end{gps-model} 
+
+And unfeasible weight represents a resource demand that exceeds the system capability. Chandra et al.~\cite{chandra00} propose to convert unfeasible weights into their closest feasible ones. With this conversion, a GPS scheduler is well defined for any multiprocessor system.
+
+A GPS scheduler is idealized since all runnable threads must run simultaneously and be scheduled with infinitesimally quanta, which is unfeasible. Thus, all practical scheduler emulate GPS approximately and are evaluated from two aspects: fairness and time complexity. Lag is common used metric for fairness. Assume that threads $i$ and $j$ are both runnable and have a fixed weight in the interval $[t_1, t_2]$ under some algorithm A.
+
+\begin{gps-model}
+For any interval $[t_1, t_2]$, the lag of thread $i$ at the time $t \in [t_1, t_2]$ is
+$$lag_i(t) = S_{i, GPS}(t_1, t) - S_{i, A}(t_1, t).$$
+\end{gps-model}
+
+A positive lags at time $t$ implies that the thread has received less service than under GPS; a negative lag implies the opposite. All fair scheduling algorithm seek to bound the positive and negative lags, the smaller the bounds are the fairer algorithm. An algorithm achieves strong fairness if its lags are bounded by small constants. On other hand, fairness is poor and non scalable if the lag bounds are $O(N)$ function , where N is the number of threads, because the algorithm  increasingly deviates from GPS as the number of threads in the system increases.
+
+The most recent work have used different kind of techniques to achieve a fairer algorithm than previous one e.g. Virtual-time-based algorithm, lottery algorithms. However most of the recent work has been done used the Round-Robin algorithm technique. Round-Robin algorithms have $O(1)$ time complexity and thus are highly efficient~\cite{li09}. However they have weak fairness with $O(N)$ lag bounds in general. Currently Linux kernel is using the Completely Fair Scheduler, which could it be a misleading name because it guarantees a unfair level less than $O(n)$ which is not completely fair. 
 
 \subsection{Schedule of astronomic observations}
 
 A summary of how the astronomical institution do schedule of the astronomical observations are discussed in \cite{mora11}.
 
-Astronomical observations require specific conditions for their execution, several of them are discussed in section \ref{sec:astro-concepts}, although these concepts are focused on radio astronomy, also they are applicable on optical astronomy, however these concepts could get different names. All this information, together with the scientific goals of the observation, are presented by an astronomer in a so called proposal to apply for observation time. Its format can vary from one institution to another, including the following parameters: telescope and instrument (one telescope can work with more than one instrument), main investigator, program description and target(s) list. In particular the case of the ALMA project data model (APDM) is discussed in \ref{sec:apdm}, this model has been achieve in a joint effort of several astronomies institutions, thus is quite generic and it has been adopted for other observatories like the Very Large Array telescope.
+Astronomical observations require specific conditions for their execution, several of them are discussed in section \ref{sec:astro-concepts}, although these concepts are focused on radio astronomy, also they are applicable on optical astronomy, however these concepts could get different names. All this information, together with the scientific goals of the observation, are presented by an astronomer in a so called proposal to apply for observation time. Its format can vary from one institution to another, including the following parameters: telescope and instrument (one telescope can work with more than one instrument), main investigator, program description and target(s) list. In particular the case of the ALMA project data model (APDM) is discussed in \ref{sec:apdm}, this model has been achieve in a joint effort of several astronomical institutions, thus is quite generic and it has been adopted for other observatories like the Very Large Array telescope.
 
 In the case of Chile, there are three main institutions managing some of the world’s most important telescopes: European Southern Observatory, ESO (La Silla, Paranal, APEX); Association of Universities for Research in Astronomy, AURA (Tololo, Gemini, SOAR); and Observatories of the Carnegie Institute of Washington, OCIW (Las Campanas). Proposals have to be sent to the corresponding telescope Time Assignment Committee, which evaluates all proposals, assigning a scientific grade (importance of execution), and approving or rejecting the requested observing times. As most observatories are joint ventures between several organizations and/or countries, the list of approved projects has to comply with the percentage of total time assigned to each part. Normally, telescope time can be applied once per observation period. An observation can be executed in visitor or service mode. Visitor mode observations require the presence of the main investigator (or a collaborator) on site to take the data, while service mode observations are executed by the telescope operator and observatory’s science staff members.
 
@@ -100,7 +156,18 @@ For each on of the SBs that at the current time satisfy all these requisites, a 
 The scoring numbers are combined in a weighted sum to compute the final score of the
 candidate SBs.
 
-\textit{(Add summary of mmora algorithm here)}
+\subsubsection{Most recent research}
+In 2011 Mora studied the problem~\cite{mora11}. In his thesis is proposed a mathematical model of the problem, however the model does not aim to solve the specific ALMA scheduling problem treating a more general and open observatory scheduling problem. 
+
+For the development of the model proposed it is considered the instances for single and multiples-arrays at the same time, they are treated as different telescopes. The parameters are divided among static and dynamic. The most relevant dynamic parameters are: The on-line weather parameters and the Project and Scheduling Block future feasibility which depends if them whether are or are not completed.
+
+The scheduling selection process establishes two different selection queues: A long-term queue is used to maintain the collection of SB that are feasible to observe during a time frame, the selection of the feasible Scheduling Blocks is based in the static parameters; and a short-term observing queue based on observation time slots, the Scheduling Block selection is based on the dynamic parameters identified for the problem. Multiple short-term queues are maintained according to the common priority of the scheduled observations.
+
+The algorithm seeks to maximize the scientific value of the completed projects, aiming to complete most of the top priority projects, however how the algorithm calculates the science value of the scheduled observation is uncertain due no scientific analysis was done in the presentation of the algorithm. Also it is stated that the algorithm could seek to maximize the array's usage proportion, minimizing the array's idle time. Nonetheless, the objective functions are not optimized explicitly.
+
+%The algorithm aims to solve the medium-term problem due does not %consider changes in array configurations during the observing season 
+%but it is not considered the science capabilities of these instruments %at the time when the observations are planned by the scheduling %algorithm. 
+%\textit{(Add summary of mmora algorithm here)}
 
 \newpage
 \section{Problem}
@@ -248,11 +315,41 @@ So to allow the determination of ``Schedulability'' we find items like represent
 The target is the element within an SB that defines the area to map, the spectral or instrumental setups to use, and the purpose of the observing. In fact the target element itself contains nothing except references to other elements that contain descriptions of these three key components.
 
 \subsection{General problem}
+\newtheorem{problem-def}{Definition}
+The atomic unit to be scheduled is called scheduling block, this name matches the name described in section~\ref{sec:apdm}, although it differs since, the scheduling block defined as atomic unit here, considers only the representative target as the only considered target.
+\begin{problem-def}
+A Scheduling Block (SB) is represented as a n-tuple of time independent  properties ($P$). Let $S_0$ be the set of all SBs,
+$$S_0 = P_1 \times P_2 \times ... \times P_n,$$
+for appropriate $P_i$ sets. Then one SB is:
+$$sb = (p_1, p_2, ..., p_n) \mid p_i \in P_i$$
+\end{problem-def} 
+
+Once defined a scheduling block, then the operation of selecting SB can be defined as:
+\begin{problem-def}
+The scheduling blocks selection is represented as a function that for a given time $t$ and a set of SBs $S \subseteq S_0$, it returns a subset of S:
+$$sel:(t,S) \rightarrow \mathcal P \left({S}\right)$$
+\end{problem-def}
+
+Given these definitions, a property of $sel$ follow:
+
+\newtheorem{sel-props}{Property}
+\begin{sel-props}
+The full selection operation $sel$ for a given time $t$ can be decomposed in independent selection operations, one for each property $p_i$:
+$$sel(t,S) = sel_1(t, S) \cap sel_2(t, S) \cap ... \cap sel_n(t,S)$$
+In general each one of these selection operations can be expressed  as an inequality:
+$$sb \in sel_i(t, S)\,i.i.f\;\alpha_1(t, sb) \leq \alpha(t, sb) \leq \alpha_2(t, sb)$$
+From now on this property will be called ``schedulable time window''.
+\end{sel-props}
+
+Without losing generality, the inequality of the property of above can be separated in two inequalities, then the condition can be expressed as: 
+$$\alpha'(t, sb) \leq \alpha (t, sb)$$
+Regarding the dependencies of both $\alpha$ and $\alpha'$, if the property depends on $t$, then the property is \textit{dynamic}, which means that the property is calculated and updated accordingly the scheduling algorithm progress. In other hand the properties depending only on $sb$ are \textit{dynamic} the values for them are pre-calculated at the beginning of the algorithm.\\
+
 In general a sky source will be visible daily for hours then the source will go below horizon due the Earth's rotation, unless the source is circumpolar in which case the source will be always visible. Also the Earth's orbit movement around the sun would cause that a source will be visible during a period of the calendar year only. Both of these source properties are predictable and can be calculated. Nonetheless, the weather cannot be foreseen with exactitude, even the most accurate weather foresee could have a error margin which will increase if the period of time foresaw increase.
 
-Each Scheduling Block is ``schedulable'' only if the representative target for the given scheduling block is observable, this means that the source of the sky is visible, the array configuration has enough hardware capabilities to observe the source according to the scientific plan and the weather conditions are good enough to carry on the observation. This is defined as the \textit{schedulable time window} for a given scheduling block, this window could be available several times during the observing season. In practical terms a scheduling block can be observed as many times as possible until it has been complete.
+In common terms a Scheduling Block is ``schedulable'' only if the representative target for the given scheduling block is observable, this means that the source of the sky is visible, the array configuration has enough hardware capabilities to observe the source according to the scientific plan, the weather conditions are good enough to carry on the observation, etc. Basically this is the intersection of the different $sel$ functions and it is defined as the \textit{schedulable time window} for a given scheduling block, this window could be available several times during the observing season. In practical terms a scheduling block can be observed as many times as possible until it has been complete.
 
-As stated in the section \ref{sec:apdm} a scheduling block can have multiple targets, however the representative target is the most representative of the set of targets for the given scheduling block, which is selected by the creator of the Project/SchedBlock, thus this target will be the one used by the scheduler.
+As stated in the section \ref{sec:apdm}, a scheduling block can have multiple targets, however the representative target is the most representative of the set of targets for the given scheduling block, which is selected by the creator of the Project/SchedBlock, thus this target will be the one used by the scheduler.
 
 A scheduling block will be considered complete if it meets any of following three criterion:
 \begin{itemize}
@@ -272,7 +369,9 @@ Every project submitted to be observed in the observing season does not have the
 
 The \textit{scheduling array problem} consists on determine a schedule for the given set of scheduling blocks considering one or more arrays already created in a given period of time. The idea is to try to observe most of the projects with high scientific value in the less amount of time possible considering all the scientific requirements.
 
-The \textit{array configuration schedule problem} is on top of the scheduling array problem. It consists in try to determine a schedule of observations for the observing season (which is a fixed amount of time and it lasts for several months, up to 1 year), for given set of the scheduling blocks and the given set the array configurations. The idea is to try to observe most of the projects with high scientific value considering all the scientific requirements during the observing season.
+
+The \textit{array configuration schedule problem} is on top of the scheduling array problem. It consists in try to determine a schedule of observations for the observing season (which is a fixed amount of time and it lasts for several months, up to 1 year), for given set of the scheduling blocks and the given set the array configurations. The idea is to try to observe most of the projects with high scientific value considering all the scientific requirements during the observing season, however not all the projects could be completed.
+
 
 \subsection{ALMA Scheduling Problem}
 The Atacama Large Millimeter/submillimeter Array (ALMA) is a major collaboration effort between European, North American and East Asian countries, under construction on the Chilean Chajnantor plateau, at 5.000 meters altitude. When completed in 2013 it will be the largest radio telescope on earth, with more than 60 antennas of 12 and 7 meters diameter, distributed over a wide extension, with up to 16 kilo-meters of baseline separation. The ALMA interferometer will provide the possibility to be used as a single array, or as up to six (due to limited centralized equipment, photonic references) minor independent arrays or groups of antennas. As each array is equivalent to one instrument, this can eventually be seen as a multi-telescope problem. Also, the antennas will be changing their positions over the year, as different distributions will be used to exploit various kinds of observations. As ALMA does not observe in the visible spectrum, observations are not limited to night time only, thus a 24/7 operation with as small downtime as possible is expected. 
@@ -297,14 +396,19 @@ The ALMA telescope will be operated as one or more antenna arrays, executing obs
 \end{figure}
 
 A huge part of the telescope operations will be handled through the ALMA software, which is divided into various subsystems, such as Control, Correlator (ACA and Baseline), Pipeline, Archive, Scheduling and Offline software. The big picture of ALMA Software can be seen in \cite{schwarz04}.
-The Scheduling Subsystem is the one in charge of managing antenna arrays and dynamically executing scheduling blocks. The current software design details are in \cite{clarke12}. The basic design considers 4 main parts which are represented in figure \ref{fig:sched-class-model}: The ``Master Scheduler'', The ``Array'', The ``Dynamic Scheduler instance'' and the ``Archive Interface''. The Master Scheduler is in charge of create and manage the creation of the Arrays and handle the management of the Scheduling Policies to be used in the DSA. The Array is the main operations unit of the scheduling subsystem, each array operates over Scheduling Blocks, executing, waiting for results of the observations and notifying to the user of the system what has been the outcome of the observation. The Array uses directly the Archive, which is the database storing the definition of each Observation project (see \ref{sec:apdm}, through the Archive Interface. Each array has its own scheduling queue, which can contain several schedblocks waiting to be executed, but just one SchedBlock is observed at the same time in each Array. Finally the DSA acts as a component of an Array selecting the current best SB according to the algorithm policy selected for the given Array, the details of the ALMA's DSA is discussed in section \ref{sec:alma-dsa}. Additionally each scheduling array can operate in 3 different modes: Manual, in this mode the scheduling queue is set with a maximum of one item, in this mode the user is responsible to execute the observation manually using low level scripts. Automatic, in this mode the array has a scheduling queue with unlimited size, once a observation has been completed a new SchedBlock is taken from this queue to observe the next one until the queue is empty or the scheduler is stopped. And Dynamic, in dynamic mode the scheduling queue behaves as the array in interactive mode, but when the queue is empty the DSA is triggered selecting the next best SchedBlock to observe, depending is the DSA is active or passive the selected SchedBlock will be put in the queue to start the observation or the Scheduler will notify the user only respectively.
+The Scheduling Subsystem is the one in charge of managing antenna arrays and dynamically executing scheduling blocks. The current software design details are in \cite{clarke12}. The basic design considers 4 main parts which are represented in figure \ref{fig:sched-class-model}: The ``Master Scheduler'', The ``Array'', The ``Dynamic Scheduler instance'' and the ``Archive Interface''. The Master Scheduler is in charge of create and manage the creation of the Arrays and handle the management of the Scheduling Policies to be used in the DSA. The Array is the main operations unit of the scheduling subsystem, each array operates over Scheduling Blocks, executing, waiting for results of the observations and notifying to the user of the system what has been the outcome of the observation. The Array uses directly the Archive, which is the database storing the definition of each Observation project (see \ref{sec:apdm}), through the Archive Interface. Each array has its own scheduling queue, which can contain several schedblocks waiting to be executed, but just one SchedBlock is observed at the same time in each Array. Finally the DSA acts as a component of an Array selecting the current best SB according to the algorithm policy selected for the given Array, the details of the ALMA's DSA is discussed in section \ref{sec:alma-dsa}. Additionally each scheduling array can operate in 3 different modes: Manual, in this mode the scheduling queue is set with a maximum of one item, in this mode the user is responsible to execute the observation manually using low level scripts. Automatic, in this mode the array has a unlimited size scheduling queue, once a observation has been completed a new SchedBlock is taken from this queue to observe the next one until the queue is empty or the scheduler is stopped. And Dynamic, in dynamic mode the scheduling queue behaves as the array in interactive mode, but when the queue is empty the DSA is triggered selecting the next best SchedBlock to observe, depending if the DSA is active or passive the selected SchedBlock will be put in the queue to start the observation or the Scheduler will notify the user only respectively.
+
+It is true that most of the scheduling software will be run in the online software, however there is a planning stage where the Scheduling algorithm will contribute to plan different scenarios of a season. The online usage of the algorithm is known as the \textit{short-term scheduler}, this scheduler can be used in quasi-real time or to planning the night observations. A \textit{medium-term scheduler} used to planning the observations of a frame of time where the array configurations are the same. And finally \textit{long-term scheduler} which should be able to plan an entire season of observation across the different planned array configurations, ideally the algorithm should define the duration of each configuration given as a input.  
 
 
 \subsection{Comparison with classical scheduling problems}
 
-The problem cannot be compared against job-shop due the scheduling block's schedulable time window, this does not allow to have every scheduling block available at any time. Besides this restriction, to observe at different times of the day the same target, ignoring weather conditions, would deliver different scientific result outputs due the nature of how the $uv$ coverage and sensitivity are calculated.
+The problem cannot be compared against job-shop due the scheduling block's schedulable time window, this does not allow to have every scheduling block available at any time. Besides this restriction, to observe at different times of the day the same target, ignoring weather conditions, would deliver different scientific result outputs due the nature of how the $uv$ coverage and sensitivity are calculated
 
-To compare the astronomic scheduling problem against CPU scheduling also it could not be feasible. It is true that every schedblock is an atomic schedulable unit, like a process in a computer operating system, but when a schedblock is being observed it cannot be preempt to observe another schedblock, this limitations breaks most of the modern CPU scheduler designs found in modern operating systems. However it is possible to find some similitude with cooperative schedulers found in older operating systems.
+To compare the astronomic scheduling problem against CPU scheduling also it could not be feasible. It is true that every SchedBlock is an atomic schedulable unit, like a process in a computer operating system, but when a schedblock is being observed it cannot be preempt to observe another schedblock, this limitations breaks most of the modern CPU scheduler designs found in modern operating systems. However it is possible to find some similitude with cooperative schedulers found in older operating systems. 
+
+Another relaxation of this particular problem is the lack of obligation to complete all the projects for the given season. It is desirable to complete the projects with the highest scientific priority, however if one or more of the projects are not completed, they could re-appear in the next season because of the high scientific values assigned to them.
+
 
 \begin{thebibliography}{9}
 \bibitem{graham66}
@@ -365,7 +469,7 @@ To compare the astronomic scheduling problem against CPU scheduling also it coul
 
 \bibitem{muscettola96}
 	Muscettola N, Smith S. S,
-	\textbf{Investigations into Generalizations of 				Constraint-Based Scheduling Theories with Applications to Space Telescope Observation Scheduling},
+	\textbf{Investigations into Generalizations of Constraint-Based Scheduling Theories with Applications to Space Telescope Observation Scheduling},
 	Technical Report,
 	The Robotics Inst., Carnegie-Mellon University,
 	Pittsburgh, 1996
@@ -390,9 +494,27 @@ To compare the astronomic scheduling problem against CPU scheduling also it coul
 	National Radio Astronomy Observatory,
 	2012,
 	COMP-70.55.00.00-003-F-DSN Version F
-	
 
+\bibitem{parekh93}
+	Parekh, A. K, Gallager, R. G.
+	\textbf{A Generalized Processor Sharing Approach to Flow Control in Integrated Services Networks: The Single Node Case},
+	IEEE/ACM Transactions on Networking,	
+	1(3):344-357,
+	June 1993
 	
+\bibitem{li09}
+	Li T, Baumberger D, Hahn S,
+	\textbf{Efficient and scalable multiprocessor fair scheduling using distributed weighted round-robin},
+	Proceedings of the 14th ACM SIGPLAN symposium on Principles and practice of parallel programming,
+	1:65-74, ISBN: 978-1-60558-397-6
+	4 April, 2009
+
+\bibitem{chandra00}
+ 	Chandra A, Adler M, Goyal P, Shenoy P.
+ 	\textbf{fair scheduling: A proportional-share CPU scheduling algorithm for symmetric multiprocessor},
+ 	Proceedings of the 4th Symposium on operating System Design and Implementation,
+ 	pages 45-48,
+ 	October 2000
 	
 \end{thebibliography}
 
