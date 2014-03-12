@@ -36,7 +36,7 @@ The scheduling of proposals for astronomical observations is a complex problem, 
 
 Usually this problem has been seen as a particular problem derived from the classic job-shop scheduling problem, which has been studied since the '60s. This approach could be useful if the astronomical facility is not based on interferometry where the quality of science value of an observation could vary greatly if the external and dynamic conditions vary. 
 
-This document tries to give a new approach to the observatory scheduling problem covering in section \ref{sec:state-of-art} an overview of the past and current techniques used to treat the problem. A particular use of this problem problem is treated as part of the Atacama Large Millimeter/Submillimeter Array (ALMA), which currently is the largest radio interferometer telescope built in Earth. Section \ref{sec:problem} gives an overview of the general observatory scheduling problem for an radio interferometer telescope covering scientific topics, again ALMA is explained in detail.
+This document tries to give a new approach to the observatory scheduling problem covering in section \ref{sec:state-of-art} an overview of the past and current techniques used to treat the problem. A particular use of this problem is treated as part of the Atacama Large Millimeter/Submillimeter Array (ALMA), which currently is the largest radio interferometer telescope built in Earth. Section \ref{sec:problem} gives an overview of the general observatory scheduling problem for a radio interferometer telescope covering scientific topics, again ALMA is explained in detail.
 
 \newpage
 \section{State of the art}
@@ -56,7 +56,9 @@ Another approach to scheduling problem is the proportional fair scheduling studi
 
 In this problem fairness is an essential requirement of the scheduler designed for the operating system. The conventional approach is to assign to each task a weight and the scheduler ensures that each task receive time proportional to his weight~\cite{parekh93}. Since perfect fairness requires infinitesimal small scheduling quanta, which is unfeasible, all practical schedulers approximate it with the goal of obtaining small error bounds.
 
-Most of the modern operating system have been adopted an imprecise notion of fairness that seeks prevention of the starvation and be ``reasonable'' fair at the same time~\cite{li09}. In these designs the scheduler dispatches threads in the order of threat priorities. For each thread, it assigns the threads a time slice that determines how long the thread can run once the thread dispatched. A higher priority thread receives a larger time slice, how much larger is often determined empirically, not a proportional function of the thread's priority. To facilitate fairness the scheduler also dynamically adjusts priorities, allowing the priority of a thread to decay over time or boosting it if the thread have not run for a while. Similar to time slices, the parameters of these adjustments are determined empirically using heuristic methods.  
+Most of the modern operating system have been adopted an imprecise notion of fairness that seeks prevention of the starvation and be ``reasonable'' fair at the same time~\cite{li09}. In these designs the scheduler dispatches threads in the order of threat priorities. For each thread, it assigns the threads a time slice that determines how long the thread can run once the thread dispatched. A higher priority thread receives a larger time slice, how much larger is often determined empirically, not a proportional function of the thread's priority. To facilitate fairness the scheduler also dynamically adjusts priorities, allowing the priority of a thread to decay over time or boosting it if the thread have not run for a while. Similar to time slices, the parameters of these adjustments are determined empirically using heuristic methods. 
+
+The most recent work have used different kind of techniques to achieve a fairer algorithm than previous one e.g. Virtual-time-based algorithm, lottery algorithms. However most of the recent work has been done used the Round-Robin algorithm technique. Round-Robin algorithms have $O(1)$ time complexity and thus are highly efficient~\cite{li09}. However they have weak fairness with $O(N)$ lag bounds in general. Currently Linux kernel is using the Completely Fair Scheduler~\cite{jones09}, which could it be a misleading name because it guarantees a unfair level less than $O(n)$ which is not completely fair. 
 
 \subsubsection{Fair scheduling theory}
 Generalized Processor Sharing (GPS) is an idealized scheduling algorithm that achieves perfect fairness. All practical schedulers approximate GPS and use it as reference to measure fairness.
@@ -94,7 +96,7 @@ $$\frac{w_i}{\sum_{j \in \Phi}w_j} > \frac{1}{P},$$
 where $\Phi$ is the set of runnable threads that remain unchanged in $[t_1, t_2]$ and P is the number of CPUs.
 \end{gps-model} 
 
-And unfeasible weight represents a resource demand that exceeds the system capability. Chandra et al.~\cite{chandra00} propose to convert unfeasible weights into their closest feasible ones. With this conversion, a GPS scheduler is well defined for any multiprocessor system.
+An unfeasible weight represents a resource demand that exceeds the system capability. Chandra et al.~\cite{chandra00} propose to convert unfeasible weights into their closest feasible ones. With this conversion, a GPS scheduler is well defined for any multiprocessor system.
 
 A GPS scheduler is idealized since all runnable threads must run simultaneously and be scheduled with infinitesimally quanta, which is unfeasible. Thus, all practical scheduler emulate GPS approximately and are evaluated from two aspects: fairness and time complexity. Lag is common used metric for fairness. Assume that threads $i$ and $j$ are both runnable and have a fixed weight in the interval $[t_1, t_2]$ under some algorithm A.
 
@@ -103,9 +105,7 @@ For any interval $[t_1, t_2]$, the lag of thread $i$ at the time $t \in [t_1, t_
 $$lag_i(t) = S_{i, GPS}(t_1, t) - S_{i, A}(t_1, t).$$
 \end{gps-model}
 
-A positive lags at time $t$ implies that the thread has received less service than under GPS; a negative lag implies the opposite. All fair scheduling algorithm seek to bound the positive and negative lags, the smaller the bounds are the fairer algorithm. An algorithm achieves strong fairness if its lags are bounded by small constants. On other hand, fairness is poor and non scalable if the lag bounds are $O(N)$ function , where N is the number of threads, because the algorithm  increasingly deviates from GPS as the number of threads in the system increases.
-
-The most recent work have used different kind of techniques to achieve a fairer algorithm than previous one e.g. Virtual-time-based algorithm, lottery algorithms. However most of the recent work has been done used the Round-Robin algorithm technique. Round-Robin algorithms have $O(1)$ time complexity and thus are highly efficient~\cite{li09}. However they have weak fairness with $O(N)$ lag bounds in general. Currently Linux kernel is using the Completely Fair Scheduler, which could it be a misleading name because it guarantees a unfair level less than $O(n)$ which is not completely fair. 
+A positive lags at time $t$ implies that the thread has received less service than under GPS; a negative lag implies the opposite. All fair scheduling algorithm seek to bound the positive and negative lags, the smaller the bounds are the fairer algorithm. An algorithm achieves strong fairness if its lags are bounded by small constants. On other hand, fairness is poor and non-scalable if the lag bounds are $O(N)$ function , where N is the number of threads, because the algorithm  increasingly deviates from GPS as the number of threads in the system increases.
 
 \subsection{Schedule of astronomic observations}
 
@@ -336,14 +336,13 @@ Given these definitions, a property of $sel$ follow:
 \begin{sel-props}
 The full selection operation $sel$ for a given time $t$ can be decomposed in independent selection operations, one for each property $p_i$:
 $$sel(t,S) = sel_1(t, S) \cap sel_2(t, S) \cap ... \cap sel_n(t,S)$$
-In general each one of these selection operations can be expressed  as an inequality:
-$$sb \in sel_i(t, S)\,i.i.f\;\alpha_1(t, sb) \leq \alpha(t, sb) \leq \alpha_2(t, sb)$$
-From now on this property will be called ``schedulable time window''.
+In genera,l each one of these selection operations can be expressed  as an inequality, defining the ``schedulable time window'' for a given $sb_j$:
+$$sb_j \in sel_i(t, S)\,i.i.f\;\alpha_1(t, sb) \leq \alpha(t, sb) \leq \alpha_2(t, sb)$$
 \end{sel-props}
 
 Without losing generality, the inequality of the property of above can be separated in two inequalities, then the condition can be expressed as: 
 $$\alpha'(t, sb) \leq \alpha (t, sb)$$
-Regarding the dependencies of both $\alpha$ and $\alpha'$, if the property depends on $t$, then the property is \textit{dynamic}, which means that the property is calculated and updated accordingly the scheduling algorithm progress. In other hand the properties depending only on $sb$ are \textit{dynamic} the values for them are pre-calculated at the beginning of the algorithm.\\
+Regarding the dependencies of both $\alpha$ and $\alpha'$, if the property depends on $t$, then the property is \textit{dynamic}, which means that the property value to satisfy the inequality is calculated and updated accordingly the scheduling algorithm progress. In other hand the properties depending only on $sb$ are \textit{static}, therefore the values to satisfy their inequalities are pre-calculated at the beginning of the algorithm.\\
 
 In general a sky source will be visible daily for hours then the source will go below horizon due the Earth's rotation, unless the source is circumpolar in which case the source will be always visible. Also the Earth's orbit movement around the sun would cause that a source will be visible during a period of the calendar year only. Both of these source properties are predictable and can be calculated. Nonetheless, the weather cannot be foreseen with exactitude, even the most accurate weather foresee could have a error margin which will increase if the period of time foresaw increase.
 
@@ -515,6 +514,13 @@ Another relaxation of this particular problem is the lack of obligation to compl
  	Proceedings of the 4th Symposium on operating System Design and Implementation,
  	pages 45-48,
  	October 2000
+	
+\bibitem{jones09}
+	Jones M. T
+	\textbf{Inside the Linux 2.6 Completely Fair Scheduler},
+	IBM developer works technical papers,
+	\texttt{http://www.ibm.com/developerworks/library/l-completely-fair-scheduler/},
+	December 2009
 	
 \end{thebibliography}
 
