@@ -1,0 +1,124 @@
+\chapter{State of the art}
+
+The scheduling problem is an optimization problem in which ideal jobs, also called tasks, are assigned to resources at particular times to execute these jobs, the execution of the jobs must satisfy all the constraints, this should be done in a way that the resulting schedule, the solution, is the best possible.
+
+The most well known problem is the \textit{job-shop} scheduling problem presented by first time in 1966 by Graham \cite{graham66}. In this problem $n$ jobs of different sizes are scheduled to $m$ identical machines, where it is trying to minimize the makespan (the time taken to process all the jobs). In the definition of this problem is possible to appreciate the static nature, however     nowadays the problem can be treated as an online problem using dynamic scheduling.
+
+The job-shop dynamic scheduling problem has been researched in the recent years, this problem adds new challenges to the online schedule, e.g. adding new jobs during the jobs execution and adding new restrictions. A simple example of dynamic schedule is found in 
+
+\textit{(Write more about job-shop problem details)}
+
+\section{Fair scheduling: Processor sharing approach}
+
+Another approach to scheduling problem is the proportional fair scheduling studied at level of processor sharing, this problem is very common in computer science and developing of Operating System's kernels~\cite{li09} including real-time systems and in the past, in the 90's was studied in network sharing~\cite{parekh93}. 
+
+In this problem fairness is an essential requirement of the scheduler designed for the operating system. The conventional approach is to assign to each task a weight and the scheduler ensures that each task receive time proportional to his weight~\cite{parekh93}. Since perfect fairness requires infinitesimal small scheduling quanta, which is unfeasible, all practical schedulers approximate it with the goal of obtaining small error bounds.
+
+Most of the modern operating system have been adopted an imprecise notion of fairness that seeks prevention of the starvation and be ``reasonable'' fair at the same time~\cite{li09}. In these designs the scheduler dispatches threads in the order of threat priorities. For each thread, it assigns the threads a time slice that determines how long the thread can run once the thread dispatched. A higher priority thread receives a larger time slice, how much larger is often determined empirically, not a proportional function of the thread's priority. To facilitate fairness the scheduler also dynamically adjusts priorities, allowing the priority of a thread to decay over time or boosting it if the thread have not run for a while. Similar to time slices, the parameters of these adjustments are determined empirically using heuristic methods. 
+
+The most recent work have used different kind of techniques to achieve a fairer algorithm than previous one e.g. Virtual-time-based algorithm, lottery algorithms. However most of the recent work has been done used the Round-Robin algorithm technique. Round-Robin algorithms have $O(1)$ time complexity and thus are highly efficient~\cite{li09}. However they have weak fairness with $O(N)$ lag bounds in general. Currently Linux kernel is using the Completely Fair Scheduler~\cite{jones09}, which could it be a misleading name because it guarantees a unfair level less than $O(n)$ which is not completely fair. 
+
+\subsection{Fair scheduling theory}
+Generalized Processor Sharing (GPS) is an idealized scheduling algorithm that achieves perfect fairness. All practical schedulers approximate GPS and use it as reference to measure fairness.
+
+Consider a system with $P$ CPUs and $N$ threads. Each thread $i$, $1 \leq i \leq N$, has a weight $w_i$. A scheduler is perfectly fair if:
+\begin{enumerate}
+	\item It is work conservative i.e., it never leaves a CPU idle if there are runnable threads.
+	\item it allocates CPU time to threads in exact proportion to their weights.
+\end{enumerate}
+Such a scheduler is common referred to a GPS~\cite{parekh93}.
+
+\newtheorem{gps-model}{Definition}
+\begin{gps-model}
+A GPS scheduler is one for which
+$$\frac{S_i(t_1, t_2)}{S_j(t_1, t_2)} \geq \frac{w_i}{w_j}, j=1, 2, ..., N$$
+holds for any thread $i$ that is continuously runnable in $[t_1, t_2]$ and $w_i$ and $w_j$ are fixed in that interval. 
+\end{gps-model}
+
+\newtheorem{gps-props}{Property}
+\begin{gps-props}
+If both threads $i$ and $j$ are continuously runnable with fixed weights in $[t_1, t_2]$, then GPS satisfies 
+$$\frac{S_i(t_1, t_2)}{S_j(t_1, t_2)} = \frac{w_i}{w_j}$$
+\end{gps-props}
+
+\begin{gps-props}
+If the set of runnable threads, $\Phi$, and their weights remain unchanged throughout  the interval $[t_1, t_2]$, then for any thread $i \in \Phi$, GPS satisfies
+$$S_i(t_1, t_2) = \frac{w_i}{\sum_{j \in \Phi} w_j}(t_2 - t_1)P$$
+\end{gps-props}
+
+For multiprocessor some weights assignments can be unfeasible  and thus no GPS scheduler can exist, then Chandra et al.~\cite{chandra00} introduced the following definition:
+
+\begin{gps-model}
+In any given interval $[t_1, t_2]$, the weight $w_i$ of thread $i$ is unfeasible if
+$$\frac{w_i}{\sum_{j \in \Phi}w_j} > \frac{1}{P},$$
+where $\Phi$ is the set of runnable threads that remain unchanged in $[t_1, t_2]$ and P is the number of CPUs.
+\end{gps-model} 
+
+An unfeasible weight represents a resource demand that exceeds the system capability. Chandra et al.~\cite{chandra00} propose to convert unfeasible weights into their closest feasible ones. With this conversion, a GPS scheduler is well defined for any multiprocessor system.
+
+A GPS scheduler is idealized since all runnable threads must run simultaneously and be scheduled with infinitesimally quanta, which is unfeasible. Thus, all practical scheduler emulate GPS approximately and are evaluated from two aspects: fairness and time complexity. Lag is common used metric for fairness. Assume that threads $i$ and $j$ are both runnable and have a fixed weight in the interval $[t_1, t_2]$ under some algorithm A.
+
+\begin{gps-model}
+For any interval $[t_1, t_2]$, the lag of thread $i$ at the time $t \in [t_1, t_2]$ is
+$$lag_i(t) = S_{i, GPS}(t_1, t) - S_{i, A}(t_1, t).$$
+\end{gps-model}
+
+A positive lags at time $t$ implies that the thread has received less service than under GPS; a negative lag implies the opposite. All fair scheduling algorithm seek to bound the positive and negative lags, the smaller the bounds are the fairer algorithm. An algorithm achieves strong fairness if its lags are bounded by small constants. On other hand, fairness is poor and non-scalable if the lag bounds are $O(N)$ function , where N is the number of threads, because the algorithm  increasingly deviates from GPS as the number of threads in the system increases.
+
+\section{Schedule of astronomic observations}
+
+A summary of how the astronomical institution do schedule of the astronomical observations are discussed in \cite{mora11}.
+
+Astronomical observations require specific conditions for their execution, several of them are discussed in section \ref{sec:astro-concepts}, although these concepts are focused on radio astronomy, also they are applicable on optical astronomy, however these concepts could get different names. All this information, together with the scientific goals of the observation, are presented by an astronomer in a so called proposal to apply for observation time. Its format can vary from one institution to another, including the following parameters: telescope and instrument (one telescope can work with more than one instrument), main investigator, program description and target(s) list. In particular the case of the ALMA project data model (APDM) is discussed in \ref{sec:apdm}, this model has been achieve in a joint effort of several astronomical institutions, thus is quite generic and it has been adopted for other observatories like the Very Large Array telescope.
+
+In the case of Chile, there are three main institutions managing some of the world’s most important telescopes: European Southern Observatory, ESO (La Silla, Paranal, APEX); Association of Universities for Research in Astronomy, AURA (Tololo, Gemini, SOAR); and Observatories of the Carnegie Institute of Washington, OCIW (Las Campanas). Proposals have to be sent to the corresponding telescope Time Assignment Committee, which evaluates all proposals, assigning a scientific grade (importance of execution), and approving or rejecting the requested observing times. As most observatories are joint ventures between several organizations and/or countries, the list of approved projects has to comply with the percentage of total time assigned to each part. Normally, telescope time can be applied once per observation period. An observation can be executed in visitor or service mode. Visitor mode observations require the presence of the main investigator (or a collaborator) on site to take the data, while service mode observations are executed by the telescope operator and observatory’s science staff members.
+
+The scheduling of astronomical observations is a variation of the dynamic scheduling problem, which has been treated in various ways since several decades by the scientific community as discussed in \cite{gomez03}. This is a multi-objective problem, as normally various optimizations are required. The most important ones are the maximization of the executed scientific priorities (scientific throughput), and the maximization of observing time usage. This could include minimizing gaps between executions (including readout time, telescope movement to the new source, instrument change and/or calibrations, etc.), and carefully planning required maintenance. Also, the total exposure time of an observation may depend on atmospheric conditions, as it could be necessary to do larger exposures with poor visibility.
+
+Although most of modern professional observatories use certain degree of scheduling automation, there is still a huge part of human intervention to build up the daily plan and to take last minute decisions. External parameters can vary at any time during observations, and therefore a dynamic re-scheduling is needed. If we consider a given execution priority for each block, depending on the quality of observation conditions and importance of scientific goals, external parameters can certainly cause priority changes: some observations may not be suitable anymore to execute under new conditions. Moreover, as observation blocks depend on target’s visibility on the sky, they might be only valid during certain day/night time, and/or certain periods of the year. Therefore, it might happen that initially high priority tasks have to be executed with less priority, or cannot be executed at all within one observation period. Particular observation blocks may also depend on others to be executed. For example, it may be required to execute blocks sequentially or with a certain frequency.
+
+\section{Current observatory schedulers}
+
+A good description of the common astronomy scheduling problem and basic mathematical model is presented in \cite{gomez03}. In the same publication, the author proposes long and short-term scheduling scopes, and tries to solve the problem using neighbourhood search (Lin-Kernighan heuristic) and genetic algorithms. The result is that under certain circumstances (short size and good pre-ordered sample) the neighbourhood search can perform better than the genetic algorithm. Nevertheless, the genetic algorithm is in general a better and faster alternative, and does not need a pre-knowledge of the main constraints. The scientific policy imposes some restrictions that are difficult to handle, depending strongly on the sample characteristics (proposal quality and duration). To take better advantage of automatic scheduling, it is important to have a small degree of over-subscription in the final allocated time, and also a large number of short exposure (duration) project proposals.
+
+The most referenced scheduling solution for astronomical observations is the SPIKE scheduler for the Hubble Space Telescope, developed by the Space Telescope Science Institute (STScI). SPIKE is largely cited as a reference scheduling system, and has also been adapted to other (ground based) telescopes. The current trend is to increase the observations automation, as astronomical projects are getting more complex, observation time more expensive, and decisions more difficult.
+
+\subsection{Hubble Space Telescope}
+The Hubble Space Telescope is probably the most famous space telescope, launched in 1990, and best known for its exploration of the deep space from the Earth orbit. It is a collaboration between NASA and the European Space Agency. Space telescopes have the advantage of not depending on atmospheric interference, but are also much more complex to maintain and repair. The HST SPIKE scheduling system, described in \cite{johnston90} and \cite{zweben94}, treats the scheduling as a constraint satisfaction problem (CSP), including a toolkit to handle this type of problems. Short and long term scheduling concepts are applied, and several schedule steps are considered: trial assignment heuristic (min-conflicts times), repair heuristic (neural network) and de-conflict (priority selection). Also, rescheduling of observations is possible through the CSP toolkit (task locking and conflict-cause analysis). Since its original implementation in 1987 SPIKE is entirely implemented in Common Lisp and Common Lisp Interface Manager for user interfaces. \cite{muscettola96} presents a report about studies related to the generalization of constraint-based scheduling theories and techniques with application to space telescope observation scheduling. For this goal, the Heuristic Scheduling Testbed System (HSTS) planning and scheduling framework was developed. Planning and scheduling are treated as complimentary problems to produce good results.
+
+\subsection{Atacama Large Millimiter/SubMillimiter Array Dynamic Scheduling Algorithm}
+\label{sec:alma-dsa}
+
+ALMA's Dynamic Scheduling Algorithm (DSA) is the process where the Scheduling subsystem selects the next Scheduling Block (SB) to be executed by an array in the telescope, according to several criteria such as the current weather conditions, the state of the telescope's hardware, the observation time that the Executives have spent so far in an observing season, and several other. The algorithm aims to select the ``best'' SB given the system conditions at the time when the algorithm is executed. The complete algorithm is described in \cite{avarias11} 
+
+The algorithm is ``greedy'', in the sense that in every iteration, it assumes that all the array resources are allocated to the next selected SB. The algorithm doesn't try optimize the set of selected SBs as a function of time for long periods of time ---like an observing season--- using estimated values for future conditions. It just selects the optimal SB for the current conditions. The algorithm doesn't try to come up with an optimal program for array configurations. This is assumed to be given as input to the algorithm. This problem statement is directly derived from the science requirements.
+
+The current algorithm is divided in two steps. A first selection step, where the entire pool of SBs is scanned to discard SBs that can't be executed at this time. The result of this step is a set of candidate SBs, which are then scored to select the best. The required selection criteria are:
+\begin{itemize}
+\item Select only the SBs which haven't been completed yet.
+\item Select only the SBs belonging to Executives that still have enough time left.
+\item Select only the SBs for which the weather is satisfactory for the entire observation.
+\item Select only the SBs for which the current array configuration is appropriate.
+\item Select only the SBs with sources visible and outside the Sun and Moon avoidance zones for the entire time of the observation.
+\item Select only the SBs with required hardware available.
+\end{itemize}
+
+For each on of the SBs that at the current time satisfy all these requisites, a score number is calculated to account for each one of the following qualities:
+\begin{itemize}
+\item Science grade.
+\item Degree of completion of project.
+\item Target SNR/Execution Time/Time Limit.
+\item Expected weather pattern.
+\item uv-coverage/Side Lobes/Hour Angle coverage.
+\end{itemize}
+The scoring numbers are combined in a weighted sum to compute the final score of the
+candidate SBs.
+
+\subsection{Most recent research}
+In 2011 Mora studied the problem~\cite{mora11}. In his thesis is proposed a mathematical model of the problem, however the model does not aim to solve the specific ALMA scheduling problem treating a more general and open observatory scheduling problem. 
+
+For the development of the model proposed it is considered the instances for single and multiples-arrays at the same time, they are treated as different telescopes. The parameters are divided among static and dynamic. The most relevant dynamic parameters are: The on-line weather parameters and the Project and Scheduling Block future feasibility which depends if them whether are or are not completed.
+
+The scheduling selection process establishes two different selection queues: A long-term queue is used to maintain the collection of SB that are feasible to observe during a time frame, the selection of the feasible Scheduling Blocks is based in the static parameters; and a short-term observing queue based on observation time slots, the Scheduling Block selection is based on the dynamic parameters identified for the problem. Multiple short-term queues are maintained according to the common priority of the scheduled observations.
+
+The algorithm seeks to maximize the scientific value of the completed projects, aiming to complete most of the top priority projects, however how the algorithm calculates the science value of the scheduled observation is uncertain due no scientific analysis was done in the presentation of the algorithm. Also it is stated that the algorithm could seek to maximize the array's usage proportion, minimizing the array's idle time. Nonetheless, the objective functions are not optimized explicitly.

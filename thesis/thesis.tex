@@ -1,0 +1,85 @@
+\documentclass[11pt, letterpaper]{memoir}
+\usepackage[plainpages=false, colorlinks, urlcolor=black, citecolor=black,
+	linkcolor=blue]{hyperref}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{txfonts}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage[spanish, english]{babel}
+%\usepackage[dvips]{epsfig}
+%\usepackage{epsfig}
+%\usepackage{psfig}
+
+%% Margenes segun Normas
+%% Ancho Legal 21,59cm /  8,5in
+%% Alto  Legal 33,02cm / 13,0in
+\paperheight    27.81cm % alto letter
+\paperwidth     21.59cm % ancho
+\hoffset        -1.0in % Seteo a 0 el margen izquierdo
+\voffset        -1.0in % Seteo a 0 el margen superior
+\oddsidemargin  3.80cm % Margen izquierdo (pag. impar)
+% \evensidemargin 2.55cm % Margen izquierdo (pag. par) Acrobat Winkk
+\evensidemargin 2.59cm % Margen izquierdo (pag. par)
+\topmargin      1.00cm % Margen superior
+\headheight     5.00mm % Ancho encabezado
+\headsep        8.00mm % Separacion encabezado-cuerpo
+\textheight     23.5cm % Alto cuerpo
+\textwidth      15.2cm % Ancho cuerpo
+\footskip       1.30cm % Separacion piepag-cuerpo
+\parindent      0em
+\parskip        1ex
+
+\lstloadlanguages{C++, sh, IDL, make}
+\lstset{basicstyle=\small\sffamily, commentstyle=\slshape,
+        numbers=left, numberstyle=\tiny, numbersep=10pt,
+        extendedchars, frame=lines,
+        floatplacement=ht, captionpos=b,
+        defaultdialect=[CORBA]IDL}
+
+\title{Data Distribution Service as an alternative to
+the CORBA Notification Service for Alma Common Software}
+\author{Jorge Avarias}
+
+\newcommand{\doctitle}{A NEW SCHEDULING ALGORITHM FOR ALMA OBSERVATORY}
+
+\begin{document}
+\selectlanguage{english}
+\input{include/cover.tex}
+\thispagestyle{empty}
+\bibliographystyle{alpha}
+%\maketitle
+\frontmatter
+%\input{include/abstract}
+\selectlanguage{english}
+\newpage
+\tableofcontents
+\cleardoublepage
+\listoffigures
+\cleardoublepage
+\listoftables
+\cleardoublepage
+\lstlistoflistings
+
+\mainmatter
+\cleardoublepage
+
+%\input{include/01-Introduction}
+\input{include/02-state-of-art}
+\input{include/03-problem-description}
+%\input{include/04-DDS-for-ACS}
+%\input{include/05-Code-description}
+%\input{include/06-Verification}
+%\input{include/07-Conclusions}
+
+\backmatter
+\theglossary
+%\input{include/glossary}
+
+%\appendix
+%\input{include/appendix.tex}
+
+\bibliographystyle{alpha}
+
+%\bibliography{refs,theses}
+\end{document}
