@@ -54,13 +54,13 @@ The troposphere is extending from Earth's surface to 7 to 10 km of altitude, the
 \label{fig:atmospheric-opacity}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[]
 \includegraphics[width=\textwidth]{images/chajnantor-atm-transmission}
 \caption{Transmission of the atmosphere from 0 to 1000 GHz for the ALMA site at Chajnantor in Chile assuming the typical value of $w_0 = 1 mm$ of precipitate water vapor. Source: \cite{taylor99}}
 \label{fig:chaj-atm-tx}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[]
 \includegraphics[width=\textwidth]{images/vla-atm-transmission}
 \caption{Transmission of the atmosphere for VLA site in Socorro, NM, assuming a value of $w_0 = 4 mm$. Source: \cite{taylor99}}
 \label{fig:vla-atm-tx}
@@ -70,35 +70,42 @@ Figure \ref{fig:vla-atm-tx} shows the model of the atmospheric transmission at c
 
 (System temperature $T_{sys}$ is missing, explain definition and usage in the observation)
 
+\newpage
 \section{ALMA Project Data Model}
 \label{sec:apdm}
 The ALMA Software system works using the concept of an Observing Project. The Observing Project is used throughout the ALMA software as the top level structure associated with a project resulting from a single observing proposal. In fact the Observing Project is a container for all the information relating to a project before it begins execution. During and following execution other data associated with the project are created and held in other structures, each of which holds a reference to the original observing project. Of particular interest is the Project Status structure, which holds a record of the execution status of the Project. The ALMA Project Data Model (APDM) defines the structure of both the Observing Project (ObsProject) and the execution status (ProjectStatus).
 
 The Scheduling Block (SchedBlock or SB) is the atomic unit of observing for ALMA, any given science observation will usually be broken into many SBs, which may, or may not be executed in sequence. The ALMA Scheduling Software will decide on which SB to execute at any given time on the basis of which is the best to execute now. An SB as a canonical execution length of around 30 minutes, however in practice the SBs observation duration could be up to 2 hours, depending of the Observation program.
 
-\subsection*{Observation Project Entity}
+\begin{description}
+\item[Observation Project Entity] \hfill \\
 When a ALMA user submits a project to the Data Base, then the user is creating a ObsProject. Almost all the end-user tools in ALMA operates on ObsProjects, no other entities are exposed to the end user.
 
 In order to hold all of the pre-observing information associated with a project the ObsProject entity class is composed of three parts: an ObsProposal, an ObsReview and an ObsProgram. These hold the information associated with the three phases of observing preparation: the proposal or Phase I, the reviewing and resultant approvals, and the observing program definition, or Phase II.
 
-\subsection*{Observation Program Entity}
+\item[Observation Program Entity] \hfill \\
 The Observing Program (ObsProgram) part of the Observing Project holds all the information created during Phase II, or program preparation. The ObsProgram consists of an Observing Plan (ObsPlan) and a SciencePlan. The Science Plan covers the science goal oriented view of the observing, and it is intended to contain the information that most users will use to define their observing programs. This information will persist, for the convenience of users, but will not be the definition that is used by the Observatory when carrying out the observations. Instead the latter information is contained within the ObsPlan, and covers what we call the system view. The service of Program Generation allows users to create the Observing Plan from their Science Plan. It is also possible for very advanced users to ignore the Science Plan and simply create all of the Observing Plan directly.
 
 As stated, the Observing Plan (ObsPlan) is the container for defining the actual observing objects. In modeling terms the ObsPlan is a role for the top level ObsUnitSet, heading the definition of the system view. An ObsUnitSet contains a collection of Scheduling Blocks or more ObsUnitSets, along with objects defining the preconditions, performance and calibration requirements, and flow control that apply to that collection.
 
-\subsection*{Scheduling Block Entity}
+
+\item[Scheduling Block Entity] \hfill \\
 A Scheduling Block (SB) is the unit of observing for ALMA. It defines all the information that is required by the Observatory to independently execute the acquisition of a set of data and then to calibrate it as well. Since SBs are selected for execution individually they must exist as separate items in the data base.
 
 Most of the structures within the SB hold information that is used either by the scheduler, to query whether or not this SB is suitable for scheduling ``now'', or as information that is used by the Observing Script (in the Control subsystem) to actually execute the observing (see below), and in some cases both. There are also performance goals for the SBs, to be measured against by the observing system.
 
 So to allow the determination of ``Schedulability'' we find items like representative target observability, weather constraints, a precondition that requires a current Baseline Calibration and a Scientific Priority.
 
-\subsection*{Targets}
+\item[Targets] \hfill \\
 The target is the element within an SB that defines the area to map, the spectral or instrumental setups to use, and the purpose of the observing. In fact the target element itself contains nothing except references to other elements that contain descriptions of these three key components.
+
+\end{description}
 
 \section{General problem}
 \newtheorem{problem-def}{Definition}
-The atomic unit to be scheduled is called scheduling block, this name matches the name described in section~\ref{sec:apdm}, although it differs since, the scheduling block defined as atomic unit here, considers only the representative target as the only considered target.
+The atomic unit to be scheduled is called scheduling block, this name matches the name described in section~\ref{sec:apdm}, although it differs since, the scheduling block is defined as atomic unit here, it contains only one target, the \textit{representative target}, which is the most representative of the set of targets for the given scheduling block. The submitter of the proposal is in charge to choose the representative target.
+
+
 \begin{problem-def}
 A Scheduling Block (SB) is represented as a n-tuple of time independent  properties ($P$). Let $S_0$ be the set of all SBs,
 $$S_0 = P_1 \times P_2 \times ... \times P_n,$$
@@ -118,7 +125,7 @@ Given these definitions, a property of $sel$ follow:
 \begin{sel-props}
 The full selection operation $sel$ for a given time $t$ can be decomposed in independent selection operations, one for each property $p_i$:
 $$sel(t,S) = sel_1(t, S) \cap sel_2(t, S) \cap ... \cap sel_n(t,S)$$
-In genera,l each one of these selection operations can be expressed  as an inequality, defining the ``schedulable time window'' for a given $sb_j$:
+In general, each one of these selection operations can be expressed  as an inequality, defining the ``schedulable time window'' for a given $sb_j$:
 $$sb_j \in sel_i(t, S)\,i.i.f\;\alpha_1(t, sb) \leq \alpha(t, sb) \leq \alpha_2(t, sb)$$
 \end{sel-props}
 
@@ -126,13 +133,35 @@ Without losing generality, the inequality of the property of above can be separa
 $$\alpha'(t, sb) \leq \alpha (t, sb)$$
 Regarding the dependencies of both $\alpha$ and $\alpha'$, if the property depends on $t$, then the property is \textit{dynamic}, which means that the property value to satisfy the inequality is calculated and updated accordingly the scheduling algorithm progress. In other hand the properties depending only on $sb$ are \textit{static}, therefore the values to satisfy their inequalities are pre-calculated at the beginning of the algorithm.\\
 
-In general a sky source will be visible daily for hours then the source will go below horizon due the Earth's rotation, unless the source is circumpolar in which case the source will be always visible. Also the Earth's orbit movement around the sun would cause that a source will be visible during a period of the calendar year only. Both of these source properties are predictable and can be calculated. Nonetheless, the weather cannot be foreseen with exactitude, even the most accurate weather foresee could have a error margin which will increase if the period of time foresaw increase.
+\subsection{Static an dynamic constraints}
+
+As stated in section~\ref{sec:apdm} a target is composed by three elements, which match the constraint categories detailed here: \textit{sky source}, \textit{instrumentation} and \textit{weather}.
 
 In common terms a Scheduling Block is ``schedulable'' only if the representative target for the given scheduling block is observable, this means that the source of the sky is visible, the array configuration has enough hardware capabilities to observe the source according to the scientific plan, the weather conditions are good enough to carry on the observation, etc. Basically this is the intersection of the different $sel$ functions and it is defined as the \textit{schedulable time window} for a given scheduling block, this window could be available several times during the observing season. In practical terms a scheduling block can be observed as many times as possible until it has been complete.
 
-As stated in the section \ref{sec:apdm}, a scheduling block can have multiple targets, however the representative target is the most representative of the set of targets for the given scheduling block, which is selected by the creator of the Project/SchedBlock, thus this target will be the one used by the scheduler.
+The description of each one of the different categories is as follow:
 
-A scheduling block will be considered complete if it meets any of following three criterion:
+\begin{description}
+    \item[Instrumentation] \hfill \\
+Every scheduling block execution is done in an \textit{Array} which is a subset of the available antennas in the observatory. Each antenna has its own hardware configuration to receive electromagnetic waves from the space. An array will have the hardware configuration common to all the antennas conforming the array, the idea is to observe the target with the same hardware in all the antennas as they were a single instrument. In general, in an observatory all the antennas conforming an array will have all the same capabilities, even they can be interchange each other and should not be any difference. The array configuration and the availability of the instrumentation is decided beforehand and for effects of the algorithm is considered an static constraint. 
+
+Nonetheless, problems in some instruments during observatory operations could temporally remove some capabilities from some antennas, or even the entire antenna could be removed, altering the original instrumentation properties that the array was given initially. Since all these failure are not planned this is considered a dynamic constraint.
+
+	\item[Sky source] \hfill \\
+In general a sky source will be visible in daily basis for certain amount of time, then the source will go below horizon due the Earth's rotation, unless the source is circumpolar in which case the source will be always visible. Also the Earth's orbit movement around the sun would cause that a source will be visible during a period of the calendar year only. Both of these source properties are predictable and can be calculated before the execution of any observation.
+
+Every time that a observation starts, the telescope needs to be calibrated to adjust pointing corrections based on atmospheric conditions and source position. It is possible to predict how much time will be spent on calibrations if the observation plan is given before the execution of observations starts, however sometimes this is not the case due improvement or deterioration of weather conditions expected, making this constraint dependable on the time the observation being executed.
+  
+	\item[Weather] \hfill \\
+The weather cannot be foreseen with exactitude, even the most accurate weather forecast will have a error margin, which will increase if the period of time foresaw increase. Once the weather condition has changed, for good or bad, usually the list of the scheduling blocks to be observed needs to be updated accordingly. The time frame on what the algorithm can optimize the observations is bounded to the reliability of the weather pattern prediction, doing optimizations beyond that could be worthless.
+
+\end{description}
+
+Another important property of every project submitted to be observed in the observing season, is that they does not have the same science value, this means there are certain projects that are more interesting to observe and complete than others. This measure of how much value has a project is given by science team of the observatory, therefore the scheduler must be aware of this and try to complete most of the projects having the ``highest'' science qualification, this will be known as the \textit{scientific throughput}.
+
+\subsection{Completing Scheduling Blocks and Observation projects}
+A scheduling block does not need to be completed in just one observation, in fact the scheduling block cn be observed multiples times at different time, hence different weather conditions and different array configurations, until the scheduling block is considered complete.
+A scheduling block will be completed, and put its state as complete, if it meets any of following three criterion:
 \begin{itemize}
 	\item \textit{Number of repetitions}: A scheduling block could have a limit of how many times can be observed.
 	\item \textit{Total time observed}: A scheduling block could have a limit of how much time can be observed.
@@ -140,18 +169,27 @@ A scheduling block will be considered complete if it meets any of following thre
 \end{itemize} 
 Some of the scheduling blocks could not have all the three criteria, it is enough for the SB to have a least one of them.
 
-The criteria to determine if a project was complete is based in how many scheduling blocks or ObsUnit sets have been completed or the total amount of time observed which is the sum of all the scheduling blocks observations. However, in reality human intervention is required to determine if the project has been completed based on the quality of science data extracted from the observations.
+The criteria to determine if a project was complete, is based in how many scheduling blocks or ObsUnit sets have been completed, or the total amount of time observed, which is the sum of all the scheduling blocks observations. However, in reality human intervention is required to determine if the project has been completed based on the quality of science data extracted from the observations. The algorithm establishing whether a Observation project is completed or not is far beyond the scope of this study. 
 
-Every scheduling block execution is done in an \textit{Array} which is a subset of the available antennas in the observatory. Each antennas has its own hardware configuration to receive electromagnetic waves from the space. An array will have the hardware configuration common to all the antennas conforming the array, the idea is to observe the target with the same hardware in all the antennas as they were a single instrument. In general in an observatory all the antennas conforming an array will have all the same capabilities even they can be interchange each other and should not be any difference, however problems in some instruments during observatory operations could temporally remove some capabilities from some antennas.
+\subsection{Observing season (Observation cycle)}
+Until this point, this study has tried to explain and referred only to observation properties within the time frame considering only one instrument (just one instrument spawns for the whole observation time frame). 
 
-Over the time available in the observing season is possible to have different \textit{Array configurations}. Each array configuration can be composed of 1 or more antennas available in the observatory, each one can offer different science capabilities which can be or cannot be used by the scheduling block, nevertheless each array will offer basic differences like the $uv$ coverage as seen in section \ref{sec:uvcover}, the angular resolution explained in section \ref{sec:angular-res} or the sensitivity achieved in every observation (section \ref{sec:sens}) which is dependent of the number of antennas in the array. As well one or more arrays can be available for observations at the same time, however each scheduling block must be observed by just one array at a given time.
+However, over the whole time available in the observing season, it is possible to have different \textit{Array configurations}, that can co-exist at the very same time with other array configurations, or can be created in serial over the time frame of the observation season, or a combination of both situations.
 
-Every project submitted to be observed in the observing season does not have the same science value, this means there are certain projects that are more interesting to observe and complete than others. This measure of how much value has a project is given by science team of the observatory, therefore the scheduler must be aware of this and try to complete most of the projects having the ``highest'' science qualification, this will be known as the \textit{scientific throughput}.
+Each array configuration can be composed of 1 or more antennas available at the observatory, each one can offer different science capabilities, which can be or cannot be used by the scheduling block, nonetheless each array will offer basic differences like the $uv$ coverage as seen in section \ref{sec:uvcover}, the angular resolution explained in section \ref{sec:angular-res} or the sensitivity achieved in every observation (section \ref{sec:sens}), which is dependent of the number of antennas in the array. As well one or more arrays can be available for observations at the same time as said before, however each scheduling block must be observed by just one array at a given time.
 
-The \textit{scheduling array problem} consists on determine a schedule for the given set of scheduling blocks considering one or more arrays already created in a given period of time. The idea is to try to observe most of the projects with high scientific value in the less amount of time possible considering all the scientific requirements.
+\subsection{Identified problems}
+After the analysis of the different properties and constraints related to the astronomy scheduling problem it is possible to identify the following two different problems:
+\begin{description}
 
+\item[Scheduling array problem] \hfill \\
+The \textit{scheduling array problem} consists on determine a schedule for a given set of scheduling blocks, which all of them can be observed by the instrument, considering one array already created within a given period of time. 
+The idea is to generate a plan to try to observe all, or most of the projects with the highest scientific value in the less amount of time possible considering all, or the most critical of the scientific requirements. It may possible to not complete all the observation projects submitted for this array configuration. Slso is desirable to reduce the amount of idle time of the instrument.
 
-The \textit{array configuration schedule problem} is on top of the scheduling array problem. It consists in try to determine a schedule of observations for the observing season (which is a fixed amount of time and it lasts for several months, up to 1 year), for given set of the scheduling blocks and the given set the array configurations. The idea is to try to observe most of the projects with high scientific value considering all the scientific requirements during the observing season, however not all the projects could be completed.
+\item[Array configuration schedule problem]
+
+The \textit{array configuration schedule problem} is on top of the scheduling array problem. It consists in try to determine a schedule of observations, for the observing season (which is a fixed amount of time and it lasts for several months, up to a couple of years), for a given set of the scheduling blocks and a given set the array configurations. The idea is to try to observe most of the projects with high scientific value considering all, or most of the scientific requirements during the observing season, however not all the observation projects may not be completed. Also it is desirable to reduce the idle time of the observatory as whole.
+\end{description}
 
 
 \section{ALMA Scheduling Problem}
@@ -170,9 +208,11 @@ The ALMA telescope will be operated as one or more antenna arrays, executing obs
 \end{itemize}
 
 \begin{figure}	
-\centering
+\begin{center}
 \includegraphics[width=\textwidth]{images/scheduling_class_model}
-\caption{Basic class model of Scheduling subsystem. \texttt{MasterScheduler} and \texttt{Array} are the common classes used by all kind of Arrays. \texttt{DynamicSchedulingAlgorithm} is the class implemenenting the current ALMA's dynamic algorithm. At right side of the figure it is available the hierarchy of the the top level APDM classes used by the scheduling subsystem, which are accessed through the \texttt{ArchiveInterface}. } 
+\caption{Basic class model of Scheduling subsystem.}
+\end{center}
+ \texttt{MasterScheduler} and \texttt{Array} are the common classes used by all kind of Arrays. \texttt{DynamicSchedulingAlgorithm} is the class implemenenting the current ALMA's dynamic algorithm. At right side of the figure it is available the hierarchy of the the top level APDM classes used by the scheduling subsystem, which are accessed through the \texttt{ArchiveInterface}.
 \label{fig:sched-class-model}
 \end{figure}
 
