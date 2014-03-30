@@ -68,12 +68,77 @@ The troposphere is extending from Earth's surface to 7 to 10 km of altitude, the
 
 Figure \ref{fig:vla-atm-tx} shows the model of the atmospheric transmission at cm and mm wavelengths for the VLA site at 2150 m of altitude, figure \ref{fig:chaj-atm-tx} shows the model for ALMA site located in Chile at 4600 m of altitude. In both plots is possible to see a strong absorption lines including the water line at 22 GHz and 183 GHz, and the $O_2$ lines at 60 GHz and 118 GHz, plus a systematic decrease in the transmission with increasing frequency between lines. Every plot includes a different value for the column density of precipitable water vapor $w_0$ where each of one is typical for the site where the samples were taken. The precipitable water vapor (PWV) is the depth of the water vapor in the atmosphere in the site if it were converted to liquid phase.
 
-(System temperature $T_{sys}$ is missing, explain definition and usage in the observation)
+Another important parameter in radio astronomy is the \textit{System Temperature ($T_{sys}$)}, this quantity measures the overall sensitivity of the receiving system. At centimetre, millimetre wavelengths, the temperature of the receiving system dominates the system noise temperature that is the receiver and the antenna. 
 
-\newpage
+The calculation of $Tsys$ will be done in three steps:
+\begin{enumerate}
+\item First the Precipitable Water Vapor (PWV) content is determined. There are
+several ways of doing this:
+\begin{enumerate}
+\item Calculate PWV from the Relative Humidity (RH) or the Dew Point. One way
+of doing this is found in the MMA Memo No. 237, ``Precipitable Water at the VLA --
+1990-1998'', by Bryan Butler. In this paper the PWV is developed as
+$$
+h = \frac{m_w P_0 H}{\rho_l k T_0}
+$$
+where $m_w$ is the mass of a water molecule (18 amu), $P_0$ is the water vapor
+partial pressure, $H$ is the scale height of water vapor distribution (an
+exponential distribution, 1.5 km for the VLA), $\rho_l$ is the density of
+liquid water ($\mathrm{gr}/\mathrm{cm}^3$) and $k$ is the Boltzmann constant.
+
+This memo presents a way to estimate $P_0$ from the dew point. In the subsequent
+MMA Memo No. 238, ``Precipitable Water at KP -- 1993-1998'', a way of calculating
+$P_0$ from the relative humidity is given:
+$$
+P_0 = 2.409 \times 10^{12} \ RH\ \theta^4 \exp(-22.67\theta)
+$$
+where $\theta$ is the inverse temperature ($\theta = 300/T_0 $ K), and $RH$ is
+the relative humidity.
+
+\item Calculate it from the opacity $\tau_{225}$ at 225 GHz measured by the
+tipper. In this case a way of calculating the $PWV$ can be seen in
+ALMA Memo 271 ``The Determination of Precipitable Water Vapour at Llano de
+Chajnantor from Observations of the 183 GHz Water Line''. $PWV$ can be obtained
+by inverting
+$$
+\tau_{225} = 6.7787\cdot 10^{-3} + 4.0757\cdot 10^{-2} PWV + 9.59\cdot 10^{-4} PVW^2
+$$
+\item Get the PWV directly from the Water Vapor Radiometers.
+\end{enumerate}
+When the $PWV$ is available from different sources, the different values
+are averaged.
+
+\item Interpolate the ATM tables to determine the opacity $\tau$ and the
+atmospheric effective temperature $T_{atm}$. The ATM tables have the following structure:
+\begin{eqnarray*}
+\tau & = & \tau(\nu_i, PWV_j) \\
+T_{atm} & = & T_{atm}(\nu_i, PWV_j)
+\end{eqnarray*}
+where $\nu_i$ covers the range $20-1000$ GHz with 100 MHz granularity, and $PWV_j$
+covers the 7 values 0.4772, 0.658, 0.9134, 1.262, 1.796, 2.748, and 5.186 (mm). 
+\item The system temperature is calculated as:
+
+$$
+T_{sys} = \frac {\left ( T_{rx} + T_{ant} + \xi T_{ant} \right ) e^{\tau / \sin(el)}}
+{\eta}
+$$
+where $T_{rx}$ is the receiver temperature, $\eta$ is the forward efficiency (or
+feed efficiency, or spillover factor), $T_{ant}$ is the antenna temperature and $\xi$
+is the sideband ratio, which for practical purposes will be $0$
+
+Expanding the calculation of above:
+
+$$
+T_{sys} = \frac{\left ( T_{rx} + \eta T_{atm} \left ( 1 - e^{-\tau/\sin(el)} \right ) + (1 - \eta) 0.95 T_{amb} + \eta 2.76 e^{-\tau/\sin(el)} \right )  e^{\tau / \sin(el)}}
+{\eta}
+$$
+where $T_{amb}$ is the ambient temperature, which is read from weather station.
+\end{enumerate}
+
+
 \section{ALMA Project Data Model}
 \label{sec:apdm}
-The ALMA Software system works using the concept of an Observing Project. The Observing Project is used throughout the ALMA software as the top level structure associated with a project resulting from a single observing proposal. In fact the Observing Project is a container for all the information relating to a project before it begins execution. During and following execution other data associated with the project are created and held in other structures, each of which holds a reference to the original observing project. Of particular interest is the Project Status structure, which holds a record of the execution status of the Project. The ALMA Project Data Model (APDM) defines the structure of both the Observing Project (ObsProject) and the execution status (ProjectStatus).
+The ALMA Software system works using the concept of an Observing Project, the full description and the details of the model are available at~\cite{apdm-model}. The Observing Project is used throughout the ALMA software as the top level structure associated with a project resulting from a single observing proposal. In fact the Observing Project is a container for all the information relating to a project before it begins execution. During and following execution other data associated with the project are created and held in other structures, each of which holds a reference to the original observing project. Of particular interest is the Project Status structure, which holds a record of the execution status of the Project. The ALMA Project Data Model (APDM) defines the structure of both the Observing Project (ObsProject) and the execution status (ProjectStatus).
 
 The Scheduling Block (SchedBlock or SB) is the atomic unit of observing for ALMA, any given science observation will usually be broken into many SBs, which may, or may not be executed in sequence. The ALMA Scheduling Software will decide on which SB to execute at any given time on the basis of which is the best to execute now. An SB as a canonical execution length of around 30 minutes, however in practice the SBs observation duration could be up to 2 hours, depending of the Observation program.
 
@@ -179,6 +244,7 @@ However, over the whole time available in the observing season, it is possible t
 Each array configuration can be composed of 1 or more antennas available at the observatory, each one can offer different science capabilities, which can be or cannot be used by the scheduling block, nonetheless each array will offer basic differences like the $uv$ coverage as seen in section \ref{sec:uvcover}, the angular resolution explained in section \ref{sec:angular-res} or the sensitivity achieved in every observation (section \ref{sec:sens}), which is dependent of the number of antennas in the array. As well one or more arrays can be available for observations at the same time as said before, however each scheduling block must be observed by just one array at a given time.
 
 \subsection{Identified problems}
+\label{sec:problems}
 After the analysis of the different properties and constraints related to the astronomy scheduling problem it is possible to identify the following two different problems:
 \begin{description}
 
@@ -193,6 +259,7 @@ The \textit{array configuration schedule problem} is on top of the scheduling ar
 
 
 \section{ALMA Scheduling Problem}
+\label{sec:alma-sched-problem}
 The Atacama Large Millimeter/submillimeter Array (ALMA) is a major collaboration effort between European, North American and East Asian countries, under construction on the Chilean Chajnantor plateau, at 5.000 meters altitude. When completed in 2013 it will be the largest radio telescope on earth, with more than 60 antennas of 12 and 7 meters diameter, distributed over a wide extension, with up to 16 kilo-meters of baseline separation. The ALMA interferometer will provide the possibility to be used as a single array, or as up to six (due to limited centralized equipment, photonic references) minor independent arrays or groups of antennas. As each array is equivalent to one instrument, this can eventually be seen as a multi-telescope problem. Also, the antennas will be changing their positions over the year, as different distributions will be used to exploit various kinds of observations. As ALMA does not observe in the visible spectrum, observations are not limited to night time only, thus a 24/7 operation with as small downtime as possible is expected. 
 
 ALMA will operate exclusively in service mode. Therefore, the Scheduling software Subsystem is supposed to provide a fully automatic “quasi-real-time” dynamic scheduling platform, mostly with the only human participation of supervision. This Subsystem is still under development, and the needed algorithm(s) are still in a preliminary state. The main problem is the dynamic priorities scheduling, which differs widely from the traditional dynamic job-shop. This particular problem is very similar for all ground based observatories, and ALMA is one real example, that needs this kind of scheduling to accomplish its operations requirements.
@@ -216,7 +283,16 @@ The ALMA telescope will be operated as one or more antenna arrays, executing obs
 \label{fig:sched-class-model}
 \end{figure}
 
-A huge part of the telescope operations will be handled through the ALMA software, which is divided into various subsystems, such as Control, Correlator (ACA and Baseline), Pipeline, Archive, Scheduling and Offline software. The big picture of ALMA Software can be seen in \cite{schwarz04}.
-The Scheduling Subsystem is the one in charge of managing antenna arrays and dynamically executing scheduling blocks. The current software design details are in \cite{clarke12}. The basic design considers 4 main parts which are represented in figure \ref{fig:sched-class-model}: The ``Master Scheduler'', The ``Array'', The ``Dynamic Scheduler instance'' and the ``Archive Interface''. The Master Scheduler is in charge of create and manage the creation of the Arrays and handle the management of the Scheduling Policies to be used in the DSA. The Array is the main operations unit of the scheduling subsystem, each array operates over Scheduling Blocks, executing, waiting for results of the observations and notifying to the user of the system what has been the outcome of the observation. The Array uses directly the Archive, which is the database storing the definition of each Observation project (see \ref{sec:apdm}), through the Archive Interface. Each array has its own scheduling queue, which can contain several schedblocks waiting to be executed, but just one SchedBlock is observed at the same time in each Array. Finally the DSA acts as a component of an Array selecting the current best SB according to the algorithm policy selected for the given Array, the details of the ALMA's DSA is discussed in section \ref{sec:alma-dsa}. Additionally each scheduling array can operate in 3 different modes: Manual, in this mode the scheduling queue is set with a maximum of one item, in this mode the user is responsible to execute the observation manually using low level scripts. Automatic, in this mode the array has a unlimited size scheduling queue, once a observation has been completed a new SchedBlock is taken from this queue to observe the next one until the queue is empty or the scheduler is stopped. And Dynamic, in dynamic mode the scheduling queue behaves as the array in interactive mode, but when the queue is empty the DSA is triggered selecting the next best SchedBlock to observe, depending if the DSA is active or passive the selected SchedBlock will be put in the queue to start the observation or the Scheduler will notify the user only respectively.
+A huge part of the telescope operations will be handled through the ALMA software, which is divided into various subsystems, such as Control, Correlator (ACA and Baseline), Pipeline, Archive, Scheduling and Offline software. The big picture of ALMA Software can be seen in~\cite{schwarz04}.
+The Scheduling Subsystem is the one in charge of managing antenna arrays and dynamically executing scheduling blocks. The current software design details are in~\cite{clarke12}. The basic design considers 4 main parts which are represented in figure \ref{fig:sched-class-model}: The ``Master Scheduler'', The ``Array'', The ``Dynamic Scheduler instance'' and the ``Archive Interface''. The Master Scheduler is in charge of create and manage the creation of the Arrays and handle the management of the Scheduling Policies to be used in the DSA. The Array is the main operations unit of the scheduling subsystem, each array operates over Scheduling Blocks, executing, waiting for results of the observations and notifying to the user of the system what has been the outcome of the observation. The Array uses directly the Archive, which is the database storing the definition of each Observation project (see~\ref{sec:apdm}), through the Archive Interface. Each array has its own scheduling queue, which can contain several schedblocks waiting to be executed, but just one SchedBlock is observed at the same time in each Array. Finally the DSA acts as a component of an Array selecting the current best SB according to the algorithm policy selected for the given Array, the details of the ALMA's DSA is discussed in section \ref{sec:alma-dsa}. Additionally each scheduling array can operate in 3 different modes: Manual, in this mode the scheduling queue is set with a maximum of one item, in this mode the user is responsible to execute the observation manually using low level scripts. Automatic, in this mode the array has a unlimited size scheduling queue, once a observation has been completed a new SchedBlock is taken from this queue to observe the next one until the queue is empty or the scheduler is stopped. And Dynamic, in dynamic mode the scheduling queue behaves as the array in interactive mode, but when the queue is empty the DSA is triggered selecting the next best SchedBlock to observe, depending if the DSA is active or passive the selected SchedBlock will be put in the queue to start the observation or the Scheduler will notify the user only respectively. The state machine implemented as part of the current DSA can be seen in the figure~\ref{fig:sched-dsa-state-machine}, the DSA may be executed every time that a new Scheduling Block is needed to be queued, until there is no more Scheduling Blocks available.
 
-It is true that most of the scheduling software will be run in the online software, however there is a planning stage where the Scheduling algorithm will contribute to plan different scenarios of a season. The online usage of the algorithm is known as the \textit{short-term scheduler}, this scheduler can be used in quasi-real time or to planning the night observations. A \textit{medium-term scheduler} used to planning the observations of a frame of time where the array configurations are the same. And finally \textit{long-term scheduler} which should be able to plan an entire season of observation across the different planned array configurations, ideally the algorithm should define the duration of each configuration given as a input.  
+\begin{figure}	
+\begin{center}
+\includegraphics[width=\textwidth]{images/alma-dsa-state-machine}
+\caption{Dynamic scheduling algorithm's state machine}
+\end{center}
+\label{fig:sched-dsa-state-machine}
+\end{figure}
+
+
+It is true that most of the scheduling software will be run in the on-line software, however there is a planning stage where the Scheduling algorithm will contribute to plan different scenarios within a season. The on-line usage of the algorithm is known as the \textit{short-term scheduler}, this scheduler either can be used in quasi-real time or to planning the night observations. A \textit{medium-term scheduler} used to planning the observations of a frame of time where the array configurations are the same. And finally \textit{long-term scheduler} which should be able to plan an entire season of observation across the different planned array configurations, ideally the algorithm should define the duration of each configuration given as a input. For the two last use cases a ALMA scientific operations uses a simulator, which are mostly described in~\cite{hoffstadt10}. Although new features have been added, the basic workflow has been kept until now.

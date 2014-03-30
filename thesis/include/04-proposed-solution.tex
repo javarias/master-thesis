@@ -1,0 +1,109 @@
+\chapter{Proposed Solution}
+
+As stated in section~\ref{sec:problems} two problems were identified, these both problems are part of the ALMA Scheduling problem.
+This chapter describes the proposed solution for both problems, which are related between each other.
+The problem is modeled after ALMA requirements and current software design detailed in~\cite{avarias11,clarke12,schwarz04,apdm-model} and aim to solve
+the ALMA scheduling problem. Although some simplifications are considered, mainly because still there are certain requirements that are under discussion or they are still unclear. 
+
+\section{General conditions and simplifications}
+
+As stated in~\ref{sec:alma-sched-problem}, each array is handled independently by the scheduling subsystem software, this means that each array will have its own scheduler instance, and they are considered a different instrument during them life. At very same time one or more arrays can be running, hence the multiple schedulers instances can be active, and the data containing the Observation Projects and Scheduling Blocks is common to all the schedulers.
+
+Instrument calibrations and pointing is a very important step before the actual usage of the instrument, increasing the accuracy and sensitivity of the instruments. However, for now, the algorithm will consider that the array configurations are always calibrated and ready to observe. Also session management will not be considered at all due calibrations dependencies.
+
+The time period to be scheduled could not be continuous, this means that there may be time periods during the day where the instruments will not function to produce science. Since this is planned, the time not used for science is not considered as downtime. Dynamic or random downtimes have been not considered and they are out of the scope of the problem.
+
+\section{ALMA Scheduling array problem}
+
+This problem only considers the execution of Scheduling Block in the same Array Configuration.
+
+\subsection{Mathematical model}
+
+\subsection{Constraints}
+
+\begin{description}
+
+\item[Executive time balance] \hfil \\
+Each \texttt{SchedBlock} object is associated with an \texttt{Executive}. Currently this association is
+done through the PI. For each \texttt{SchedBlock} there is single \texttt{Executive}. It is likely that this
+association be modified in the future to account for PIs belonging to many Executives.
+
+Every time that a SB is executed, either a simulated execution or a real execution, the
+\texttt{ExecutivePercentage.remainingObsTime} field is updated, adding the real observation time,
+in the case of a real execution in the telescope; or the \texttt{ObsUnitControl.estimatedExecutionTime},
+in case the execution is simulated.
+
+The final query for this selector involves several joins. Referring to Figure~\ref{fig:executivedm},
+\texttt{SchedBlock} is joined with \texttt{Executive}, \texttt{Executive} with \texttt{ExecutivePercentage}, and
+\texttt{ExecutivePercentage} with \texttt{ObservingSeason}. The \texttt{ObservingSeason} is contrained to be
+the current observing season, and
+$$
+\mathtt{ObsUnitControl.estimatedExecutionTime}\ \leq \mathtt{ExecutivePercentage.remainingObsTime}.
+$$
+
+The required fields in the APDM are:
+
+\item[Source visibility] \hfill \\
+It is possible to know before running the algorithm, to know if a point in the sky will be visible at the time when the algorithm runs.
+In function of LST the rising and setting, $LST_r$ and $LST_s$, respectively are calculated as:
+\begin{eqnarray*}
+LST_r & = & 24 - \frac{1}{15} \cos^{-1} (-\tan\phi\tan\delta) + \alpha \\
+LST_s & = & \frac{1}{15} \cos^{-1} (-\tan\phi \tan\delta) + \alpha
+\end{eqnarray*}
+where $\alpha$ is the right ascension, $\delta$ is the declination, and
+$\phi$ is the telescope geographical latitude.
+This selection operation selects all the SBs for which the current $LST$ falls
+between $LST_r$ and $LST_s$, accounting for cases where this range extends to include
+the following day.
+
+\item[Sun avoiding zone] \hfill \\
+
+\item[Moon avoiding zone] \hfill \\
+
+\item[Array configuration and resolution] \hfill \\
+A first order approximation of the resolution that can be attained with a give
+array configuration is $\theta = \lambda / l_{max}$ where $l_{max}$ is the maximum
+baseline in the array. Each SB defines a range of acceptable resolutions $[\theta_{min}, \theta_{max}]$.
+The selection criteria in this case selects all SBs for which
+$$
+\theta_{min} \leq \frac{\lambda}{l_{max}} \leq \theta_{max}
+$$
+
+\item[Atmospheric transmission] \hfill \\
+For atmospheric transmission selection a simple criteria is used based in opacity quartiles at 225 GHz.
+
+$$
+S(\nu_{rep}, \tau_{225}) = \left\{
+    \begin{array}{l l}
+    true & \mbox{if } \nu_{rep} > 370 \mbox{ GHz } \land \tau_{225} \leq 0.037 \\
+    true & \mbox{if } 370 \mbox{ GHz } \geq \nu_{rep} > 270 \mbox{ GHz } \land \tau_{225} \leq 0.061 \\
+    true & \mbox{if } \nu_{rep} < 270 \mbox{ GHz } \land \tau_{225} \leq 0.6\\
+    false & \mbox{otherwhise}
+    \end{array} \right . 
+$$
+
+where $\nu_{rep}$ is the representative frequency and $\tau_{225}$ is the Opacity
+at Zenith at 225 Ghz.
+
+\item[Weather stability] \hfill \\
+During the execution of an observation, the algorithm must try to ensure that the weather conditions would not deteriorate significantly.
+For this purpose, the $Tsys$ is calculated using an average of a few data
+points taken at the time when the algorithm is executed, then this value is compared with the
+projected $Tsys$ calculated at least 30 minutes later (30 minutes being the assumed
+average duration of an SB), taking also into consideration the change in elevation
+of the SB representative target.
+
+How significant the increase in $Tsys$ needs to be for a SB to be discarded
+is under discussion, and in general it will be frequency dependent. In addition
+it is possible that some projects decide that non-optimum observing conditions are
+fine anyway. For now, an increase in the $Tsys$  of 15-20\% is considered too much
+degradation for the SB to be executed.
+
+The selection operation filters out all the SBs that don't comply with
+$$
+\frac{T_{sys}(t+\Delta t) - T_{sys}(t)}{T_{sys}(t)} < 0.15
+$$
+
+\end{description}
+
+\section{Array configuration schedule problem}
