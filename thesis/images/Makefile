@@ -1,5 +1,7 @@
 IMAGES:=Atmospheric_electromagnetic_opacity.pdf \
-	scheduling_class_model.pdf
+	scheduling_class_model.pdf \
+	DSA-state-machine.pdf \
+	simulator-state-machine.pdf
 
 all: $(IMAGES)
 

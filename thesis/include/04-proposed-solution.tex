@@ -9,13 +9,25 @@ the ALMA scheduling problem. Although some simplifications are considered, mainl
 
 As stated in~\ref{sec:alma-sched-problem}, each array is handled independently by the scheduling subsystem software, this means that each array will have its own scheduler instance, and they are considered a different instrument during them life. At very same time one or more arrays can be running, hence the multiple schedulers instances can be active, and the data containing the Observation Projects and Scheduling Blocks is common to all the schedulers.
 
+Even when it is possible to have linked Scheduling Blocks between each other, the solution proposed here will not considered here due they are not well defined in the ALMA requirements and they are still in discussion.
+
 Instrument calibrations and pointing is a very important step before the actual usage of the instrument, increasing the accuracy and sensitivity of the instruments. However, for now, the algorithm will consider that the array configurations are always calibrated and ready to observe. Also session management will not be considered at all due calibrations dependencies.
 
 The time period to be scheduled could not be continuous, this means that there may be time periods during the day where the instruments will not function to produce science. Since this is planned, the time not used for science is not considered as downtime. Dynamic or random downtimes have been not considered and they are out of the scope of the problem.
 
+The time spent in a execution is variable, it depends completely on the Scheduling Block to be observed. Usually the requested time range goes from 30 minutes until 3 hours. The Observation project and Scheduling Blocks will be considered completely observed according to the rules discussed in section~\ref{subsec:completing-obs} 
+
+The DSA will do the search based on the Local Sidereal Time (LST).
+
+The arrays configurations are given as input to the algorithm, the algorithm will try to accommodate over the time the given configurations. It is not responsibility of the algorithm to came up with suggestions related to changes in the configurations.
+ 
 \section{ALMA Scheduling array problem}
 
-This problem only considers the execution of Scheduling Block in the same Array Configuration.
+This problem only considers the execution of Scheduling Block in the same Array Configuration. The algorithm lifecycle is tied to the current ALMA requirements shown in section~\ref{sec:alma-sched-problem}, which is detailed as follows:
+
+%\begin{description}
+%
+%\end{description}
 
 \subsection{Mathematical model}
 
@@ -24,25 +36,23 @@ This problem only considers the execution of Scheduling Block in the same Array 
 \begin{description}
 
 \item[Executive time balance] \hfil \\
-Each \texttt{SchedBlock} object is associated with an \texttt{Executive}. Currently this association is
-done through the PI. For each \texttt{SchedBlock} there is single \texttt{Executive}. It is likely that this
-association be modified in the future to account for PIs belonging to many Executives.
+ALMA observatory is based on international collaboration. Within this collaboration several countries participate through science and astronomical organizations. Currently these organization are divided among different world's regions, which are called executives. These executives are North America (NA), Europe (EU), East Asia (EA), Chile (CL) and Non Alma members (OTHER).
 
-Every time that a SB is executed, either a simulated execution or a real execution, the
-\texttt{ExecutivePercentage.remainingObsTime} field is updated, adding the real observation time,
-in the case of a real execution in the telescope; or the \texttt{ObsUnitControl.estimatedExecutionTime},
-in case the execution is simulated.
+Since each executive contributed with different resources, which may differ from the other executives. A fixed percentage of the total observation time of a observation cycle is given to each executive. Ideally, the assigned amount of observation time shall be adjusted to comply with the percentage assigned to each executive.
 
-The final query for this selector involves several joins. Referring to Figure~\ref{fig:executivedm},
-\texttt{SchedBlock} is joined with \texttt{Executive}, \texttt{Executive} with \texttt{ExecutivePercentage}, and
-\texttt{ExecutivePercentage} with \texttt{ObservingSeason}. The \texttt{ObservingSeason} is contrained to be
-the current observing season, and
+Ideally, the observation time percentage for each executive, has to be kept accordingly to the assigned percentage in the observation cycle. Nonetheless, this could carry unfairness within each observation sub-period (e.g within one week only NA Scheduling blocks were observed). This could trigger unhappiness and some concerns among the different executives, whom expects to have their observation time proportion assigned during a sub-period of time within the observation cycle.
+
+It has been defined the period of time, as one week of observation (this coincides with the early science block carried on bi-weekly). Within this period of time each executive shall get as near as possible the amount of time assigned initially. If it is not possible, then the scheduler shall carry over the unfairness among the executive's times and apply corrections in future schedules.
+
+At the end of the cycle is expected that each Executive will receive the time assigned to it or a very near value. 
+
 $$
-\mathtt{ObsUnitControl.estimatedExecutionTime}\ \leq \mathtt{ExecutivePercentage.remainingObsTime}.
+\sum_{i}^{n} T(EB_i) \in Ex_{j} \approx \tau_j, \forall t \in {[ t(i), t(n) [}
 $$
 
-The required fields in the APDM are:
+Where $T(EB_i)$ is the time observed for a given Execution Block, $Ex_j$ is a given Executive and $\tau_j$ is the initial estimated execution time over a period of time starting at $t(i)$ and finishing at $t(n)$.
 
+ 
 \item[Source visibility] \hfill \\
 It is possible to know before running the algorithm, to know if a point in the sky will be visible at the time when the algorithm runs.
 In function of LST the rising and setting, $LST_r$ and $LST_s$, respectively are calculated as:

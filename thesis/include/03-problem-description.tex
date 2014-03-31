@@ -225,6 +225,7 @@ The weather cannot be foreseen with exactitude, even the most accurate weather f
 Another important property of every project submitted to be observed in the observing season, is that they does not have the same science value, this means there are certain projects that are more interesting to observe and complete than others. This measure of how much value has a project is given by science team of the observatory, therefore the scheduler must be aware of this and try to complete most of the projects having the ``highest'' science qualification, this will be known as the \textit{scientific throughput}.
 
 \subsection{Completing Scheduling Blocks and Observation projects}
+\label{subsec:completing-obs}
 A scheduling block does not need to be completed in just one observation, in fact the scheduling block cn be observed multiples times at different time, hence different weather conditions and different array configurations, until the scheduling block is considered complete.
 A scheduling block will be completed, and put its state as complete, if it meets any of following three criterion:
 \begin{itemize}
@@ -288,7 +289,7 @@ The Scheduling Subsystem is the one in charge of managing antenna arrays and dyn
 
 \begin{figure}	
 \begin{center}
-\includegraphics[width=\textwidth]{images/alma-dsa-state-machine}
+\includegraphics[width=0.9\textwidth]{images/DSA-state-machine}
 \caption{Dynamic scheduling algorithm's state machine}
 \end{center}
 \label{fig:sched-dsa-state-machine}
