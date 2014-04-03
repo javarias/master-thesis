@@ -2,14 +2,13 @@
 
 As stated in section~\ref{sec:problems} two problems were identified, these both problems are part of the ALMA Scheduling problem.
 This chapter describes the proposed solution for both problems, which are related between each other.
-The problem is modeled after ALMA requirements and current software design detailed in~\cite{avarias11,clarke12,schwarz04,apdm-model} and aim to solve
-the ALMA scheduling problem. Although some simplifications are considered, mainly because still there are certain requirements that are under discussion or they are still unclear. 
+The solution is modeled after ALMA requirements and current software design detailed in~\cite{avarias11,clarke12,schwarz04,apdm-model} and it aims to solve the ALMA scheduling problem. Although some simplifications are considered, mainly because still there are certain requirements that are under discussion or they are still unclear. 
 
 \section{General conditions and simplifications}
 
 As stated in~\ref{sec:alma-sched-problem}, each array is handled independently by the scheduling subsystem software, this means that each array will have its own scheduler instance, and they are considered a different instrument during them life. At very same time one or more arrays can be running, hence the multiple schedulers instances can be active, and the data containing the Observation Projects and Scheduling Blocks is common to all the schedulers.
 
-Even when it is possible to have linked Scheduling Blocks between each other, the solution proposed here will not considered here due they are not well defined in the ALMA requirements and they are still in discussion.
+Even though is possible to have linked Scheduling Blocks between each other, the solution proposed here will not considered here due they are not well defined in the ALMA requirements and they are still in discussion. This implies that the Scheduling Blocks belonging to an Observation Projects can be observed and completed in any order.
 
 Instrument calibrations and pointing is a very important step before the actual usage of the instrument, increasing the accuracy and sensitivity of the instruments. However, for now, the algorithm will consider that the array configurations are always calibrated and ready to observe. Also session management will not be considered at all due calibrations dependencies.
 
@@ -23,15 +22,55 @@ The arrays configurations are given as input to the algorithm, the algorithm wil
  
 \section{ALMA Scheduling array problem}
 
-This problem only considers the execution of Scheduling Block in the same Array Configuration. The algorithm lifecycle is tied to the current ALMA requirements shown in section~\ref{sec:alma-sched-problem}, which is detailed as follows:
+This problem only considers the execution of Scheduling Block in the same Array Configuration. The algorithm lifecycle is tied to the current ALMA requirements shown in section~\ref{sec:alma-sched-problem} figure~\ref{fig:sched-dsa-state-machine}, which is detailed as follows:
 
-%\begin{description}
-%
-%\end{description}
+\begin{description}
+\item[Run static parameter's selector] \hfill \\
+After running these selectors the algorithm will return a list of the potential candidates given current static conditions, this includes the visibility for the representative target which is known beforehand, but is not filterable until the algorithm knows the time. If after this state there is no feasible solution, then the algorithm will return nothing.
+
+\item[Update dynamic parameters] \hfill \\
+In this state the algorithm will recalculate the parameters requiring update at the given time. Usually weather conditions and parameters that cannot be calculated beforehand (e.g. altitude of a source for the given time, the point in the sky is in RA-Dec coordinates).  
+
+\item[Run dynamic parameter's selector] \hfill \\
+This will filter out all the Scheduling Blocks which do not fit in the criteria established after the dynamic updates ran. As the first state it will return a list of the candidate SB. If after this state there is no feasible solution, then the algorithm will return nothing.
+
+\item[Rank all candidate Scheduling Blocks] \hfill \\
+The algorithm might have a list of scorers, each one of these scorers will assign a value between ${[ 0 , 1 ]}$. The algorithm also will have a list of weights, one per scorer. The final result of each Scheduling Blocks will be sum of all the weighted scores given to this Scheduling Block for the given time to the algorithm.
+
+\item[Select best ranked Scheduling Block] \hfill \\
+The algorithm will select, and will return, the ``best'' suitable Scheduling Blocks for the given time.
+
+\end{description}
+
 
 \subsection{Mathematical model}
 
-\subsection{Constraints}
+\subsubsection{Static parameters}
+These parameters are statically provided at the beginning of the period. They do not change over the time period used by the algorithm. 
+
+\subsubsection{Dynamic parameters}
+Contrary to the static parameters, these parameters change at any time during the time period used bt the algorithm.
+
+\subsubsection{Objective functions}
+
+The main objective of the algorithm is to maximize the number of scientific projects completed at the end of the time frame given. Also it can be interpreted as to maximize the scientific value of the completed projects (see equation~\ref{eq:max-sci-value}). However there is a caveat, there must be priority on complete the best graded projects.
+
+\begin{equation}
+\label{eq:max-sci-value}
+max \: \sum_{i} SciVal(P_i) \: St(P_i)
+\end{equation}
+
+At the same time the algorithm, must maximize its usage time. This is equivalent to minimize the array's idle time (see equation~\ref{eq:min-idle-time}).
+
+\begin{equation}
+\label {eq:min-idle-time}
+max \mbox{ }\bigg( \frac{\sum_{i}T(EB_i)}{T(AC_j)}\bigg)
+\end{equation}
+
+
+\subsubsection{Constraints}
+
+It is assumed that all the constraints operate over one or more Scheduling Block's properties, unless stated.
 
 \begin{description}
 
@@ -46,20 +85,23 @@ It has been defined the period of time, as one week of observation (this coincid
 
 At the end of the cycle is expected that each Executive will receive the time assigned to it or a very near value. 
 
-$$
-\sum_{i}^{n} T(EB_i) \in Ex_{j} \approx \tau_j, \forall t \in {[ t(i), t(n) [}
-$$
+\begin{equation}
+\sum_{i}^{n} T(EB_i) \approx T(Ex_j) \mid \forall t \in {[ t_s(i), t_e(n) [} \land EB_i \in Ex_j 
+\end{equation}
 
-Where $T(EB_i)$ is the time observed for a given Execution Block, $Ex_j$ is a given Executive and $\tau_j$ is the initial estimated execution time over a period of time starting at $t(i)$ and finishing at $t(n)$.
+Where $T(EB_i)$ is the time observed for a given Execution Block $EB_i$, $Ex_j$ is a given Executive and $T(Ex_j)$ is the initial estimated execution time over a period of time starting at $t_s(i)$ and finishing at $t_e(n)$.
 
+This constraint is a special kind, since it operates over a set of Execution Blocks after the observation of one or more Scheduling Blocks, over a period of time. Instead of operate over a Scheduling Block property.
  
 \item[Source visibility] \hfill \\
 It is possible to know before running the algorithm, to know if a point in the sky will be visible at the time when the algorithm runs.
 In function of LST the rising and setting, $LST_r$ and $LST_s$, respectively are calculated as:
-\begin{eqnarray*}
-LST_r & = & 24 - \frac{1}{15} \cos^{-1} (-\tan\phi\tan\delta) + \alpha \\
-LST_s & = & \frac{1}{15} \cos^{-1} (-\tan\phi \tan\delta) + \alpha
-\end{eqnarray*}
+\begin{equation}
+LST_r =  24 - \frac{1}{15} \cos^{-1} (-\tan\phi\tan\delta) + \alpha
+\end{equation}
+\begin{equation}
+LST_s = \frac{1}{15} \cos^{-1} (-\tan\phi \tan\delta) + \alpha
+\end{equation}
 where $\alpha$ is the right ascension, $\delta$ is the declination, and
 $\phi$ is the telescope geographical latitude.
 This selection operation selects all the SBs for which the current $LST$ falls
@@ -75,14 +117,14 @@ A first order approximation of the resolution that can be attained with a give
 array configuration is $\theta = \lambda / l_{max}$ where $l_{max}$ is the maximum
 baseline in the array. Each SB defines a range of acceptable resolutions $[\theta_{min}, \theta_{max}]$.
 The selection criteria in this case selects all SBs for which
-$$
+\begin{equation}
 \theta_{min} \leq \frac{\lambda}{l_{max}} \leq \theta_{max}
-$$
+\end{equation}
 
 \item[Atmospheric transmission] \hfill \\
 For atmospheric transmission selection a simple criteria is used based in opacity quartiles at 225 GHz.
 
-$$
+\begin{equation}
 S(\nu_{rep}, \tau_{225}) = \left\{
     \begin{array}{l l}
     true & \mbox{if } \nu_{rep} > 370 \mbox{ GHz } \land \tau_{225} \leq 0.037 \\
@@ -90,9 +132,9 @@ S(\nu_{rep}, \tau_{225}) = \left\{
     true & \mbox{if } \nu_{rep} < 270 \mbox{ GHz } \land \tau_{225} \leq 0.6\\
     false & \mbox{otherwhise}
     \end{array} \right . 
-$$
+\end{equation}
 
-where $\nu_{rep}$ is the representative frequency and $\tau_{225}$ is the Opacity
+where $\nu_{rep}$ is the representative frequency at $\tau_{225}$ is the Opacity
 at Zenith at 225 Ghz.
 
 \item[Weather stability] \hfill \\
@@ -110,10 +152,11 @@ fine anyway. For now, an increase in the $Tsys$  of 15-20\% is considered too mu
 degradation for the SB to be executed.
 
 The selection operation filters out all the SBs that don't comply with
-$$
+\begin{equation}
 \frac{T_{sys}(t+\Delta t) - T_{sys}(t)}{T_{sys}(t)} < 0.15
-$$
+\end{equation}
 
 \end{description}
 
 \section{Array configuration schedule problem}
+
