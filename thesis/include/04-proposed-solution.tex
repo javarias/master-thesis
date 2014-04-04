@@ -14,19 +14,19 @@ Instrument calibrations and pointing is a very important step before the actual 
 
 The time period to be scheduled could not be continuous, this means that there may be time periods during the day where the instruments will not function to produce science. Since this is planned, the time not used for science is not considered as downtime. Dynamic or random downtimes have been not considered and they are out of the scope of the problem.
 
-The time spent in a execution is variable, it depends completely on the Scheduling Block to be observed. Usually the requested time range goes from 30 minutes until 3 hours. The Observation project and Scheduling Blocks will be considered completely observed according to the rules discussed in section~\ref{subsec:completing-obs} 
+The time spent in a single execution (observing) is variable, it depends completely on the Scheduling Block to be observed. Usually the requested duration goes from 30 minutes until 3 hours. The Observation project and Scheduling Blocks will be considered completely observed according to the rules discussed in section~\ref{subsec:completing-obs} 
 
 The DSA will do the search based on the Local Sidereal Time (LST).
 
-The arrays configurations are given as input to the algorithm, the algorithm will try to accommodate over the time the given configurations. It is not responsibility of the algorithm to came up with suggestions related to changes in the configurations.
+The arrays configurations are given as input to the algorithm, the algorithm will try to accommodate over the time the given configurations. It is not responsibility of the algorithm to come up with suggestions related to changes in the configurations.
  
 \section{ALMA Scheduling array problem}
 
-This problem only considers the execution of Scheduling Block in the same Array Configuration. The algorithm lifecycle is tied to the current ALMA requirements shown in section~\ref{sec:alma-sched-problem} figure~\ref{fig:sched-dsa-state-machine}, which is detailed as follows:
+This problem only considers the execution of Scheduling Block inside the same Array Configuration. The algorithm lifecycle is tied to the current ALMA requirements shown in section~\ref{sec:alma-sched-problem} figure~\ref{fig:sched-dsa-state-machine}, which is detailed as follows:
 
 \begin{description}
 \item[Run static parameter's selector] \hfill \\
-After running these selectors the algorithm will return a list of the potential candidates given current static conditions, this includes the visibility for the representative target which is known beforehand, but is not filterable until the algorithm knows the time. If after this state there is no feasible solution, then the algorithm will return nothing.
+After running these selectors the algorithm will return a list of the potential candidates given current static conditions, this includes the visibility for the representative target which is known beforehand, but is not filterable until the algorithm knows the current Local Sidereal Time. If after this state there is no feasible solution, then the algorithm will return nothing.
 
 \item[Update dynamic parameters] \hfill \\
 In this state the algorithm will recalculate the parameters requiring update at the given time. Usually weather conditions and parameters that cannot be calculated beforehand (e.g. altitude of a source for the given time, the point in the sky is in RA-Dec coordinates).  
@@ -35,7 +35,7 @@ In this state the algorithm will recalculate the parameters requiring update at 
 This will filter out all the Scheduling Blocks which do not fit in the criteria established after the dynamic updates ran. As the first state it will return a list of the candidate SB. If after this state there is no feasible solution, then the algorithm will return nothing.
 
 \item[Rank all candidate Scheduling Blocks] \hfill \\
-The algorithm might have a list of scorers, each one of these scorers will assign a value between ${[ 0 , 1 ]}$. The algorithm also will have a list of weights, one per scorer. The final result of each Scheduling Blocks will be sum of all the weighted scores given to this Scheduling Block for the given time to the algorithm.
+The algorithm might have a list of scorers, each one of these ``scorers'' will assign a value between ${[ 0 , 1 ]}$. The algorithm also will have a list of weights, one per scorer. The final result of each Scheduling Blocks will be sum of all the weighted scores given to this Scheduling Block for the given time to the algorithm.
 
 \item[Select best ranked Scheduling Block] \hfill \\
 The algorithm will select, and will return, the ``best'' suitable Scheduling Blocks for the given time.
@@ -60,7 +60,7 @@ The main objective of the algorithm is to maximize the number of scientific proj
 max \: \sum_{i} SciVal(P_i) \: St(P_i)
 \end{equation}
 
-At the same time the algorithm, must maximize its usage time. This is equivalent to minimize the array's idle time (see equation~\ref{eq:min-idle-time}).
+At the same time the algorithm, must maximize the array's usage time. This is equivalent to minimize the array's idle time (see equation~\ref{eq:min-idle-time}).
 
 \begin{equation}
 \label {eq:min-idle-time}
@@ -136,7 +136,7 @@ S(LST) = \left\{
 	\end{array} \right .
 \end{equation}
 
-The $LST$ parameter is the current Local Sidereal Time, over what the algorithm is calculating.
+The $LST$ parameter is the current Local Sidereal Time, over what the algorithm is selecting Scheduling Blocks.
 
 \item[Sun avoiding zone] \hfill \\
 

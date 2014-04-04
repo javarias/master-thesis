@@ -198,7 +198,7 @@ Without losing generality, the inequality of the property of above can be separa
 $$\alpha'(t, sb) \leq \alpha (t, sb)$$
 Regarding the dependencies of both $\alpha$ and $\alpha'$, if the property depends on $t$, then the property is \textit{dynamic}, which means that the property value to satisfy the inequality is calculated and updated accordingly the scheduling algorithm progress. In other hand the properties depending only on $sb$ are \textit{static}, therefore the values to satisfy their inequalities are pre-calculated at the beginning of the algorithm.\\
 
-\subsection{Static an dynamic constraints}
+\subsection{Static and dynamic constraints}
 
 As stated in section~\ref{sec:apdm} a target is composed by three elements, which match the constraint categories detailed here: \textit{sky source}, \textit{instrumentation} and \textit{weather}.
 
@@ -226,16 +226,16 @@ Another important property of every project submitted to be observed in the obse
 
 \subsection{Completing Scheduling Blocks and Observation projects}
 \label{subsec:completing-obs}
-A scheduling block does not need to be completed in just one observation, in fact the scheduling block cn be observed multiples times at different time, hence different weather conditions and different array configurations, until the scheduling block is considered complete.
+A scheduling block does not need to be completed in just one observation, in fact the scheduling block can be observed multiples times at different calendar time, hence different weather conditions and different array configurations, until the scheduling block is considered complete.
 A scheduling block will be completed, and put its state as complete, if it meets any of following three criterion:
 \begin{itemize}
 	\item \textit{Number of repetitions}: A scheduling block could have a limit of how many times can be observed.
 	\item \textit{Total time observed}: A scheduling block could have a limit of how much time can be observed.
 	\item \textit{Sensitivity achieved}: As stated in section \ref{sec:sens} if the goal for the RMS noise accumulated is achieved, then the scheduling block will be considered completed.
 \end{itemize} 
-Some of the scheduling blocks could not have all the three criteria, it is enough for the SB to have a least one of them.
+Some of the scheduling blocks could not met all the three criteria, it is enough for the Scheduling Block to have a least one of them.
 
-The criteria to determine if a project was complete, is based in how many scheduling blocks or ObsUnit sets have been completed, or the total amount of time observed, which is the sum of all the scheduling blocks observations. However, in reality human intervention is required to determine if the project has been completed based on the quality of science data extracted from the observations. The algorithm establishing whether a Observation project is completed or not is far beyond the scope of this study. 
+The criteria to determine if a project was complete, for simplicity of this study, is based in how many scheduling blocks or ObsUnit sets, belonging to the Observation project, have been completed; or the total amount of time observed, which is the sum of all the scheduling blocks observations. Although in reality, human intervention is required to determine if the project has been completed based on the quality of science data extracted from the observations. The algorithm establishing whether a Observation project is completed or not for real, is far beyond the scope of this study. 
 
 \subsection{Observing season (Observation cycle)}
 Until this point, this study has tried to explain and referred only to observation properties within the time frame considering only one instrument (just one instrument spawns for the whole observation time frame). 
