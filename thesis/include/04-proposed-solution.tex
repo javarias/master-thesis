@@ -81,32 +81,62 @@ Since each executive contributed with different resources, which may differ from
 
 Ideally, the observation time percentage for each executive, has to be kept accordingly to the assigned percentage in the observation cycle. Nonetheless, this could carry unfairness within each observation sub-period (e.g within one week only NA Scheduling blocks were observed). This could trigger unhappiness and some concerns among the different executives, whom expects to have their observation time proportion assigned during a sub-period of time within the observation cycle.
 
-It has been defined the period of time, as one week of observation (this coincides with the early science block carried on bi-weekly). Within this period of time each executive shall get as near as possible the amount of time assigned initially. If it is not possible, then the scheduler shall carry over the unfairness among the executive's times and apply corrections in future schedules.
-
-At the end of the cycle is expected that each Executive will receive the time assigned to it or a very near value. 
+It has been defined the period of time, as one week of observation (this coincides with the early science block carried on bi-weekly). Within this period of time each executive shall get as near as possible the amount of time assigned initially. If it is not possible, then the scheduler shall carry over the unfairness among the executive's times and apply corrections in future schedules (see equation~\ref{eq:exec-balance}).
 
 \begin{equation}
+\label{eq:exec-balance}
 \sum_{i}^{n} T(EB_i) \approx T(Ex_j) \mid \forall t \in {[ t_s(i), t_e(n) [} \land EB_i \in Ex_j 
 \end{equation}
 
-Where $T(EB_i)$ is the time observed for a given Execution Block $EB_i$, $Ex_j$ is a given Executive and $T(Ex_j)$ is the initial estimated execution time over a period of time starting at $t_s(i)$ and finishing at $t_e(n)$.
+Where $T(EB_i)$ is the time observed for a given Execution Block $EB_i$, $Ex_j$ is a given Executive and $T(Ex_j)$ is the initial estimated execution time over a period of time starting at $t_s(i)$ and finishing at $t_e(n)$, as expressed before for convenience, this time interval corresponds to a single week of observations.
+
+At the end of the cycle is expected that each Executive will receive the time assigned to it or a very near value. 
 
 This constraint is a special kind, since it operates over a set of Execution Blocks after the observation of one or more Scheduling Blocks, over a period of time. Instead of operate over a Scheduling Block property.
  
 \item[Source visibility] \hfill \\
 It is possible to know before running the algorithm, to know if a point in the sky will be visible at the time when the algorithm runs.
-In function of LST the rising and setting, $LST_r$ and $LST_s$, respectively are calculated as:
+In function of LST the rising and setting, $LST_r$ and $LST_s$ shown by equation~\ref{eq:lst-r} and equation~\ref{eq:lst-s} respectively.
 \begin{equation}
+\label{eq:lst-r}
 LST_r =  24 - \frac{1}{15} \cos^{-1} (-\tan\phi\tan\delta) + \alpha
 \end{equation}
 \begin{equation}
+\label{eq:lst-s}
 LST_s = \frac{1}{15} \cos^{-1} (-\tan\phi \tan\delta) + \alpha
 \end{equation}
+
+Also is possible to known if the source is always visible or hidden as shown in equation~\ref{eq:sky-src-always-vis} and~\ref{eq:sky-src-always-hid} respectively.
+
+\begin{equation}
+\label{eq:sky-src-always-vis}
+\delta > (90^{\circ} - \phi)
+\end{equation}
+\begin{equation}
+\label{eq:sky-src-always-hid}
+\delta < (90^{\circ} - \phi)
+\end{equation}
+
 where $\alpha$ is the right ascension, $\delta$ is the declination, and
 $\phi$ is the telescope geographical latitude.
-This selection operation selects all the SBs for which the current $LST$ falls
+
+
+The selection operation selects all the SBs for which the current $LST$ falls
 between $LST_r$ and $LST_s$, accounting for cases where this range extends to include
-the following day.
+the following day (see equation~\ref{eq:lst-range-sel}).
+
+\begin{equation}
+\label{eq:lst-range-sel}
+S(LST) = \left\{ 
+	\begin{array}{l l}
+	LST_r < LST < LST_s & \mbox{if } LST_r < LST_s \\
+	LST_r < LST < 24 \land 0 \leq LST < LST_s & \mbox{if } LST_r > LST_s  \\
+	true & \mbox{if } src(SB_i) \mbox{ is always visible.} \\
+	flase & \mbox{if } src(SB_i) \mbox{ is always hidden.} \\
+	\end{array} \right .
+\end{equation}
+
+The $LST$ parameter is the current Local Sidereal Time, over what the algorithm is calculating.
 
 \item[Sun avoiding zone] \hfill \\
 
@@ -115,9 +145,9 @@ the following day.
 \item[Array configuration and resolution] \hfill \\
 A first order approximation of the resolution that can be attained with a give
 array configuration is $\theta = \lambda / l_{max}$ where $l_{max}$ is the maximum
-baseline in the array. Each SB defines a range of acceptable resolutions $[\theta_{min}, \theta_{max}]$.
-The selection criteria in this case selects all SBs for which
+baseline in the array. Each SB defines a range of acceptable resolutions $[\theta_{min}, \theta_{max}]$ (see equation~\ref{eq:sel-arr-res})
 \begin{equation}
+\label{eq:sel-arr-res}
 \theta_{min} \leq \frac{\lambda}{l_{max}} \leq \theta_{max}
 \end{equation}
 
@@ -141,9 +171,8 @@ at Zenith at 225 Ghz.
 During the execution of an observation, the algorithm must try to ensure that the weather conditions would not deteriorate significantly.
 For this purpose, the $Tsys$ is calculated using an average of a few data
 points taken at the time when the algorithm is executed, then this value is compared with the
-projected $Tsys$ calculated at least 30 minutes later (30 minutes being the assumed
-average duration of an SB), taking also into consideration the change in elevation
-of the SB representative target.
+projected $Tsys$ calculated at least 30 minutes later
+%, taking also into consideration the change in elevation of the SB representative target.
 
 How significant the increase in $Tsys$ needs to be for a SB to be discarded
 is under discussion, and in general it will be frequency dependent. In addition
@@ -151,8 +180,9 @@ it is possible that some projects decide that non-optimum observing conditions a
 fine anyway. For now, an increase in the $Tsys$  of 15-20\% is considered too much
 degradation for the SB to be executed.
 
-The selection operation filters out all the SBs that don't comply with
+The selection operation filters out all the SBs that don't comply with equation~\ref{eq:sel-tsys}
 \begin{equation}
+\label{eq:sel-tsys}
 \frac{T_{sys}(t+\Delta t) - T_{sys}(t)}{T_{sys}(t)} < 0.15
 \end{equation}
 
