@@ -238,5 +238,16 @@ The selection operation filters out all the SBs that don't comply with equation~
 
 \subsubsection{Algorithm design rationale}
 
+So far, the study has been focused in the definition of the ALMA's Scheduling array problem and the study of its mathematical model. However, this have not provided the background about how the algorithm will operate internally to return a plan for a given time period. The decision the algorithm design is driven by the following properties:
+\begin{itemize}
+\item The algorithm must work on the on-line system and as well on simulation mode. The idea behind the simulation, is to evaluate how well (or bad) behave the algorithm for a given set of Scheduling Blocks, Array Configurations and time period. Since the ultimate goal is to use the algorithm in on-line system to contribute to take a decision for the best Scheduling Block at a given time.
+
+\item The time within a time period used by the algorithm, may not be discretized because of the variable duration of each Scheduling Block.
+
+\item The algorithm must try to optimize the objective functions (equations~\ref{eq:max-sci-value} and~\ref{eq:min-idle-time}), but at the same time the executive percentage time balance must be kept in line, according to the original defined values, within an observation time frame of one (1) week (see equation~\ref{eq:exec-balance}).
+
+\item The algorithm design and implementation must use the lifecyle currently in use by ALMA software.
+\end{itemize}
+
 \section{Array configuration schedule problem}
 
