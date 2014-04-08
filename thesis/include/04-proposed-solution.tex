@@ -50,12 +50,19 @@ These parameters are statically provided at the beginning of the period. They do
 
 \begin{description}
 \item[$\mathbf{P_i}$] Project number $i$ $\slash \forall P_i \mid P_i \neq \emptyset \land P_i = \{SB_{i1}, SB_{i2}, \ldots, SB_{ik}\}$.
+
 \item[$\mathbf{SB_{ik}}$] Scheduling Block $k$ $\slash \forall SB_{ik} | SB_{ik} \in P_i \land SB_{ik} \notin P_x \mid x \neq i$.
-\item[$\mathbf{SciVal(P_i)}$] Scientific value for $P_i$ $\slash \forall P_i \land SB_{ik} \in P_i \mid SciVal(P_i) \Leftrightarrow SciValue(SB{ij}) $.
+
+\item[$\mathbf{SciVal(P_i)}$] Scientific value for $P_i$ $\slash \forall P_i \land SB_{ik} \in P_i \mid SciVal(P_i) \Leftrightarrow SciVal(SB_{ij}) $.
+
 \item[$\mathbf{T(SB_{ik})}$] Duration (time) of a single execution (observation) for Scheduling Block $ik$.
+
 \item[$\mathbf{AC_j}$] Array Configuration $j$.
+
 \item[$\mathbf{T(AC_j)}$] Duration (time) for Array Configuration $j$.
+
 \item[$\mathbf{Ex_h}$] Executive number $h$.
+
 \item[$\mathbf{TP(Ex_h)}$] Percentage of time for Executive $h$ $\slash \forall TP(Ex_h) \mid TP(Ex_h) \in {[0,1]} \land \sum_{h}^{n} TP(Ex_h) = 1$ 
 
 \end{description} 
@@ -64,11 +71,32 @@ These parameters are statically provided at the beginning of the period. They do
 Contrary to the static parameters, these parameters may change at any time during the time period being used by the algorithm.
 
 \begin{description}
-\item[$\mathbf{EB_n}$] Execution Block $n$. The execution blocks represents a time frame where an observation of Scheduling Block $SB_{ij}$ was carried on, it belongs to a given array configuration $AC_j $, since start time $t_s$ until end time $t_e$, during this period of time and array configuration the execution block is unique.
+\item[$\mathbf{EB_n}$] Execution Block $n$. The execution blocks represents a time frame where an observation of Scheduling Block $SB_{ij}$ was carried on, it belongs to a given array configuration $AC_j $, since start time $t_s(EB_n)$ until end time $t_e(EB_n)$, during this period of time and array configuration the execution block is unique.
 
 \item[$\mathbf{T(EB_n)}$] Duration (time) of Execution Block $n$.
 
 \item[$\mathbf{LST}$] Current Local Sidereal Time.
+
+\item[$\mathbf{St(P_i)}$] Current status of Project $i$  $
+\left\{
+\begin{array}{l l} 
+true & \mbox{if  } P_i \mbox{ completed} \Leftrightarrow \forall SB_{ik} \in P_i \mid St(SB_{ik}) = true\\
+false & \mbox{if  } P_i \mbox{ not completed} \\
+\end{array}
+\right .$
+
+\item[$\mathbf{St(SB_{ik})}$] Current status of Scheduling Block $ik$  $
+\left\{
+\begin{array}{l l} 
+true & \mbox{if  } SB_{ik} \mbox{ completed} \\
+false & \mbox{if  } SB_{ik} \mbox{ not completed} \\
+\end{array}
+\right .$
+
+\item[$\mathbf{\tau_{225}(SB_{ik}, t)}$] Opacity for a given Scheduling Block's source $ik$, for the given time $t$.
+
+\item[$\mathbf{T_{sys}(SB_{ik}, t)}$] System temperature for a given Scheduling Block's source $ik$, for the given time $t$.
+
 \end{description}
 
 \subsubsection{Objective functions}
@@ -77,14 +105,14 @@ The main objective of the algorithm is to maximize the number of scientific proj
 
 \begin{equation}
 \label{eq:max-sci-value}
-max \: \sum_{i} SciVal(P_i) \: St(P_i)
+max \: \bigg(\sum_{i} SciVal(P_i) \: St(P_i)\bigg)
 \end{equation}
 
 At the same time the algorithm, must maximize the array's usage time. This is equivalent to minimize the array's idle time (see equation~\ref{eq:min-idle-time}).
 
 \begin{equation}
 \label {eq:min-idle-time}
-max \mbox{ }\bigg( \frac{\sum_{i}T(EB_i)}{T(AC_j)}\bigg)
+max \mbox{ }\Bigg( \frac{\sum_{i}T(EB_i)}{T(AC_j)}\Bigg)
 \end{equation}
 
 
@@ -105,10 +133,10 @@ It has been defined the period of time, as one week of observation (this coincid
 
 \begin{equation}
 \label{eq:exec-balance}
-\frac{\sum_{i}^{n} T(EB_x)}{(t_e(EB_n) - t_s(EB_i))} \approx TP(Ex_j) \mid  EB_i \in Ex_h 
+\frac{\sum_{i}^{n} T(EB_x)}{(t_e - t_s)} \approx TP(Ex_j) \mid  EB_i \in Ex_h \land t_s \leq t_s(EB_i) \land t_e(EB_n) \leq t_e
 \end{equation}
 
-Where $T(EB_i)$ is the time observed for a given Execution Block $EB_i$, $Ex_j$ is a given Executive and $T(Ex_j)$ is the initial estimated execution time over a period of time starting at $t_s(i)$ and finishing at $t_e(n)$, as expressed before for convenience, this time interval corresponds to a single week of observations.
+Where $T(EB_x)$ is the time observed for a given Execution Block $EBxi$, $Ex_h$ is a given Executive; and $t_s$ and $t_e$ are the starting and ending times for a arbitrary time interval, as expressed before for convenience, this time interval may correspond to a single week of observations.
 
 At the end of the cycle is expected that each Executive will receive the time assigned to it or a very near value. 
 
@@ -116,7 +144,7 @@ This constraint is a special kind, since it operates over a set of Execution Blo
  
 \item[Source visibility] \hfill \\
 It is possible to know before running the algorithm, to know if a point in the sky will be visible at the time when the algorithm runs.
-In function of LST the rising and setting, $LST_r$ and $LST_s$ shown by equation~\ref{eq:lst-r} and equation~\ref{eq:lst-s} respectively.
+In function of $LST$ the rising and setting, $LST_r$ and $LST_s$ shown by equation~\ref{eq:lst-r} and equation~\ref{eq:lst-s} respectively.
 \begin{equation}
 \label{eq:lst-r}
 LST_r =  24 - \frac{1}{15} \cos^{-1} (-\tan\phi\tan\delta) + \alpha
@@ -151,8 +179,8 @@ S(LST) = \left\{
 	\begin{array}{l l}
 	LST_r < LST < LST_s & \mbox{if } LST_r < LST_s \\
 	LST_r < LST < 24 \land 0 \leq LST < LST_s & \mbox{if } LST_r > LST_s  \\
-	true & \mbox{if } src(SB_i) \mbox{ is always visible.} \\
-	flase & \mbox{if } src(SB_i) \mbox{ is always hidden.} \\
+	true & \mbox{if } src(SB_{ik}) \mbox{ is always visible.} \\
+	flase & \mbox{if } src(SB_{ik}) \mbox{ is always hidden.} \\
 	\end{array} \right .
 \end{equation}
 
@@ -207,6 +235,8 @@ The selection operation filters out all the SBs that don't comply with equation~
 \end{equation}
 
 \end{description}
+
+\subsubsection{Algorithm design rationale}
 
 \section{Array configuration schedule problem}
 
