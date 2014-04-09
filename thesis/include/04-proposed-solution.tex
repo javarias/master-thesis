@@ -44,6 +44,7 @@ The algorithm will select, and will return, the ``best'' suitable Scheduling Blo
 
 
 \subsection{Mathematical model}
+\label{sec:array-sched-math-model}
 
 \subsubsection{Static parameters}
 These parameters are statically provided at the beginning of the period. They do not change over the time period being used by the algorithm.
@@ -239,15 +240,44 @@ The selection operation filters out all the SBs that don't comply with equation~
 \subsubsection{Algorithm design rationale}
 
 So far, the study has been focused in the definition of the ALMA's Scheduling array problem and the study of its mathematical model. However, this have not provided the background about how the algorithm will operate internally to return a plan for a given time period. The decision the algorithm design is driven by the following properties:
-\begin{itemize}
+\begin{enumerate}
 \item The algorithm must work on the on-line system and as well on simulation mode. The idea behind the simulation, is to evaluate how well (or bad) behave the algorithm for a given set of Scheduling Blocks, Array Configurations and time period. Since the ultimate goal is to use the algorithm in on-line system to contribute to take a decision for the best Scheduling Block at a given time.
 
-\item The time within a time period used by the algorithm, may not be discretized because of the variable duration of each Scheduling Block.
+\item The time within a time period, used by the algorithm, might not be discretized because of the variable duration of each Scheduling Block. Also a single execution of a Scheduling Block is not be preemptable until it completes (success ot failure). 
 
 \item The algorithm must try to optimize the objective functions (equations~\ref{eq:max-sci-value} and~\ref{eq:min-idle-time}), but at the same time the executive percentage time balance must be kept in line, according to the original defined values, within an observation time frame of one (1) week (see equation~\ref{eq:exec-balance}).
 
 \item The algorithm design and implementation must use the lifecyle currently in use by ALMA software.
-\end{itemize}
+
+\end{enumerate}
+
+Given the uncertain number of possible Execution Blocks, duration of them and the time when they are scheduled for execution, it might result impossible to determine a domain model where a complete search technique could be applied. Also, every time a Scheduling Block is schedule for observation, the search tree for the problem changes creating a whole new options based on the previous decision. Of course, the dynamism on the number of branches in the search tree, greatly depends on the number of Scheduling Block given as input for the algorithm. According to ALMA's system requirements the scheduling subsystem (including the algorithm) must be able to handle easily~\footnote{Easily is a quality property for the system, which should be interpreted as ``The algorithm must return a solution in a reasonable human time (usually between $1-2$ seconds)'' for the given input time} $10000$ Scheduling Blocks as input.
+
+The algorithm proposed in this study will be based on the Deficit Round-Robin (DRR) algorithm~\cite{shreedhar96}. The original algorithm defines service flows (queues) and a processor dispatching the network packets arrived and already sorted in one of the flows. Making a comparative between the model proposed in the original paper and the ALMA's scheduling problem, it is possible to map the original proposed domain model into the ALMA's model as follows:
+
+\begin{description}
+\item[Network packets] are mapped into a \textit{single-execution of a Scheduling Block}. This is not the same as the Execution Block, because this entity is the result after a Scheduling Block execution. As established by DRR design, the network packet length is variable, matching the single-execution time Scheduling Block property.
+
+\item[Processor] is mapped into the \textit{Array Configuration}. The Array is unique and can execute just one Scheduling Block at a given time.
+
+\item[Service flows] are mapped into the \textit{Executives' observation times}. Actually, the flows will be mapped into the percentage of the Executives' observation times, what is a measurable quantity given an arbitrary time frame inside the total duration of the time given as input to the algorithm. Nevertheless, the mapping here does not fit perfectly, due the design of DRR establishes that every service flow will have the same priority than the others. For the ALMA case, each Executive should have different priorities, to deal with this issue a weight will be applied to the quantum size, based on the time percentage assigned to each executive, this is similar to what is proposed in the weighted Round-Robin algorithm explained in~\cite{katevenis91}.
+\end{description}
+
+In the original DRR algorithm, the service flows are filled with network packets arriving from the media, and they are kept in the queues until are services. In ALMA, each service flow will be filled with the result of the Scheduling Block filtering for the given time based on the mathematical model constraints explained in section~\ref{sec:array-sched-math-model}. The difference with DRR is that the service flows will be recalculated every time the algorithm runs, filtering-out and putting-in the no longer and new suitable Scheduling Blocks respectively.
+
+The quantum size will be fixed number as explained in the original DRR design. However, the quantum size applied to a Executive's service flow will be multiplied by a weight defined in equation~\ref{eq:alg-quantum-weight}, which is different for every Executive.
+
+\begin{equation}
+\label{eq:alg-quantum-weight}
+W_{h} = \frac{TP(Ex_h)}{max(TP(Ex_x))}
+\end{equation}
+
 
 \section{Array configuration schedule problem}
-
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=\textwidth]{images/array-config-problem-overview}
+\caption{Array configuration schedule problem overview}
+\end{center}
+\label{fig:array-config-problem-overview}
+\end{figure}
