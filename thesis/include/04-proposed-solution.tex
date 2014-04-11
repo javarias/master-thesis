@@ -239,7 +239,7 @@ The selection operation filters out all the SBs that don't comply with equation~
 
 \subsubsection{Algorithm design rationale}
 
-So far, the study has been focused in the definition of the ALMA's Scheduling array problem and the study of its mathematical model. However, this have not provided the background about how the algorithm will operate internally to return a plan for a given time period. The decision the algorithm design is driven by the following properties:
+So far, the study has been focused in the definition of the ALMA's Scheduling array problem and the study of its mathematical model. However, this have not provided the background about how the algorithm will operate internally to return a plan for a given time period. The decision of the algorithm design is driven by the following properties:
 \begin{enumerate}
 \item The algorithm must work on the on-line system and as well on simulation mode. The idea behind the simulation, is to evaluate how well (or bad) behave the algorithm for a given set of Scheduling Blocks, Array Configurations and time period. Since the ultimate goal is to use the algorithm in on-line system to contribute to take a decision for the best Scheduling Block at a given time.
 
@@ -247,11 +247,11 @@ So far, the study has been focused in the definition of the ALMA's Scheduling ar
 
 \item The algorithm must try to optimize the objective functions (equations~\ref{eq:max-sci-value} and~\ref{eq:min-idle-time}), but at the same time the executive percentage time balance must be kept in line, according to the original defined values, within an observation time frame of one (1) week (see equation~\ref{eq:exec-balance}).
 
-\item The algorithm design and implementation must use the lifecyle currently in use by ALMA software.
+\item The algorithm design and implementation must fit into lifecyle currently in use by ALMA software.
 
 \end{enumerate}
 
-Given the uncertain number of possible Execution Blocks, duration of them and the time when they are scheduled for execution, it might result impossible to determine a domain model where a complete search technique could be applied. Also, every time a Scheduling Block is schedule for observation, the search tree for the problem changes creating a whole new options based on the previous decision. Of course, the dynamism on the number of branches in the search tree, greatly depends on the number of Scheduling Block given as input for the algorithm. According to ALMA's system requirements the scheduling subsystem (including the algorithm) must be able to handle easily~\footnote{Easily is a quality property for the system, which should be interpreted as ``The algorithm must return a solution in a reasonable human time (usually between $1-2$ seconds)'' for the given input time} $10000$ Scheduling Blocks as input.
+Given the uncertain number of possible Execution Blocks, duration of them and the time when they are scheduled for execution, it might result impossible to determine a domain model where a complete search technique could be applied. Also, every time a Scheduling Block is scheduled for observation, the search tree for the problem changes, creating a whole new set of options based on the previous decision. Of course, the dynamism on the number of branches in the search tree, greatly depends on the number of Scheduling Block given as input for the algorithm. According to ALMA's system requirements the scheduling subsystem (including the algorithm) must be able to handle easily~\footnote{Easily is a quality property for the system, which should be interpreted as ``The algorithm must return a solution in a reasonable human time (usually between $1-2$ seconds)'' for the given input time} $10000$ Scheduling Blocks as input.
 
 The algorithm proposed in this study will be based on the Deficit Round-Robin (DRR) algorithm~\cite{shreedhar96}. The original algorithm defines service flows (queues) and a processor dispatching the network packets arrived and already sorted in one of the flows. Making a comparative between the model proposed in the original paper and the ALMA's scheduling problem, it is possible to map the original proposed domain model into the ALMA's model as follows:
 
@@ -272,6 +272,64 @@ The quantum size will be fixed number as explained in the original DRR design. H
 W_{h} = \frac{TP(Ex_h)}{max(TP(Ex_x))}
 \end{equation}
 
+To achieve the objective functions, the algorithm must optimize the selection for the given time. For this reason, the Scheduling Blocks must be prioritized according to a score. This score shall be composed by the sum of different weighted scores, very similar to what is proposed in the current ALMA algorithm. The following are the scorers currently defined for the current ALMA DSA, that can be reused for the proposed algorithm in this study:
+
+\begin{description}
+\item[Scientific priority score] \hfill \\
+Each proposal or project gets assigned a scientific priority, defined by three numbers
+(score, rank, grade). The \texttt{score} (a float) is assigned by
+a specialized committee (galactic, extra-galactic, etc.). When the proposals that have
+been evaluated by different committees are assembled in one set, there is the possibility
+of collisions in the order defined by the \texttt{score}. The \texttt{rank} (an integer) resolves these
+collisions, providing a completely ordered set. On top of this, the \texttt{grade} (which can assume
+the values A, B, C, or D)
+
+The algorithm computes the scientific priority score as shown in equation~\ref{eq:project-grade-score}
+\begin{equation}
+\label{eq:project-grade-score}
+S = \frac{N_p - (\mathtt{rank} - 1)}{N_p} + K
+\end{equation}
+where $N_p$ is the total number of projects (or proposals), and $K$ is defined by equation~\ref{eq:scoring-prj-grades}
+\begin{equation}
+\label{eq:scoring-prj-grades}
+K = \left\{
+    \begin{array}{l l}
+    4 & \mbox{if project grade is $A$} \\
+    2 & \mbox{if project grade is $B$} \\
+    1 & \mbox{if project grade is $C$} \\
+    0 & \mbox{if project grade is $D$}
+    \end{array} \right . 
+\end{equation}
+
+\item[Hour angle score] \hfill \\
+In order to favor the Scheduling Blocks that at the current time have their representative source close to the zenith, 
+their hour angle should be in the vicinity of $0.0$ hours. The hour angle score is defined in equation~\ref{eq:ha-scorer}
+
+\begin{equation}
+\label{eq:ha-scorer}
+	S = \frac{AM_{current}}{AM_{transit}} = \frac{\cos(HA) + \tan(\delta) \tan(\varphi)}
+											{1 + \tan(\delta) \tan(\varphi)}
+\end{equation}
+
+Where $AM$ is the Air Mass at transit (at source meridian transit) and current (current value of $AM$ if observed), $HA$ Hour Angle, $\delta$ target declination and $\varphi$ latitude of ALMA
+
+\item[Weather selector] \hfill \\
+This selector is based on the $T_{sys}$ as shown by equation~\ref{eq:weather-scorer}
+\begin{equation}
+\label{eq:weather-scorer}
+	S_{T_{sys}} = \frac{T_{sys}^{transit}}{T_{sys}^{current}}
+\end{equation}
+\end{description}
+
+Therefore, every Scheduling Block queued into the service flow is given a score represented by equation~\ref{eq:sb-final-score}. Given this, every Scheduling Block is inserted in order into the service queue, selecting just the top Scheduling Block to executive serviced at the given time.
+
+\begin{equation}
+\label{eq:sb-final-score}
+\sum_{i}^{n} w_i\times Sc_i(SB_xy)
+\end{equation}
+
+
+\textit{Write a pseudo code description for the algorithm}
 
 \section{Array configuration schedule problem}
 \begin{figure}[h!]
