@@ -50,11 +50,11 @@ The algorithm will select, and will return, the ``best'' suitable Scheduling Blo
 These parameters are statically provided at the beginning of the period. They do not change over the time period being used by the algorithm.
 
 \begin{description}
-\item[$\mathbf{P_i}$] Project number $i$ $\slash \forall P_i \mid P_i \neq \emptyset \land P_i = \{SB_{i1}, SB_{i2}, \ldots, SB_{ik}\}$.
+\item[$\mathbf{P_i}$] Project number $i$ $\Big\slash \forall P_i \mid P_i \neq \emptyset \land P_i = \{SB_{i1}, SB_{i2}, \ldots, SB_{ik}\}$.
 
-\item[$\mathbf{SB_{ik}}$] Scheduling Block $k$ $\slash \forall SB_{ik} | SB_{ik} \in P_i \land SB_{ik} \notin P_x \mid x \neq i$.
+\item[$\mathbf{SB_{ik}}$] Scheduling Block $k$ $\Big\slash \forall SB_{ik} | SB_{ik} \in P_i \land SB_{ik} \notin P_x \mid x \neq i$.
 
-\item[$\mathbf{SciVal(P_i)}$] Scientific value for $P_i$ $\slash \forall P_i \land SB_{ik} \in P_i \mid SciVal(P_i) \Leftrightarrow SciVal(SB_{ij}) $.
+\item[$\mathbf{SciVal(P_i)}$] Scientific value for $P_i$ $\Big\slash \forall P_i \land SB_{ik} \in P_i \mid SciVal(P_i) \Leftrightarrow SciVal(SB_{ij}) $.
 
 \item[$\mathbf{T(SB_{ik})}$] Duration (time) of a single execution (observation) for Scheduling Block $ik$.
 
@@ -64,7 +64,7 @@ These parameters are statically provided at the beginning of the period. They do
 
 \item[$\mathbf{Ex_h}$] Executive number $h$.
 
-\item[$\mathbf{TP(Ex_h)}$] Percentage of time for Executive $h$ $\slash \forall TP(Ex_h) \mid TP(Ex_h) \in {[0,1]} \land \sum_{h}^{n} TP(Ex_h) = 1$ 
+\item[$\mathbf{TP(Ex_h)}$] Percentage of time for Executive $h$ $\Big\slash \forall TP(Ex_h) \mid TP(Ex_h) \in {[0,1]} \land \sum_{h}^{n} TP(Ex_h) = 1$ 
 
 \end{description} 
 
@@ -112,7 +112,7 @@ max \: \bigg(\sum_{i} SciVal(P_i) \: St(P_i)\bigg)
 At the same time the algorithm, must maximize the array's usage time. This is equivalent to minimize the array's idle time (see equation~\ref{eq:min-idle-time}).
 
 \begin{equation}
-\label {eq:min-idle-time}
+\label{eq:min-idle-time}
 max \mbox{ }\Bigg( \frac{\sum_{i}T(EB_i)}{T(AC_j)}\Bigg)
 \end{equation}
 
@@ -332,6 +332,7 @@ Therefore, every Scheduling Block queued into the service flow is given a score 
 \textit{Write a pseudo code description for the algorithm}
 
 \section{Array configuration schedule problem}
+This problem depends upon the result of the algorithm output for the ``Scheduling Array Problem'' as illustrated on figure~\ref{fig:array-config-problem-overview}. This problem is part of the ``long-term scheduling'' problem only, therefore multiple Array configurations are considered as input.
 \begin{figure}[h!]
 \begin{center}
 \includegraphics[width=\textwidth]{images/array-config-problem-overview}
@@ -339,3 +340,41 @@ Therefore, every Scheduling Block queued into the service flow is given a score 
 \end{center}
 \label{fig:array-config-problem-overview}
 \end{figure}
+
+\subsection{General conditions and assumptions}
+The problem will consider 3 different possible Array types: \textit{12-meter arrays} ($12m$) intended to be used in together with the baseline correlator computer, \textit{7-meter arrays} ($7m$) intended to be used together with ACA correlator computer (zero-spacing interferometer) and \textit{Total Power arrays} ($TP$) intended to use in auto-correlations (single-dish). 
+
+The array configurations duration has been discretized in terms of weeks. Keeping the configurations with shorter durations may be introduce a lot of overhead for operations, due in every configuration change several antennas might be moved from one pad to another, using valuable time not destined to science.
+
+The antenna movement duration is not considered in the model.
+
+The algorithm will not propose changes in properties of the array configurations (e.g. angular resolution, number of antennas, bands available, etc). It will only propose changes in terms of duration and staring time.
+
+\subsection{Mathematical model}
+
+\subsubsection{Parameters}
+\begin{description}
+\item[$\mathbf{AC_i}$] Array Configuration number $i$.
+
+\item[$\mathbf{Type(AC_i)}$] Type of Array Configuration number $i$ $\Big\slash Type(AC_i) \in \{12m, 7m, TP\}$.
+
+\item[$\mathbf{t_s(AC_i), t_e(AC_i)}$] Start and end times, respectively, for Array Configuration number $i$ $\Big\slash t_s(AC_i) < t_e(AC_i)$.
+\end{description}
+
+\subsubsection{Objective function}
+The main objective of the algorithm for this problem, is the same defined for the ``ALMA Scheduling Array Problem'' in section~\ref{sec:array-sched-math-model} equations~\ref{eq:max-sci-value} and~\ref{eq:min-idle-time}. To maximize the scientific value of the completed projects and to minimize the instrument's idle time, respectively.
+
+\subsubsection{Constraints}
+\begin{description}
+\item[Array configurations duration overlap] \hfill \\
+The antennas and the correlators computers are unique instrument components that can be present in just one array configuration at the very same time. Hence, to avoid duplications of resources, just one type of array configuration of the same type is allowed at a given time period. There is one exception, the Total power arrays, but for simplification it is considered as the other configuration types. The constraint can be expressed as shown by equation~\ref{eq:array-uniqness}
+
+\begin{equation}
+\label{eq:array-uniqness}
+t_s(AC_j) > t_e(AC_i)\; \veebar \; t_e(AC_j) < t_s(AC_i) \:
+\Big\slash \: \forall AC_i, AC_j \mid Type(AC_i) = Type(AC_j)
+\end{equation}
+
+Given that, it is possible to deduce that there are maximum three (3) arrays configurations running simultaneously, one for each array configuration type.
+
+\end{description}
