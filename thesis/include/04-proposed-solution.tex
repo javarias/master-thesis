@@ -159,11 +159,23 @@ Also is possible to known if the source is always visible or hidden as shown in 
 
 \begin{equation}
 \label{eq:sky-src-always-vis}
-\delta > (90^{\circ} - \phi)
+visible \Leftrightarrow
+\left\{
+	\begin{array} {l l}
+	\delta > (90^\circ - \phi) & \mbox{ for northern hemisphere} \\
+	\delta < -(90^\circ + \phi) & \mbox{ for southern hemisphere} \\
+	\end{array} 
+\right.
 \end{equation}
 \begin{equation}
 \label{eq:sky-src-always-hid}
-\delta < (90^{\circ} - \phi)
+hidden \Leftrightarrow
+\left\{
+	\begin{array} {l l}
+	\delta < -(90^\circ - \phi) & \mbox{ for northern hemisphere} \\
+	\delta > (90^\circ + \phi) & \mbox{ for southern hemisphere} \\
+	\end{array} 
+\right.
 \end{equation}
 
 where $\alpha$ is the right ascension, $\delta$ is the declination, and
