@@ -106,7 +106,7 @@ The main objective of the algorithm is to maximize the number of scientific proj
 
 \begin{equation}
 \label{eq:max-sci-value}
-max \: \bigg(\sum_{i} SciVal(P_i) \: St(P_i)\bigg)
+max \: \bigg(\sum_{i} SciVal(P_i) \times St(P_i)\bigg)
 \end{equation}
 
 At the same time the algorithm, must maximize the array's usage time. This is equivalent to minimize the array's idle time (see equation~\ref{eq:min-idle-time}).
@@ -193,7 +193,7 @@ S(LST) = \left\{
 	LST_r < LST < LST_s & \mbox{if } LST_r < LST_s \\
 	LST_r < LST < 24 \land 0 \leq LST < LST_s & \mbox{if } LST_r > LST_s  \\
 	true & \mbox{if } src(SB_{ik}) \mbox{ is always visible.} \\
-	flase & \mbox{if } src(SB_{ik}) \mbox{ is always hidden.} \\
+	false & \mbox{if } src(SB_{ik}) \mbox{ is always hidden.} \\
 	\end{array} \right .
 \end{equation}
 
@@ -337,7 +337,7 @@ Therefore, every Scheduling Block queued into the service flow is given a score 
 
 \begin{equation}
 \label{eq:sb-final-score}
-\sum_{i}^{n} w_i\times Sc_i(SB_xy)
+\sum_{i}^{n} w_i\times Sc_i(SB_{xy})
 \end{equation}
 
 
@@ -379,7 +379,7 @@ The main objective of the algorithm for this problem, is the same defined for th
 \subsubsection{Constraints}
 \begin{description}
 \item[Array configurations duration overlap] \hfill \\
-The antennas and the correlators computers are unique instrument components that can be present in just one array configuration at the very same time. Hence, to avoid duplications of resources, just one type of array configuration of the same type is allowed at a given time period. There is one exception, the Total power arrays, but for simplification it is considered as the other configuration types. The constraint can be expressed as shown by equation~\ref{eq:array-uniqness}
+The antennas and the correlators computers are unique instrument components that can be present in just one array configuration at the very same time. Hence, to avoid duplication of resources, just one type of array configuration of the same type is allowed at a given time period. There is one exception, the Total power arrays, but for simplification it is considered as the other configuration types. The constraint can be expressed as shown by equation~\ref{eq:array-uniqness}
 
 \begin{equation}
 \label{eq:array-uniqness}
