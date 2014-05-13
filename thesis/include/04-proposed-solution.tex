@@ -441,17 +441,21 @@ The antenna movement duration among pads is not considered in the model.
 
 The algorithm will not propose changes in properties of the array configurations (e.g. angular resolution, number of antennas, bands available, etc). It will only propose changes in terms of duration and staring time.
 
+Science observations will be carried over a daily time period considerably less than 24 hours. If there was 24 hours operations for every array, then this problem would be reduced to calculate the sum of the hours requested by every relevant project assigned to a every array configuration, as the requested array duration.
+
 \subsection{Mathematical model}
 
 \subsubsection{Parameters}
 \begin{description}
 \item[$\mathbf{AC_i}$] Array Configuration number $i$.
 
-\item[$\mathbf{Type(AC_i)}$] Type of Array Configuration number $i$ $\Big\slash Type(AC_i) \in \{12m, 7m, TP\}$.
+\item[$\mathbf{Type(AC_i)}$] Type of Array Configuration number $i$ $\Big\slash\: Type(AC_i) \in \{12m, 7m, TP\}$.
 
-\item[$\mathbf{t_s(AC_i), t_e(AC_i)}$] Start and end times, respectively, for Array Configuration number $i$ $\Big\slash t_s(AC_i) < t_e(AC_i)$.
+\item[$\mathbf{t_s(AC_i), t_e(AC_i)}$] Start and end date, respectively, for Array Configuration number $i$ $\Big\slash\: t_s(AC_i) < t_e(AC_i)$.
 
-\item[$\mathbf{Gr(P_i)}$] Grade given to the project $i$ $\Big\slash Gr(P_x) \in \{A,B,C,D\}$, where $A$ denotes the highest grade and $D$ the lowest grade.
+\item[$\mathbf{td_s(AC_i), d(AC_i)}$] Daily start time and duration of the daily period, respectively, for Array Configuration number $i$. $\Big\slash\: d(AC_i) \ll 24\;[h]$.
+
+\item[$\mathbf{Gr(P_i)}$] Grade given to the project $i$ $\Big\slash\: Gr(P_x) \in \{A,B,C,D\}$, where $A$ denotes the highest grade and $D$ the lowest grade.
 \end{description}
 
 \subsubsection{Objective function}
@@ -485,7 +489,7 @@ t_e(AC_i) - t_s(AC_i) \geq 4\:weeks
 The observatory can setup several times, in different time periods, over the observing season the same array configuration. For simplification, the model does not identify each one of these repetitions as the same array configuration, because the start and end date differs from the same configuration scheduled in another dates. In fact, they are considered different instruments even when they offer the same capabilities.
 
 \subsection{Scheduling Block classification}
-From section~\ref{sec:sched-constraints}, it is possible to deduce that, there is a subset of these restriction which might help to narrow the search space for this problem. In fact, it may be possible to define a ``Scheduling Block critical subset'', inherent to each Array Configuration. Although, the Scheduling Blocks belonging to one array configuration could not be exclusive to it.
+From section~\ref{sec:sched-constraints}, it is possible to deduce that, there is a subset of these restriction which might help to narrow the search space for this problem. In fact, it may be possible to define a ``Scheduling Block critical subset'', inherent to each Array Configuration. Although the Scheduling Blocks belonging to one array configuration could not be exclusive to it.
 
 The list of constraints is the following:
 \begin{enumerate}
@@ -495,15 +499,33 @@ The list of constraints is the following:
 \end{enumerate}
 These criteria must be applied only over $A$ graded projects and their belonging Scheduling Blocks, as defined by the objective function.
 
-From the list 1. and 3., it is possible to see that the SB selection for them is quite straight-forward. However for 2., the LST range may vary widely, depending of the sky source. Also, a correlation between the LST requested, in the Scheduling block, and the array date schedule must be found to narrow the array starting points and duration.
+For the list items 1. and 3., it is possible to see that the SB selection for them is quite straight-forward. However for 2., the LST range may vary widely, depending of the sky source. Also, a correlation between the LST requested, in the Scheduling block, and the array date schedule must be found to narrow the array starting points and duration.
+
+\subsubsection{Source visibility analysis}
+From~\cite{meeus98} the altitude of a certain sky source is defined as shown by equation~\ref{eq:source-altitude}
+\begin{equation}
+\label{eq:source-altitude}
+sin(h) = sin(\varphi) sin(\delta) + cos(\phi) cos(\delta) cos(H)
+\end{equation}
+Where $h$ is the altitude, positive above the horizon, negative below; $\varphi$ is the observatory's latitude, positive is in northern hemisphere, negative in southern hemisphere; $\delta$ is the declination of the source, positive is north of the celestial equator, negative if south; and $H$ is the local hour angle, measured westwards from the South.
+
+$H$ is calculated as shown by equation~\ref{eq:hour-angle-calculation}
+\begin{equation}
+\label{eq:hour-angle-calculation}
+H = \theta - \alpha
+\end{equation}
+Where $\theta$ is the Local Sidereal Time (LST) and $\alpha$ is the right ascension of the sky source, usually it is expressed in terms of hours, minutes and seconds.
+
+From these equations is possible to derive that the highest altitude in the sky is reach when $H = 0$. Or expressed in terms of LST, when $\theta = \alpha$. At this point is when there are less atmosphere between the observatory and the sky source, hence the quality of the data taken is better.
+
+Nevertheless also it is possible to observe a sky source when they are not at their highest altitude in the sky, the key is to set a minimal altitude to allow to carry on observations properly. This minimum allowed altitude for ALMA observatory is set to $15^\circ$ mostly due to the surrounding mountains around the site. 
 
 \subsubsection{Array Configuration duration and LST relationship}
 As stated in the general condition in section~\ref{sec:array-problem-general-condition} the minimum resolution for the problem is one (1) week.
 
 From the algorithm used to calculate the LST found in~\cite{kaplan05}, it is possible to deduce that the LST drifts from the calendar time. The drift calculated rate is approximately $1654.7328\,[s]$ or $27.57888\,[min]$ ahead for every calendar week.
 
-\subsubsection{LST analysis}
-
-
+Therefore, the LST interval during the minimum array lifespan (of 4 weeks) will be approximately the number of hours in the daily time interval plus $1.838592\;[h]$.
+Of course the borders of the configuration interval, in LST terms, would not be available the whole array duration due to the LST drifting, and these LST hours will have less representation as the array configuration life advances. But for a crude estimation of the LST interval available during array configuration life, works fine.
 
 \end{description}
