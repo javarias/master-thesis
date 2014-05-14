@@ -481,6 +481,7 @@ t_e(AC_i) - t_s(AC_i) \geq 4\:weeks
 The observatory can setup several times, in different time periods, over the observing season the same array configuration. For simplification, the model does not identify each one of these repetitions as the same array configuration, because the start and end date differs from the same configuration scheduled in another dates. In fact, they are considered different instruments even when they offer the same capabilities.
 
 \subsection{Scheduling Block classification}
+\label{sec:array-sb-classification}
 From section~\ref{sec:sched-constraints}, it is possible to deduce that, there is a subset of these restriction which might help to narrow the search space for this problem. In fact, it may be possible to define a ``Scheduling Block critical subset'', inherent to each Array Configuration. Although the Scheduling Blocks belonging to one array configuration could not be exclusive to it.
 
 The list of constraints is the following:
@@ -491,7 +492,7 @@ The list of constraints is the following:
 \end{enumerate}
 These criteria must be applied only over $A$ graded projects and their belonging Scheduling Blocks, as defined by the objective function.
 
-For the list items 1. and 3., it is possible to see that the SB selection for them is quite straight-forward. However for 2., the LST range may vary widely, depending of the sky source. Also, a correlation between the LST requested by the Scheduling block, and the array configuration date schedule must be found to narrow the configuration starting points and its duration.
+For the list items 1. and 3., it is possible to see that the SB selection for them is quite straight-forward. However for 2., the LST range may vary widely, depending of the sky source. Also, a correlation between the LST requested, in the Scheduling block, and the array date schedule must be found to narrow the array starting points and duration.
 
 \subsubsection{Source visibility analysis}
 From~\cite{meeus98} the altitude of a certain sky source is defined as shown by equation~\ref{eq:source-altitude}
@@ -510,7 +511,8 @@ Where $\theta$ is the Local Sidereal Time (LST) and $\alpha$ is the right ascens
 
 From these equations is possible to derive that the highest altitude in the sky is reach when $H = 0$. Or expressed in terms of LST, when $\theta = \alpha$. At this point is when there are less atmosphere between the observatory and the sky source, hence the quality of the data taken is better.
 
-Nevertheless also it is possible to observe a sky source while it is not at its highest altitude in the sky, the key is to set a minimal altitude to allow to carry on observations properly. This minimum allowed altitude for ALMA observatory is set to $15^\circ$ mostly due to the surrounding mountains around the site. 
+Nevertheless also it is possible to observe a sky source 
+while it is not at its highest altitude in the sky, the key is to set a minimal altitude to allow to carry on observations properly. This minimum allowed altitude for ALMA observatory is set to $15^\circ$ mostly due to the surrounding mountains around the site. 
 
 \subsubsection{Array Configuration duration and LST relationship}
 As stated in the general condition in section~\ref{sec:array-problem-general-condition} the minimum resolution for the problem is one (1) week.
@@ -519,5 +521,21 @@ From the algorithm used to calculate the LST found in~\cite{kaplan05}, it is pos
 
 Therefore, the LST interval during the minimum array lifespan (of 4 weeks) will be approximately the number of hours in the daily time interval plus $1.838592\;[h]$.
 Of course the borders of the configuration interval, in LST terms, would not be available the whole array duration due to the LST drifting, and these LST hours will have less representation as the array configuration life advances. But for a crude estimation of the LST interval available during array configuration life, works fine.
+
+The minimum configuration duration set by the problem and its model definition (4 weeks), may be changed according to the total time requested by the Scheduling Blocks covered under the calculated LST range for the given array configuration. Then, the array configuration lifespan could be either the minimum duration defined by the problem, or the total time requested by the Scheduling Blocks, or a value between both.
+
+\subsection{Algorithm design rationale}
+The search space of the problem is related to the combinations that each array configuration's start date and duration can produce, modifying either its start time, duration or both, during the span of the whole observing season. Considering a whole year ($52\,[weeks]$) and just one array configuration there are $\Sigma_{i=4}^{52} (52 - i) = 1128$ different starting dates and duration for the array configuration. Adding more array configurations make the number of possibilities to explode exponentially.
+
+Using the Scheduling Block classification method described in section~\ref{sec:array-sb-classification} might help to reduce the search space, defining a ``Scheduling Block critical set'' for each array configuration.
+Although the effectiveness of the method is not guaranteed, given the scheduling blocks' sky source dispersion over the sky, in particular over the Right Ascension coordinate.
+
+\begin{algorithm}                     
+\caption{Simulated Annealing}          
+\label{alg:array-sa}                   
+\begin{algorithmic}                    
+    \REQUIRE $ToBeWritten$ and $i = 0$
+\end{algorithmic}
+\end{algorithm}
 
 \end{description}
