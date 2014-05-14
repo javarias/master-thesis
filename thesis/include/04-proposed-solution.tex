@@ -351,74 +351,66 @@ Therefore, every Scheduling Block queued into the service flow is given a score 
 \sum_{i}^{n} w_i\times Sc_i(SB_{xy})
 \end{equation}
 
-\begin{lstlisting}[language=Java]
-public SchedBlock getSelectedSchedBlock() {
-	updateQueues();
-	if (areAllFlowsEmpty())
-		return null;
-	SchedBlock sb = null;
-	int i = 0;
-	while (sb == null) {
-		i++;
-		if (i > serviceQueues.size()) {
-			prevRrPtr = null;
-			i = 1;
-		}
-		double currDeficit = deficitCounters.get(rrPtr);
-		if (!rrPtr.equals(prevRrPtr))
-			currDeficit += quantumSize.get(rrPtr);
-		deficitCounters.put(rrPtr, currDeficit);
-		
-		if(serviceQueues.get(rrPtr).size() == 0) {
-			if (serviceQueues.higherKey(rrPtr) != null)
-				rrPtr = serviceQueues.higherKey(rrPtr);
-			else
-				rrPtr = serviceQueues.firstKey();
-			continue;
-		}
-		if (currDeficit > serviceQueues.get(rrPtr).
-				get(0).getSchedBlockControl().getSbMaximumTime()) {
-			sb = serviceQueues.get(rrPtr).get(0);
-			currDeficit -= sb.getSchedBlockControl().getSbMaximumTime();
-			deficitCounters.put(rrPtr, currDeficit);
-			prevRrPtr = rrPtr;
-		}
-		else {
-			if (serviceQueues.higherKey(rrPtr) != null)
-				rrPtr = serviceQueues.higherKey(rrPtr);
-			else
-				rrPtr = serviceQueues.firstKey();
-		}
-	}
-return sb;
-\end{lstlisting}
+\begin{algorithm}                     
+\caption{Deficit Round Robin initialization}          
+\label{alg:drr-init}                   
+\begin{algorithmic}                    
+    \REQUIRE $ExecPercentage_i > 0$ and $Q > 0$
+    \ENSURE $EQ_i > 0$
+    \STATE $MaxQFactor = 1 / max(ExecPercentage)$
+    \FOR{$i=0$ to $n$}
+    \STATE $EQ_i = ExecPercentage_i\times MaxQFactor \times Q$
+    \STATE $DC_i = 0$ \COMMENT{Deficit counters}
+    \STATE $RRp = 0$ \COMMENT{Round robin pointer initialized to point ot the first Executive service queue}
+    \ENDFOR
+\end{algorithmic}
+\end{algorithm}
 
-\begin{lstlisting}[language=Java]
-private void updateQueues() {
-	for (Executive e: serviceQueues.keySet()) {
-		serviceQueues.get(e).clear();
-	}
-	try {
-	Collections.sort(ranks);
-	Collections.reverse(ranks);
-	} catch (Exception e) {
-		System.out.println(ranks);
-		throw e;
-	}
-	for (SBRank r: ranks) {
-		SchedBlock sb = sbs.get(r.getUid());
-		if (sb.getExecutive().getName().equalsIgnoreCase("EA_NA") 
-				|| sb.getExecutive().getName().equalsIgnoreCase("EA/NA")) {
-			for (Executive e: serviceQueues.keySet()) {
-				if (e.getName().equalsIgnoreCase("NA") 
-						|| e.getName().equalsIgnoreCase("EA"))
-					serviceQueues.get(e).add(sb);
-			}
-		} else 
-			serviceQueues.get(sb.getExecutive()).add(sb);
-	}
-}
-\end{lstlisting}
+\begin{algorithm}                     
+\caption{Deficit Round Robin queuing}          
+\label{alg:drr-queuing}                   
+\begin{algorithmic}                    
+    \REQUIRE $size(ScoredSBs) > 0$
+    \FOR{$i=0$ to $size(Executives)$}
+    \STATE $clean(Queue_i)$
+    \ENDFOR
+    \STATE $sort(ScoredSBs)$
+    \FOR{$i=0$ to $size(ScoredSBs)$}
+    \STATE $E = Exec(ScoredSBs_i)$
+    \STATE $insert(Queue_E, ScoredSBs_i)$
+    \ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}                     
+\caption{Deficit Round Robin selection}          
+\label{alg:drr-select}                   
+\begin{algorithmic}                    
+    \REQUIRE $Queue[i] > 0$ and $i = 0$
+    \ENSURE $selectedSB \neq null$ and $store(RRp)$ and $store(prevRRp)$
+    \REPEAT
+    \STATE $i = i + 1$
+    \COMMENT{Ensure that the previous exectuive selected increases its deficit counter after a loop over all the other executives without finding a SB to return}
+    \IF{$ i > size(Executives)$}
+    \STATE $prevRRp = null$
+    \STATE $i = 1$
+    \ENDIF
+    \IF{$prevRRp \neq RRp$}
+    \STATE $DC_{RRp} = EQ_{RRp} + DC_{RRp}$
+    \ENDIF
+    \IF{$size(Queue_{RRp} = 0)$}
+    \STATE  $RRp = next()$
+    \ENDIF
+    \IF{$ObsTime(top(Queue_{RRp})) < DC_{RRp}$}
+    \STATE $SelectedSB = top(Queue_{RRp})$
+    \STATE $DC_{RRp} = DC_{RRp} - ObsTime(SelectedDbs)$
+    \STATE $prevRRp = RRp$
+    \ENDIF
+    \UNTIL{$selectedSB \neq null$}
+    \RETURN  $SelectedSB$
+\end{algorithmic}
+\end{algorithm}
+
 \textit{Write a pseudo code description for the algorithm}
 
 \section{Array configuration schedule problem}
