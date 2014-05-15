@@ -3,8 +3,17 @@ IMAGES:=Atmospheric_electromagnetic_opacity.pdf \
 	DSA-state-machine.pdf \
 	simulator-state-machine.pdf \
 	array-config-problem-overview.pdf
+PLOTS:=c34-1_sources.pdf c34-2_sources.pdf c34-3_sources.pdf \
+	c34-4_sources.pdf c34-5_sources.pdf c34-6_sources.pdf \
+	c34-7_sources.pdf
 
-all: $(IMAGES)
+all: $(IMAGES) $(PLOTS)
+
+%.ps: %.plot
+	gnuplot $<
+
+%.pdf: %.ps
+	ps2pdf $<
 
 %.svg: %.dia
 	dia -t svg $<
@@ -17,6 +26,6 @@ all: $(IMAGES)
 	cp $(subst pdf_tex,pdf,$@) .
 
 clean:
-	rm -rf *.aux *.pdf_tex *.pdf *.bbl *.aux *.dvi *.log *.blg $(IMAGES)
+	rm -rf *.aux *.pdf_tex *.bbl *.aux *.dvi *.log *.blg $(IMAGES) $(PLOTS)
 
 .PHONY: all clean
