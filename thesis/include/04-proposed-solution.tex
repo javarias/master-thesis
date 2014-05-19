@@ -1,10 +1,10 @@
-\chapter{Proposed Solution}
+\part{Proposed Solution}
+
+\chapter{Overview}
 
 As stated in section~\ref{sec:problems} two problems were identified, these both problems are part of the ALMA Scheduling problem.
 This chapter describes the proposed solution for both problems, which are related between each other.
 The solution is modeled after ALMA requirements and current software design detailed in~\cite{avarias11,clarke12,schwarz04,apdm-model} and it aims to solve the ALMA scheduling problem. Although some simplifications are considered, mainly because still there are certain requirements that are under discussion or they are still unclear. 
-
-\section{General conditions and simplifications}
 
 As stated in~\ref{sec:alma-sched-problem}, each array is handled independently by the scheduling subsystem software, this means that each array will have its own scheduler instance, and they are considered a different instrument during them life. At very same time one or more arrays can be running, hence the multiple schedulers instances can be active, and the data containing the Observation Projects and Scheduling Blocks is common to all the schedulers.
 
@@ -16,11 +16,11 @@ The time period to be scheduled could not be continuous, this means that there m
 
 The time spent in a single execution (observing) is variable, it depends completely on the Scheduling Block to be observed. Usually the requested duration goes from 30 minutes until 3 hours. The Observation project and Scheduling Blocks will be considered completely observed according to the rules discussed in section~\ref{subsec:completing-obs} 
 
-The DSA will do the search based on the Local Sidereal Time (LST).
+The current ALMA DSA does the search based on the Local Sidereal Time (LST). The algorithm(s) proposed must use LST are main time unit to schedule observations.
 
 The arrays configurations are given as input to the algorithm, the algorithm will try to accommodate over the time the given configurations. It is not responsibility of the algorithm to come up with suggestions related to changes in the configurations.
  
-\section{ALMA Scheduling array problem}
+\chapter{ALMA Scheduling array problem}
 
 This problem only considers the execution of Scheduling Block inside the same Array Configuration. The algorithm lifecycle is tied to the current ALMA requirements shown in section~\ref{sec:alma-sched-problem} figure~\ref{fig:sched-dsa-state-machine}, which is detailed as follows:
 
@@ -42,11 +42,17 @@ The algorithm will select, and will return, the ``best'' suitable Scheduling Blo
 
 \end{description}
 
+\begin{figure}
+\def\svgwidth{\textwidth}
+\input{images/observation-schedule-representation.pdf_tex}
+\caption{Representation of the observation schedule problem}
+\label{fig:obs-schedule-representation}
+\end{figure}
 
-\subsection{Mathematical model}
+\section{Mathematical model}
 \label{sec:array-sched-math-model}
 
-\subsubsection{Static parameters}
+\subsection{Static parameters}
 These parameters are statically provided at the beginning of the period. They do not change over the time period being used by the algorithm.
 
 \begin{description}
@@ -70,7 +76,7 @@ These parameters are statically provided at the beginning of the period. They do
 
 \end{description} 
 
-\subsubsection{Dynamic parameters}
+\subsection{Dynamic parameters}
 Contrary to the static parameters, these parameters may change at any time during the time period being used by the algorithm.
 
 \begin{description}
@@ -102,7 +108,7 @@ false & \mbox{if  } SB_{ik} \mbox{ not completed} \\
 
 \end{description}
 
-\subsubsection{Objective functions}
+\subsection{Objective functions}
 
 The main objective of the algorithm is to maximize the number of scientific projects completed at the end of the time frame given. Also it can be interpreted as to maximize the scientific value of the completed projects (see equation~\ref{eq:max-sci-value}). However there is a caveat, there must be priority on complete the best graded projects.
 
@@ -119,7 +125,7 @@ max \mbox{ }\Bigg( \frac{\sum_{i}T(EB_i)}{T(AC_j)}\Bigg)
 \end{equation}
 
 
-\subsubsection{Constraints}
+\subsection{Constraints}
 \label{sec:sched-constraints}
 It is assumed that all the constraints operate over one or more Scheduling Block's properties, unless stated.
 
@@ -260,7 +266,7 @@ The selection operation filters out all the SBs that don't comply with equation~
 
 \end{description}
 
-\subsubsection{Algorithm design rationale}
+\section{Algorithm design rationale}
 
 So far, the study has been focused in the definition of the ALMA's Scheduling array problem and the study of its mathematical model. However, this have not provided the background about how the algorithm will operate internally to return a plan for a given time period. The decision of the algorithm design is driven by the following properties:
 \begin{enumerate}
@@ -413,18 +419,17 @@ Therefore, every Scheduling Block queued into the service flow is given a score 
 
 \textit{Write a pseudo code description for the algorithm}
 
-\section{Array configuration schedule problem}
-This problem depends upon the result of the algorithm output for the ``Scheduling Array'' sub-problem as illustrated on figure~\ref{fig:array-config-problem-overview}. This problem is part of the ``long-term scheduling'' problem only, therefore multiple Array configurations are considered as input.
-
+\chapter{Array configuration planning problem}
+This problem depends upon the result of the algorithm output for the ``Scheduling Array'' sub-problem as illustrated on figure~\ref{fig:array-config-problem-overview}. This problem is part of the ``ALMA's  long-term scheduling problem'', therefore multiple Array configurations are considered as input.
 \begin{figure}[h!]
 \begin{center}
 \includegraphics[width=\textwidth]{images/array-config-problem-overview}
+\end{center}
 \caption{Array configuration schedule problem overview}
 \label{fig:array-config-problem-overview}
-\end{center}
 \end{figure}
 
-\subsection{General conditions and assumptions}
+\section{General conditions and assumptions}
 \label{sec:array-problem-general-condition}
 The problem will consider 3 different possible Array types: \textit{12-meter arrays} ($12m$) intended to be used in together with the baseline correlator computer, \textit{7-meter arrays} ($7m$) intended to be used together with ACA correlator computer (zero-spacing interferometer) and \textit{Total Power arrays} ($TP$) intended to use in auto-correlations (single-dish). 
 
@@ -436,7 +441,14 @@ The algorithm will not propose changes in properties of the array configurations
 
 Science observations will be carried over a daily time period considerably less than 24 hours. If there was 24 hours operations for every array, then this problem would be reduced to calculate the sum of the hours requested by every relevant project assigned to a every array configuration, as the requested array duration.
 
-\subsection{Mathematical model}
+\section{Mathematical model}
+
+\begin{figure}
+\def\svgwidth{\textwidth}
+\input{images/array-config-problem-representation.pdf_tex}
+\caption{Representation of the array configuration planning problem}
+\label{fig:array-planning-representation}
+\end{figure}
 
 \subsubsection{Parameters}
 \begin{description}
@@ -451,14 +463,14 @@ Science observations will be carried over a daily time period considerably less 
 \item[$\mathbf{Gr(P_i)}$] Grade given to the project $i$ $\Big\slash\: Gr(P_x) \in \{A,B,C,D\}$, where $A$ denotes the highest grade and $D$ the lowest grade.
 \end{description}
 
-\subsubsection{Objective function}
+\subsection{Objective function}
 The main objective of the algorithm for this problem is to try to complete the highest scientific graded projects as shown by the equation~\ref{eq:array-max-a-graded-projects}.
 \begin{equation}
 \label{eq:array-max-a-graded-projects}
 max \: \bigg(\sum_{i} St(P_i)\bigg) \:\: \mid\; \forall Gr(P_i) = A
 \end{equation}
 
-\subsubsection{Constraints}
+\subsection{Constraints}
 \begin{description}
 \item[Array configurations duration overlap] \hfill \\
 The antennas and the correlator computers are unique instrument components that can be present in just one array configuration at the very same time. Hence, to avoid duplication of resources, just one type of array configuration of the same type is allowed at a given time period. There is one exception, the Total power arrays, but for simplification it is considered as the other configuration types. The constraint can be expressed as shown by equation~\ref{eq:array-uniqness}
@@ -483,7 +495,7 @@ The observatory can setup several times, at different dates, over the observing 
 
 \end{description}
 
-\subsection{Scheduling Block classification}
+\section{Scheduling Block classification}
 \label{sec:array-sb-classification}
 From section~\ref{sec:sched-constraints}, it is possible to deduce that, there is a subset of these restriction which might help to narrow the search space for this problem. In fact, it may be possible to define a ``Scheduling Block critical subset'', inherent to each Array Configuration. Although the Scheduling Blocks belonging to one array configuration could not be exclusive to it.
 
@@ -497,7 +509,7 @@ These criteria must be applied only over $A$ graded projects and their belonging
 
 For the list items 1. and 3., it is possible to see that the SB selection for them is quite straight-forward. However for 2., the LST range may vary widely, depending of the sky source. Also, a correlation between the LST requested, in the Scheduling block, and the array date schedule must be found to narrow the array starting points and duration.
 
-\subsubsection{Source visibility analysis}
+\subsection{Source visibility analysis}
 From~\cite{meeus98} the altitude of a certain sky source is defined as shown by equation~\ref{eq:source-altitude}
 \begin{equation}
 \label{eq:source-altitude}
@@ -517,7 +529,7 @@ From these equations is possible to derive that the highest altitude in the sky 
 Nevertheless also it is possible to observe a sky source 
 while it is not at its highest altitude in the sky, the key is to set a minimal altitude to allow to carry on observations properly. This minimum allowed altitude for ALMA observatory is set to $15^\circ$ mostly due to the surrounding mountains around the site. 
 
-\subsubsection{Array Configuration duration and LST relationship}
+\subsection{Array Configuration duration and LST relationship}
 As stated in the general condition in section~\ref{sec:array-problem-general-condition} the minimum resolution for the problem is one (1) week.
 
 From the algorithm used to calculate the LST found in~\cite{kaplan05}, it is possible to deduce that the LST drifts from the calendar time. The drift calculated rate is approximately $1654.7328\,[s]$ or $27.57888\,[min]$ ahead for every calendar week.
@@ -527,17 +539,97 @@ Of course the borders of the configuration interval, in LST terms, would not be 
 
 The minimum configuration duration set by the problem and its model definition (4 weeks), may be changed according to the total time requested by the Scheduling Blocks covered under the calculated LST range for the given array configuration. Then, the array configuration lifespan could be either the minimum duration defined by the problem, or the total time requested by the Scheduling Blocks, or a value between both.
 
-\subsection{Algorithm design rationale}
-The search space of the problem is related to the combinations that each array configuration's start date and duration can produce, modifying either its start time, duration or both, during the span of the whole observing season. Considering a whole year ($52\,[weeks]$) and just one array configuration there are $\Sigma_{i=4}^{52} (52 - i) = 1128$ different starting dates and duration for the array configuration. Adding more array configurations make the number of possibilities to explode exponentially.
+\section{Algorithm design rationale}
+The search space of the problem is related to the combinations that each array configuration's start date and duration can produce, modifying either its start time, duration or both, during the span of the whole observing season as shown by equation~\ref{eq:one-array-search-space}
+
+\begin{equation}
+\label{eq:one-array-search-space}
+\sum_{i=4}^{MaxDuration} \Big(MaxDuration - i\Big) 
+\end{equation}
+
+Considering a whole year ($52\,[weeks]$) and just one array configuration there are $\Sigma_{i=4}^{52} (52 - i) = 1128$ different starting dates and duration for the array configuration. Adding more array configurations make the number of possibilities to explode exponentially.
 
 Using the Scheduling Block classification method described in section~\ref{sec:array-sb-classification} might help to reduce the search space, defining a ``Scheduling Block critical set'' for each array configuration.
-Although the effectiveness of the method is not guaranteed, given the scheduling blocks' sky source dispersion over the sky, in particular over the Right Ascension coordinate.
+Nevertheless the effectiveness of the method is not guaranteed, given the scheduling blocks' sky source dispersion over the sky, in particular over the Right Ascension coordinate for a given array configuration.
 
+The algorithm needs to be able to explore the search space given by the different starting dates for the array configurations, as well the different durations. But once it finds a good solution, the algorithm must optimize that based on the best-found solution until now, to try complete as much projects as possible. For this reason, this work propose to solve this problem implementing a Simulated annealing algorithm.
+
+At the start the algorithm must able to map the requested LST ranges of each array configuration, into an interval of a calendar dates. This mapping will depend on the adjustments given for the Observation season: its start time and its duration. This could return multiple calendar dates indicating when the array configuration can start. A ``random'' greedy algorithm is defined in~\ref{alg:array-greedy}, which will return a plan for the array configuration over the observation season.
 \begin{algorithm}                     
-\caption{Simulated Annealing}          
+\caption{Greedy Algorithm used for random restarts in Array configuration planning problem solution}          
+\label{alg:array-greedy}                   
+\begin{algorithmic}                    
+    \REQUIRE $ArrayConfigsSet \neq \varnothing $ and $LSTIntervals_{ArrConf} \neq \varnothing$ and $minACDur = 4\,weeks$  and $MAX\_ITER$
+    \ENSURE $ArrayConfigSchedule \neq \varnothing$
+    \STATE $ArrayConfigsPropStartDates = calculateCalendarDates(ArrayConfigSet, LSTIntervals)$
+    \REPEAT 
+    \STATE $ac = random(ArrayConfigsSet)$
+    \STATE $lst = random(LSTIntervals_{ac})$
+    \IF {$isLSTAlreadyUsed_{lst}$}
+    \STATE $nChecks = nChecks + 1$
+    \ELSE
+    \STATE $startDate = random(ArrayConfigsPropStartDates_{ac})$
+    \STATE $endDate = startDate + randomNumberOfweeks() + minACDur$
+    \STATE $collision = checkForIntervalCollisions(ArrayConfigSchedule, startDate, endDate)$
+    \IF{$collision = false$}
+    \STATE $add(ArrayConfigSchedule, ac, startDate, endDate)$
+    \STATE $nChecks = 0$
+    \ELSE
+    \STATE $nChecks = nChecks + 1$
+    \ENDIF
+    \ENDIF
+    \UNTIL {$nChecks = MAX\_ITER$}
+    \RETURN $ArrayConfigSchedule$
+    \end{algorithmic}
+\end{algorithm}
+
+This greedy algorithm is random in the sense to choose what array configuration is selected to operate over it. Once one of them is selected, one of the start dates in selected, also randomly. There may be conflicts with other already scheduled array configurations, but this algorithm does not has the ability to resolve these conflicts, it just ignore them and continues trying to allocate others array configurations, randomly.
+
+This should give enough combinations, as return values, where a more intelligent algorithm could operate over them. Nevertheless, the lack of a more smart resolution over the array configurations schedule conflicts, may not consider certain valid solutions or it could take several invokes to the proposed greedy algorithm to give it, since it is just random-based. 
+
+A simulated annealing algorithm may help to fine tune the solution returned by the greedy algorithm. The proposed algorithm is shown is listing~\ref{alg:array-sa}.
+\begin{algorithm}                     
+\caption{Simulated Annealing Algorithm used as solution for Array configuration planning problem}          
 \label{alg:array-sa}                   
 \begin{algorithmic}                    
-    \REQUIRE $ToBeWritten$ and $i = 0$
-\end{algorithmic}
+    \REQUIRE $ArrayConfigsSet \neq \varnothing $ and $LSTIntervals_{ArrConf} \neq \varnothing$ and $N\_ITER$ and $0 < nAGradedPjrsCompleted \leq TOTAL\_A\_GRADED\_PROJECTS$
+    \ENSURE $BestArrayConfigPlan \neq \varnothing$
+    \REPEAT
+    \IF{$CompletedAPrjs(currSol) \geq nAGradedPjrsCompleted $}
+    \RETURN $currSol$
+    \ENDIF
+    \IF{$random() < 0.5$}
+    \STATE $next = neighbor(currSol)$
+    \ELSE
+    \STATE $next = findInitialSolution(ArrayConfigsSet, LSTIntervals)$
+    \COMMENT{Call greedy algorithm defined in listing~\ref{alg:array-greedy}}
+    \ENDIF
+    \STATE $nextValue = runSimulation(next)$
+    \STATE $\Delta E = currValue - nextValue$
+    \IF{$\Delta E > 0$}
+    \STATE $best = next$
+    \STATE $current = next$
+    \STATE $currValue =  nextValue$
+    \ELSE
+    \STATE $T = (N\_ITER - i) \times MAX\_VALUE$
+    \IF{$e^{\frac{\Delta E}{T}} > random()$}
+    \STATE $current = next$
+    \STATE $currValue =  nextValue$
+    \ENDIF
+    \ENDIF
+    \UNTIL {$i = N\_ITER$}
+    \RETURN $best$
+    \end{algorithmic}
 \end{algorithm}
+
+The idea behind the design or the proposed SAA is to fine-tune the solution found by the greedy algorithm, exploring the neighborhood of the given solution. Of course, the SAA defined also will jump, trying to explore into solutions that are not part of the neighbor, using as random restart a result from the invocation of the proposed greedy algorithm, again. The SAA will iterate until it found a feasible solution for the requested problem, which is: ``Find a array configuration plan to complete $N$ number of A-graded projects'', where $N < TOTAL\_A\_GRADED\_PROJECTS$; or when iterates reaching the $N_ITER$ limit.
+
+The possible movements that SAA can execute to alter the initial solution are discussed next, as follows:
+\begin{description}
+\item[Change the start date for a given Array Configuration] This is considered a medium-change, it may allow to the solution to partially jump-out from the LST interval where there are more observable scheduling block. The contrary is also possible, but not both together, unless the configuration duration is also increased. The proposed SAA implements this, selecting randomly the Array Configuration.
+
+\item[Change the duration for a given Array Configuration] This is considered a soft-change, increasing the duration will affect positively to the solution because will allow to more Scheduling Blocks be observed, even more of them can be completed. The proposed SAA implements this, selecting randomly the Array Configuration and the start or end time to modify. But first, for the selected array configuration whether it is feasible to extend its duration checking, if there are no conflicting array configurations in the surroundings or not.
+
+\item[Swap two conflicting Array Configurations for given dates] This is the harshest modification for the solution. In fact the SAA proposed will not implement it, since relies completely on the proposed greedy algorithm for this. This modification cannot be applied if there are not conflicting array configurations in the interval desired to modify.
+\end{description}
 
