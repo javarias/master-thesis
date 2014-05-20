@@ -65,7 +65,6 @@ The model designed for handle the weather is represented in figure~\ref{fig:data
 \section {Input Observation projects}
 
 \begin{table}
-\label{table:input-array-configs}
 \begin{center}
 \begin{tabular}{|c|c|c|c|}
 \hline
@@ -92,6 +91,94 @@ TP    & $TP$      & $-$    & $-$ \\
 \end{tabular}
 \end{center}
 \caption{Array configurations provided as input for the algorithms}
+\label{table:input-array-configs}
+\end{table}
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Grade & Executive & Time Requested $[h]$ & Number of Scheduling Blocks \\ \hline
+A &	CL		& 12.0  & 2 \\ \hline
+A &	EA		& 36.0  & 13 \\ \hline
+A &	EA/NA	& 6.0   & 3 \\ \hline
+A & EU      & 112.0 & 31 \\ \hline 
+A &	NA		& 114.0	& 31 \\ \hline
+A & OTHER	& 0		& 0 \\ \hline
+B  & CL 	& 160.0		& 48  \\ \hline
+B  & EA     & 438.0     & 145 \\ \hline
+B  & EA/NA  & 106.0     & 30  \\ \hline
+B  & EU     & 828.0     & 280 \\ \hline
+B  & NA     & 1024.0    & 344 \\ \hline
+B  & OTHER  & 40.0      & 19  \\ \hline
+C  & CL     & 130.0     & 50  \\ \hline
+C  & EA     & 246.0     & 65  \\ \hline
+C  & EA/NA  & 52.0      & 23  \\ \hline
+C  & EU     & 410.0     & 155 \\ \hline
+C  & NA     & 556.0     & 196 \\ \hline
+C  & OTHER  & 34.0      & 13  \\ \hline
+\end{tabular}
+\end{center}
+\caption{Requested time for $12m$ array configurations}
+\label{table:requested-time-12m}
+\end{table}
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Grade & Executive & Time Requested $[h]$ & Number of Scheduling Blocks \\ \hline
+A &	CL		& 0  & 0 \\ \hline
+A &	EA		& 24.0  & 1 \\ \hline
+A &	EA/NA	& 6.0   & 12 \\ \hline
+A & EU      & 12.0 & 1 \\ \hline 
+A &	NA		& 16.0 & 2 \\ \hline
+A & OTHER	& 0		& 0 \\ \hline
+B  & CL 	& 16.0		& 1  \\ \hline
+B  & EA     & 78.0     & 21 \\ \hline
+B  & EA/NA  & 22.0     & 5  \\ \hline
+B  & EU     & 168.0     & 41 \\ \hline
+B  & NA     & 182.0    & 29 \\ \hline
+B  & OTHER  & 0.0      & 0  \\ \hline
+C  & CL     & 38.0     & 2  \\ \hline
+C  & EA     & 46.0     & 12  \\ \hline
+C  & EA/NA  & 36.0      & 9  \\ \hline
+C  & EU     & 5800     & 7 \\ \hline
+C  & NA     & 556.0     & 196 \\ \hline
+C  & OTHER  & 72.0      & 12  \\ \hline
+\end{tabular}
+\end{center}
+\caption{Requested time for $7m$ array configurations}
+\label{table:requested-time-7m}
+\end{table}
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Grade & Executive & Time Requested $[h]$ & Number of Scheduling Blocks \\ \hline
+A &	CL		& 0  & 0 \\ \hline
+A &	EA		& 28.0  & 1 \\ \hline
+A &	EA/NA	& 208.0   & 2 \\ \hline
+A & EU      & 132.0 & 1 \\ \hline 
+A &	NA		& 112.0 & 2 \\ \hline
+A & OTHER	& 0		& 0 \\ \hline
+B  & CL 	& 28.0		& 1  \\ \hline
+B  & EA     & 1852.0     & 21 \\ \hline
+B  & EA/NA  & 752.0     & 5  \\ \hline
+B  & EU     & 922.0     & 41 \\ \hline
+B  & NA     & 1792.0    & 29 \\ \hline
+B  & OTHER  & 0.0      & 0  \\ \hline
+C  & CL     & 52.0     & 2  \\ \hline
+C  & EA     & 1250.0     & 12  \\ \hline
+C  & EA/NA  & 824.0      & 9  \\ \hline
+C  & EU     & 368.0     & 7 \\ \hline
+C  & NA     & 78.0     & 12 \\ \hline
+C  & OTHER  & 2.0      & 1  \\ \hline
+\end{tabular}
+\end{center}
+\caption{Requested time for $TP$ array configurations}
+\label{table:requested-time-tp}
 \end{table}
 
 \begin{figure}
@@ -132,5 +219,6 @@ TP    & $TP$      & $-$    & $-$ \\
                 \caption{C34-7}
         \end{subfigure}           
           
-        \caption{Visibility of Scheduling Blocks for $12\,[m]$ Array Configurations}\label{fig:results-sb-critical-set}
+        \caption{Visibility of Scheduling Blocks for $12\,[m]$ Array Configurations}
+        \label{fig:results-sb-critical-set}
 \end{figure}

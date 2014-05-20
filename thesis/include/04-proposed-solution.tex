@@ -42,15 +42,15 @@ The algorithm will select, and will return, the ``best'' suitable Scheduling Blo
 
 \end{description}
 
+\section{Mathematical model}
+\label{sec:array-sched-math-model}
+
 \begin{figure}
 \def\svgwidth{\textwidth}
 \input{images/observation-schedule-representation.pdf_tex}
 \caption{Representation of the observation schedule problem}
 \label{fig:obs-schedule-representation}
 \end{figure}
-
-\section{Mathematical model}
-\label{sec:array-sched-math-model}
 
 \subsection{Static parameters}
 These parameters are statically provided at the beginning of the period. They do not change over the time period being used by the algorithm.
@@ -443,6 +443,8 @@ Science observations will be carried over a daily time period considerably less 
 
 \section{Mathematical model}
 
+A generic representation of the model proposed is presented in figure~\ref{fig:array-planning-representation}. There the different array configurations are scheduled over the season presented in the horizontal coordinate as a time-tile each one of the separation along the time-line represents a month. A configuration can be scheduled more than once over the season like the $12m_1$ configuration in the diagram, and a configuration can spawn for the whole season, if there are no conflicting arrays configurations, like the $TP$ in the representation.
+
 \begin{figure}
 \def\svgwidth{\textwidth}
 \input{images/array-config-problem-representation.pdf_tex}
@@ -622,7 +624,7 @@ A simulated annealing algorithm may help to fine tune the solution returned by t
     \end{algorithmic}
 \end{algorithm}
 
-The idea behind the design or the proposed SAA is to fine-tune the solution found by the greedy algorithm, exploring the neighborhood of the given solution. Of course, the SAA defined also will jump, trying to explore into solutions that are not part of the neighbor, using as random restart a result from the invocation of the proposed greedy algorithm, again. The SAA will iterate until it found a feasible solution for the requested problem, which is: ``Find a array configuration plan to complete $N$ number of A-graded projects'', where $N < TOTAL\_A\_GRADED\_PROJECTS$; or when iterates reaching the $N_ITER$ limit.
+The idea behind the design or the proposed SAA is to fine-tune the solution found by the greedy algorithm, exploring the neighborhood of the given solution. Of course, the SAA defined also will jump, trying to explore into solutions that are not part of the neighbor, using as random restart a result from the invocation of the proposed greedy algorithm, again. The SAA will iterate until it found a feasible solution for the requested problem, which is: ``Find a array configuration plan to complete $N$ number of A-graded projects'', where $N < TOTAL\_A\_GRADED\_PROJECTS$; or when iterates reaching the $N\_ITER$ limit.
 
 The possible movements that SAA can execute to alter the initial solution are discussed next, as follows:
 \begin{description}
@@ -630,6 +632,6 @@ The possible movements that SAA can execute to alter the initial solution are di
 
 \item[Change the duration for a given Array Configuration] This is considered a soft-change, increasing the duration will affect positively to the solution because will allow to more Scheduling Blocks be observed, even more of them can be completed. The proposed SAA implements this, selecting randomly the Array Configuration and the start or end time to modify. But first, for the selected array configuration whether it is feasible to extend its duration checking, if there are no conflicting array configurations in the surroundings or not.
 
-\item[Swap two conflicting Array Configurations for given dates] This is the harshest modification for the solution. In fact the SAA proposed will not implement it, since relies completely on the proposed greedy algorithm for this. This modification cannot be applied if there are not conflicting array configurations in the interval desired to modify.
+\item[Swap two conflicting Array Configurations for given dates] This is the harshest modification for the solution. The SAA proposed will not implement it, since relies completely on the proposed greedy algorithm for this. This modification cannot be applied if there are not conflicting array configurations in the interval desired to modify. This movement can be seen as a combination of the both movements described above, but also can involve swapping order for the array configurations in a clever way to see whether the new solution is better or not.
 \end{description}
 
