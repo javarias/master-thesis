@@ -1,0 +1,6 @@
+select SB.science_grade as grade, E.NAME as EXECUTIVE, OU.OBSUNIT_CTRL_ARRAY_TYPE as ARRAY_TYPE, sum(OU.OBSUNIT_CTRL_EXEC_TIME) as TIME_REQUESTED, sum(1) as N_SB
+from obsunit as OU INNER JOIN SCHEDBLOCK as SB on OU.OBSUNITID = SB.SCHEDBLOCKID 
+LEFT JOIN PI on sb.piname = pi.email 
+LEFT JOIN PI_MEMBERSHIP as PIM on  pi.id = pim.pi_id 
+LEFT JOIN EXECUTIVE as e on pim.executive_name = e.id
+GROUP BY GRADE, EXECUTIVE, ARRAY_TYPE order by GRADE, EXECUTIVE, ARRAY_TYPE
