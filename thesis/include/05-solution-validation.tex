@@ -84,10 +84,10 @@ If the DSA returns no result, then the simulator will jump $1\,[h]$ and $20\,[m]
 \item[Save simulation's result] \hfill \\
 After every simulation is complete, then the simulator will dump an XML file containing most of the information for post-analysis.
 
-\item[Clean execution information]
+\item[Clean execution information] \hfill \\
 Since during simulation certain data for the Scheduling blocks are filled (like current number of repetitions and total time duration) and executive accounting is modified. It is necessary to clean-up all the modified data. 
 
-The implementation done for this work will clean the complete context used for simulation, and it will reload all the data from scratch. It is known that this produce an overhead for the testing.
+The implementation done for this work will clean the complete context used for simulation, and it will reload all the data from scratch. Although it is known that this produce an overhead for the testing, it is safer to reload all the date to avoid to find programming defects during testing.
 
 \end{description}
 
