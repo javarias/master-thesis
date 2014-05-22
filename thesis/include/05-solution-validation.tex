@@ -1,4 +1,4 @@
-\part{Validation}
+\part{Validation and Results}
 
 \chapter{Solution validation}
 
@@ -44,21 +44,52 @@ The model designed for handle the weather is represented in figure~\ref{fig:data
 
 \begin{figure}[]	
 \begin{center}
-\includegraphics[width=\textwidth]{images/Weather}
+\includegraphics[width=0.6\textwidth]{images/Weather}
 \caption{Executive and observing season data model}
 \end{center}
 \label{fig:datamodel-weather}
 \end{figure}
 
 \section {Simulation}
+The simulator is the one used in the ALMA's scheduling subsystem. At the time when this document was written it remains mostly unchanged from its original design explained in detail in~\cite{hoffstadt10}. Nevertheless some modifications where done during the development of this work to support the simulation of several scenarios for the solution provided for the``Array configuration planning problem''. Next a briefly description of the simulator work-flow, shown in figure~\ref{fig:sim-state-machine}, is presented:
 
 \begin{figure}[]	
 \begin{center}
-\includegraphics[width=\textwidth]{images/simulator-state-machine}
-\caption{ALMA simulator's state machine}
+\includegraphics[width=0.8\textwidth]{images/simulator-state-machine}
 \end{center}
+\caption{ALMA simulator's state machine}
 \label{fig:sim-state-machine}
 \end{figure}
+
+\begin{description}
+\item[Load static data] \hfill \\
+In this step the simulator will load all the immutable data from data-sources. This includes weather simulation data (temperature, humidity, wind speed, etc) and atmospheric interpolation tables to calculate the atmospheric opacity given the PWV and frequency. This step is separate from the rest of the date given that, the original ALMA's simulator is intended to be run using a relational database as back-end, then these data will load just once.
+
+During the development of this work, the simulator has been modified to work with data loaded completely in memory. Therefore this step add no value to the simulator itself. However it is worth of mention the difference with the original simulator used in ALMA software. 
+
+\item[Load Observation project data] \hfill \\
+In this step the simulator will load the data intended to be modified within the simulation procedure. This includes the whole observation projects, information relative to the executives and observing season.
+
+\item[Load observatory configuration] \hfill \\
+In this step the simulator loads or modifies the array configuration planning for the observing season. Originally the ALMA's simulator supported only the loading of this data from the data-sources. During the development of this work this step was separated from the previous one, to support the setup of multiple scenarios for the, already configured, observing season.
+
+\item[Setup DSA (algorithm for Astronomical observation scheduling problem)] \hfill \\
+In this step the different simulations for each array configuration are scheduled. The simulator, according to its progress, will change among the different array configurations prepared in this step. If the simulator detects that there are no more configurations remaining for the rest of the simulated duration, then it will terminate the simulation execution and it will prepare the results and output them.
+
+\item[Running DSA (DSA-state-machine)] \hfill \\
+In this step the DSA will execute according to the work-flow presented in figure~\ref{fig:sched-dsa-state-machine} and explained in section~\ref{sec:astro-schedule-problem}.
+
+If the DSA returns no result, then the simulator will jump $1\,[h]$ and $20\,[m]$ its simulation and try again checking whether there are selectable scheduling blocks or not. The simulator will do this until the array end time is reached.
+
+\item[Save simulation's result] \hfill \\
+After every simulation is complete, then the simulator will dump an XML file containing most of the information for post-analysis.
+
+\item[Clean execution information]
+Since during simulation certain data for the Scheduling blocks are filled (like current number of repetitions and total time duration) and executive accounting is modified. It is necessary to clean-up all the modified data. 
+
+The implementation done for this work will clean the complete context used for simulation, and it will reload all the data from scratch. It is known that this produce an overhead for the testing.
+
+\end{description}
 
 \section {Algorithm implementation}
 

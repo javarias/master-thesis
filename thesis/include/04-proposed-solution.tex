@@ -20,8 +20,8 @@ The current ALMA DSA does the search based on the Local Sidereal Time (LST). The
 
 The arrays configurations are given as input to the algorithm, the algorithm will try to accommodate over the time the given configurations. It is not responsibility of the algorithm to come up with suggestions related to changes in the configurations.
  
-\chapter{ALMA Scheduling array problem}
-
+\chapter{ALMA's Astronomical observation scheduling problem}
+\label{sec:astro-schedule-problem}
 This problem only considers the execution of Scheduling Block inside the same Array Configuration. The algorithm lifecycle is tied to the current ALMA requirements shown in section~\ref{sec:alma-sched-problem} figure~\ref{fig:sched-dsa-state-machine}, which is detailed as follows:
 
 \begin{description}
@@ -419,7 +419,7 @@ Therefore, every Scheduling Block queued into the service flow is given a score 
 
 \textit{Write a pseudo code description for the algorithm}
 
-\chapter{Array configuration planning problem}
+\chapter{ALMA's Array configuration planning problem}
 This problem depends upon the result of the algorithm output for the ``Scheduling Array'' sub-problem as illustrated on figure~\ref{fig:array-config-problem-overview}. This problem is part of the ``ALMA's  long-term scheduling problem'', therefore multiple Array configurations are considered as input.
 \begin{figure}[h!]
 \begin{center}
