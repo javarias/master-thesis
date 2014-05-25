@@ -3,6 +3,7 @@ IMAGES:=Atmospheric_electromagnetic_opacity.pdf \
 	DSA-state-machine.pdf \
 	simulator-state-machine.pdf \
 	array-config-problem-overview.pdf \
+	Executive.pdf Observation.pdf Observatory.pdf Obsproject.pdf Weather.pdf \
 	observation-schedule-representation.pdf_tex \
 	array-config-problem-representation.pdf_tex
 PLOTS:=c34-1_sources.pdf c34-2_sources.pdf c34-3_sources.pdf \
