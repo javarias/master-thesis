@@ -6,6 +6,35 @@ The second set will show the feasibility of the proposed algorithm to solve the 
 
 \section{Testing the algorithms for the Astronomical observation scheduling problem}
 
+The main feature of the DRR algorithm, presented in this work, is to try to keep the observation time given to each Executive, according to the values presented in table~\ref{table:input-executive}, along the time array configuration life. For this reason, a comparison between the ALMA's DSA and the DRR will be done. 
+
+The metric to compare both algorithm will be the percentage of time given to each executive every week, every two weeks, every four weeks and for the whole array configuration duration. At the same time, it will be analyzed the impact of the DRR algorithm for the project completion rate at the end of the whole simulation, checking if there is any adverse effect over this parameter. The completion rate will be based at project level, accounting projects completed, started but non-completed and non-started, these categories will be broken down based on the projects science grade given: $A$, $B$ and $C$.
+
+The test to benchmark both algorithms will be based on the input data described in section~\ref{sec:input-data}. Although the array configuration planning will be fixed to the one presented in table~\ref{table:drr-test-array-config}
+\begin{table}[h!]
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+Array configuration & Start date (UTC) & End date (UTC) \\ \hline
+C34-6 & 2014-06-01 & 2014-07-14 \\ \hline
+C34-7 & 2014-07-15 & 2014-08-31 \\ \hline
+C34-6 & 2014-12-01 & 2014-12-31 \\ \hline
+C34-5 & 2015-01-01 & 2015-01-31 \\ \hline
+C34-4 & 2015-03-01 & 2015-03-31 \\ \hline
+C34-3 & 2015-04-01 & 2015-04-30 \\ \hline
+C34-2 & 2015-05-01 & 2015-05-31 \\ \hline
+C34-1 & 2015-06-01 & 2015-06-30 \\ \hline
+C34-4 & 2015-07-01 & 2015-07-31 \\ \hline
+C34-6 & 2015-08-01 & 2015-08-30 \\ \hline
+C34-7 & 2015-09-01 & 2015-10-01 \\ \hline
+\end{tabular}
+\end{center}
+\caption{Array configuration plan used to compare DRR algorithm vs DSA algorithm}
+\label{table:drr-test-array-config}
+\end{table}
+
+
+
 \section{Testing solution for the Array configuration planning problem} 
 
 \begin{figure}
