@@ -557,7 +557,7 @@ Nevertheless the effectiveness of the method is not guaranteed, given the schedu
 The algorithm needs to be able to explore the search space given by the different starting dates for the array configurations, as well the different durations. But once it finds a good solution, the algorithm must optimize that based on the best-found solution until now, to try complete as much projects as possible. For this reason, this work propose to solve this problem implementing a Simulated annealing algorithm.
 
 At the start the algorithm must able to map the requested LST ranges of each array configuration, into an interval of a calendar dates. This mapping will depend on the adjustments given for the Observation season: its start time and its duration. This could return multiple calendar dates indicating when the array configuration can start. A ``random'' greedy algorithm is defined in~\ref{alg:array-greedy}, which will return a plan for the array configuration over the observation season.
-\begin{algorithm}                     
+\begin{algorithm}[h!]
 \caption{Greedy Algorithm used for random restarts in Array configuration planning problem solution}          
 \label{alg:array-greedy}                   
 \begin{algorithmic}                    

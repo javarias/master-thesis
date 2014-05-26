@@ -2,7 +2,9 @@
 
 \chapter{Solution validation}
 
-\section {Data model}
+This chapter gives to the reader a shallow overview of the software developed and the date used as input to validate the work presented in the previous part. Most of the software is reused from the ALMA's scheduling sub-system software. The work mostly consisted in expand the available implementations, injecting the algorithms presented before and to run experiments to validate the hypothesis introduced in this work, and creating a standalone (not requiring ALMA software interfaces and data models) version of the planning simulator. 
+
+\section {Data model and implementation details}
 
 The model designed for the Observatory project represented in figure~\ref{fig:datamodel-obsproject} is a simplification of the ALMA Project Data Model summarized in section~\ref{sec:apdm} and it is the model used in the ALMA's Dynamic Scheduling Algorithm briefly described in section~\ref{sec:alma-dsa}.
 
@@ -12,50 +14,64 @@ The most relevant parts are:
 Description of bla1
 \end{description}
 
-\begin{figure}[]	
+\begin{figure}[h!]	
 \begin{center}
-\includegraphics[width=1.15\textwidth]{images/ObsProject}
-\caption{Observation Project data model}
+\includegraphics[width=1.15\textwidth]{images/Obsproject}
 \end{center}
+\caption{Observation Project data model}
 \label{fig:datamodel-obsproject}
 \end{figure}
 
 The model designed for handle the observatory instrumentation is represented in figure~\ref{fig:datamodel-observatory}
 
-\begin{figure}[]	
+\begin{figure}[h!]	
 \begin{center}
 \includegraphics[width=\textwidth]{images/Observatory}
-\caption{Observatory instrumentation data model}
 \end{center}
+\caption{Observatory instrumentation data model}
 \label{fig:datamodel-observatory}
 \end{figure}
 
 The model designed for handle the Executive information and the observing season is represented in figure~\ref{fig:datamodel-executive}
 
-\begin{figure}[]	
+\begin{figure}[h!]	
 \begin{center}
 \includegraphics[width=\textwidth]{images/Executive}
-\caption{Executive and observing season data model}
 \end{center}
+\caption{Executive and observing season data model}
 \label{fig:datamodel-executive}
 \end{figure}
 
 The model designed for handle the weather is represented in figure~\ref{fig:datamodel-weather}
 
-\begin{figure}[]	
+\begin{figure}[h!]	
 \begin{center}
 \includegraphics[width=0.6\textwidth]{images/Weather}
-\caption{Executive and observing season data model}
 \end{center}
+\caption{Executive and observing season data model}
 \label{fig:datamodel-weather}
 \end{figure}
+
+The top-level architecture of the ALMA's scheduling planning simulator is represented in diagram~\ref{fig:sim-top-level-architecture}. The software design uses as glue the Spring Core library, using Inversion of Control paradigm is possible to define via a configuration file, the objects to inject into the simulator, this includes Data Access Objects instances and the algorithm instances. It is enough for the software developed in this work to implement the correct interfaces to make them compatible with the rest of the ALMA software.
+
+For the development of the validation software prepared for this work, some changes were done. Essentially the whole data source's code, presented in the left part and on bottom part of the figure~\ref{fig:sim-top-level-architecture}, which is particular to ALMA software, where replaced with a Data Accessors able to read the only the XML format defined by the scheduling subsystem software for data-interchange and with in-memory data structures part of the Java API, respectively. The core of the simulator tool and the algorithm does not deal directly with the data, instead a Data Accessors Object (DAO) interface was defined already by the ALMA's scheduling software, which abstracts all the interaction between the simulator and the data. Hence the replacement was fairly easy.
+
+\begin{figure}[h!]	
+\begin{center}
+\includegraphics[width=0.67\textwidth]{images/simulator-arch}
+\end{center}
+\caption{Current top-level ALMA's scheduling simulator tool}
+\label{fig:sim-top-level-architecture}
+\end{figure}
+
+In other hand, the algorithm implemented by ALMA software (DSA) was replaced with the modified Deficit Round-Robin algorithm implmentation presented in this work. The ALMA software design also make provisions at the algorithm level, defining an interface. Which, as well with the DAOs, was fairly easy to replace with new classes developed to implement the modified DRR algorithm.
 
 \section {Simulation}
 The simulator is the one used in the ALMA's scheduling subsystem. At the time when this document was written it remains mostly unchanged from its original design explained in detail in~\cite{hoffstadt10}. Nevertheless some modifications where done during the development of this work to support the simulation of several scenarios for the solution provided for the``Array configuration planning problem''. Next a briefly description of the simulator work-flow, shown in figure~\ref{fig:sim-state-machine}, is presented:
 
-\begin{figure}[]	
+\begin{figure}[h!]	
 \begin{center}
-\includegraphics[width=0.8\textwidth]{images/simulator-state-machine}
+\includegraphics[width=0.67\textwidth]{images/simulator-state-machine}
 \end{center}
 \caption{ALMA simulator's state machine}
 \label{fig:sim-state-machine}
@@ -63,7 +79,7 @@ The simulator is the one used in the ALMA's scheduling subsystem. At the time wh
 
 \begin{description}
 \item[Load static data] \hfill \\
-In this step the simulator will load all the immutable data from data-sources. This includes weather simulation data (temperature, humidity, wind speed, etc) and atmospheric interpolation tables to calculate the atmospheric opacity given the PWV and frequency. This step is separate from the rest of the date given that, the original ALMA's simulator is intended to be run using a relational database as back-end, then these data will load just once.
+In this step the simulator will load all the immutable data from data-sources. This includes weather simulation data (temperature, humidity, wind speed, etc) and atmospheric interpolation tables to calculate the atmospheric opacity given the PWV and frequency. This step is separate from the rest of the date given that, the original ALMA's simulator is intended to be run using a relational database as back-end, then the data will be loaded just once.
 
 During the development of this work, the simulator has been modified to work with data loaded completely in memory. Therefore this step add no value to the simulator itself. However it is worth of mention the difference with the original simulator used in ALMA software. 
 
@@ -91,11 +107,45 @@ The implementation done for this work will clean the complete context used for s
 
 \end{description}
 
-\section {Algorithm implementation}
+\section {Input Data}
+This section summarizes the data that will be used to validate the solutions. 
 
-\section {Input Observation projects}
+\subsection{Observing Season and executives time share}
 
-\begin{table}
+The following are the details for the observation season:
+
+\begin{description}
+\item[Start date]: June 1st, 2014 00:00 UTC 
+\item[End date]: October 1st, 2015 00:00 UTC
+\item[Start hour daily observation interval]: 23:00 UTC
+\item[End date daily observation interval]: 7:00 UTC
+\item[Total number of hours available for science]: $TBC\,[h]$
+\end{description}
+
+The executive time share configuration is presented in table~\ref{table:input-executive}
+
+\begin{table}[h!]
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+Executive & Time (\%)\\ \hline
+CL & $9.5\%$ \\ \hline
+EA & $21.375\%$ \\ \hline
+EA\_NA & $0.0\%$\tablefootnote{For accounting purposes, the used time is split in equal parts between EA \& NA} \\ \hline
+EU & $32.0625\%$ \\ \hline
+NA & $32.0625\%$ \\ \hline
+OTHER & $5.0\%$ \\ \hline
+\end{tabular}
+\end{center}
+\caption{Time share partition given to each Executive}
+\label{table:input-executive}
+\end{table}
+
+\subsection{Array Configurations}
+
+One specific requirement for the algorithms presented in this work, is that the configurations must be available as part of the input. These configurations were already discussed by groups internal to the observatory, whom determines what are the capabilities offered to the science community before the announcement of a new observation season.
+
+\begin{table}[h!]
 \begin{center}
 \begin{tabular}{|c|c|c|c|}
 \hline
@@ -124,6 +174,16 @@ TP    & $TP$      & $-$    & $-$ \\
 \caption{Array configurations provided as input for the algorithms}
 \label{table:input-array-configs}
 \end{table}
+
+For ALMA' s cycle 2, the list of the array configurations is presented in table~\ref{table:input-array-configs}. Although the table does not introduce the starting and ending dates for any of the configurations, which are part of the problems presented in this work, and solved by the algorithms introduced in this document.
+
+
+\subsection{Observation projects}
+As input for the validation tests and benchmarking of the software developed in this work, there will be used the cycle 2 proposals submitted to ALMA observatory, although these proposals have been already processed and converted into APDM Observation projects and APDM Scheduling Blocks, the data used for tests is an extract of them, this data contains only the relevant parts for the scheduling simulation.
+
+At the moment of write this document, the Observation Projects are not still publicly available, but according to ALMA observatory policy, they will become available at the end of 2014 or beginning of 2015. 
+
+A summary of the Scheduling blocks that the validation will be used is presented in table~\ref{table:requested-time-12m} for $12\,[m]$ array configurations, in table~\ref{table:requested-time-7m} for $7\,[m]$ array configurations and in table~\ref{table:requested-time-tp} for $TP$  array configurations. Each table have in detail the number of hours requested for each executive, broke down the time per science grade. $D$ graded projects are not shown in the tables, although they are available as part of the data set used as input.
 
 \begin{table}
 \begin{center}
@@ -212,43 +272,3 @@ C  & OTHER  & 2.0      & 1  \\ \hline
 \label{table:requested-time-tp}
 \end{table}
 
-\begin{figure}
-        \centering
-        \begin{subfigure}[b]{0.45\textwidth}
-                \includegraphics[width=\textwidth]{images/c34-1_sources}
-                \caption{C34-1} 
-        \end{subfigure} 
-        ~ %
-%
-        \begin{subfigure}[b]{0.45\textwidth}
-                \includegraphics[width=\textwidth]{images/c34-2_sources}
-                \caption{C34-2}
-        \end{subfigure}
-
-        \begin{subfigure}[b]{0.45\textwidth}
-                \includegraphics[width=\textwidth]{images/c34-3_sources}
-                \caption{C34-3}
-        \end{subfigure}
-        ~ 
-        \begin{subfigure}[b]{0.45\textwidth}
-                \includegraphics[width=\textwidth]{images/c34-4_sources}
-                \caption{C34-4}
-        \end{subfigure}% 
-        
-        \begin{subfigure}[b]{0.45\textwidth}
-                \includegraphics[width=\textwidth]{images/c34-5_sources}
-                \caption{C34-5}
-        \end{subfigure}
-        ~
-        \begin{subfigure}[b]{0.45\textwidth}
-                \includegraphics[width=\textwidth]{images/c34-6_sources}
-                \caption{C34-6}
-        \end{subfigure}
-        
-        \begin{subfigure}[b]{0.45\textwidth}
-                \includegraphics[width=\textwidth]{images/c34-7_sources}
-                \caption{C34-7}
-        \end{subfigure}           
-        \caption{Visibility of A-graded Scheduling Blocks for $12\,[m]$ Array Configurations}
-		\label{fig:results-sb-critical-set}
-\end{figure}
