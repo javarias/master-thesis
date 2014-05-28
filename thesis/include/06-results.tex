@@ -33,9 +33,8 @@ C34-7 & 2015-09-01 & 2015-10-01 \\ \hline
 \label{table:drr-test-array-config}
 \end{table}
 
-
-
 \section{Testing solution for the Array configuration planning problem} 
+As explained in section~\ref{sec:array-config-plan}, the algorithm will, first, narrow the search space based on the A-graded Scheduling blocks, the visibility for them is presented in figure~\ref{fig:results-sb-critical-set}. At same time each SB will be assigned to one or more Array Configurations. For the case of the input data used in this work, each A-graded SB is mapped to just one Array Configuration.
 
 \begin{figure}
         \centering
@@ -77,3 +76,30 @@ C34-7 & 2015-09-01 & 2015-10-01 \\ \hline
         \caption{Visibility of A-graded Scheduling Blocks for $12\,[m]$ Array Configurations}
 		\label{fig:results-sb-critical-set}
 \end{figure}
+
+Then the LST intervals proposed by the Scheduling Block classification software can be seen in table~\ref{table:lst-int-prop}.
+
+\begin{table}[h!]
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+Array configuration & Start time (LST) & End time (LST) \\ \hline
+C34-1 & 5.61692 & 15.45551 \\ \hline
+C34-1 & 13.30675 & 23.14534 \\ \hline
+C34-2 & 9.86519 & 19.703777 \\ \hline
+C34-2 & 13.22811 & 23.06670 \\ \hline
+C34-3 & 4.44851 & 14.28710 \\ \hline
+C34-3 & 9.76941 & 19.60800 \\ \hline
+C34-3 & 12.97411 & 22.81270 \\ \hline
+C34-4 & 5.61692 & 15.45551 \\ \hline
+C34-5 & 9.93925 & 19.77784 \\ \hline
+C34-6 & 21.92851 & 7.76710 \\ \hline
+C34-7 & 2.77808 & 12.61667 \\ \hline
+C34-7 & 4.94547 & 14.78406 \\ \hline
+C34-7 & 9.76941 & 19.60800 \\ \hline
+\end{tabular}
+\end{center}
+\caption[LST intervals proposed by the Scheduling Blocks categorization]
+{LST intervals proposed by the Scheduling blocks categorization described in section~\ref{sec:array-sb-classification}}
+\label{table:lst-int-prop}
+\end{table}

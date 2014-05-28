@@ -1,6 +1,6 @@
 set xrange [0:24]
 set yrange [0:90]
-set term postscript
+set term postscript enhanced colour
 set output "c34-3_sources.ps"
 set title "C34-3 sources' visibility"
 set xlabel "LST (h)"
