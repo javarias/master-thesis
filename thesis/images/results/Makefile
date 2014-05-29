@@ -17,7 +17,7 @@ all: $(PLOTS)
 
 %.plt: %.plot
 	echo "set term postscript enhanced colour" > $@
-	echo "set output $*.ps" >> $@
+	echo "set output '$*.ps'" >> $@
 	cat $< >> $@
 
 clean:

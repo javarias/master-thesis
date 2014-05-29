@@ -10,7 +10,7 @@ PLOTS:=c34-1_sources.pdf c34-2_sources.pdf c34-3_sources.pdf \
 	c34-4_sources.pdf c34-5_sources.pdf c34-6_sources.pdf \
 	c34-7_sources.pdf
 
-all: $(IMAGES) $(PLOTS)
+all: $(IMAGES) $(PLOTS) results
 
 %.ps: %.plot
 	gnuplot $<
@@ -30,5 +30,9 @@ all: $(IMAGES) $(PLOTS)
 
 clean:
 	rm -rf *.aux *.pdf_tex *.bbl *.aux *.dvi *.log *.blg $(IMAGES) $(PLOTS)
+	make -C results clean
 
-.PHONY: all clean
+results:
+	make -C results all
+
+.PHONY: all clean results
