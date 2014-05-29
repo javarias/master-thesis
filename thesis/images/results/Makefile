@@ -16,5 +16,9 @@ all: $(PLOTS)
 	ps2pdf $<
 
 %.plt: %.plot
-	echo "set term postscript enhanced colour" > $<
-	cat $@ >> $<
+	echo "set term postscript enhanced colour" > $@
+	echo "set output $*.ps" >> $@
+	cat $< >> $@
+
+clean:
+	rm -rf *.plt *.ps *.pdf
