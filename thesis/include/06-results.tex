@@ -33,6 +33,140 @@ C34-7 & 2015-09-01 & 2015-10-01 \\ \hline
 \label{table:drr-test-array-config}
 \end{table}
 
+\begin{table}[h!]
+\centering
+\begin{tabular}{|r|c|c|c|} \hline
+ & A-graded & B-graded & C-graded \\ \hline
+ Completed & 24 & 126 & 43 \\ \hline
+ Incomplete & 7 & 118 & 76 \\ \hline
+ Non-Started & 2 & 58 & 472 \\ \hline
+\end{tabular}
+\caption{Observation projects yield for DSA run}
+\label{table:dsa-run-summary}
+\end{table}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|r|c|c|c|} \hline
+ & A-graded & B-graded & C-graded \\ \hline
+ Completed & 20 & 125 & 47 \\ \hline
+ Incomplete & 11 & 123 & 81 \\ \hline
+ Non-Started & 2 & 55 & 472 \\ \hline
+\end{tabular}
+\caption{Observation projects yield for DRR run}
+\label{table:drr-run-summary}
+\end{table}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{c|c|c|c|c|c|c|c|} 
+\cline{2-8}
+ & \multicolumn{7}{c|}{Executive observation time $[h]$} \\ \hline
+\multicolumn{1}{|r|}{Array Type} & CL	& EA & EA\_NA &	EU & NA & OTHER & Total \\ \hline
+\multicolumn{1}{|r|}{12m} & 186 & 444 & 90 & 804 & 786 & 42 & 2352 \\ \hline
+\multicolumn{1}{|r|}{TP} & 64 & 1444 & 548 & 1214 & 1416 & 0 & 4686 \\ \hline
+\multicolumn{1}{|r|}{7m} & 74 & 178 & 34 & 278 & 218 & 0 & 782 \\ \hline
+\end{tabular}
+\caption{Executives' observed time, broken down per array configuration type, for DSA run}
+\end{table}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{c|c|c|c|c|c|c|c|} 
+\cline{2-8}
+ & \multicolumn{7}{c|}{Executive observation time $[h]$} \\ \hline
+ \multicolumn{1}{|r|}{Array Type} & CL	& EA & EA\_NA &	EU & NA & OTHER & Total \\ \hline
+ \multicolumn{1}{|r|}{12m} &	230 & 	472 &	110 &	778 & 	746 &	42 & 2378 \\ \hline
+ \multicolumn{1}{|r|}{TP} & 116 & 944 & 632 &	1744 &	1298 & 	0 &	4734 \\ \hline
+ \multicolumn{1}{|r|}{7m} & 74	& 178 & 34 & 278 & 216 & 0 & 780 \\ \hline
+\end{tabular}
+\caption{Executives' observed time, broken down per array configuration type, for DRR run}
+\end{table}
+
+\begin{figure}[h!]
+\centering
+	\begin{subfigure}[b]{0.49\textwidth}
+		\includegraphics[width=\textwidth]{images/results/dsa-tp_a}
+        \caption{Raw data} 
+    \end{subfigure} 
+    \begin{subfigure}[b]{0.49\textwidth}
+    		\includegraphics[width=\textwidth]{images/results/dsa-tp_b}
+            \caption{Normalized time per week} 
+    \end{subfigure}
+    \caption{Observation time for $TP$ array, broken-down per executive, using DSA}
+    \label{fig:dsa-tp-exec}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+	\begin{subfigure}[b]{0.49\textwidth}
+		\includegraphics[width=\textwidth]{images/results/drr-tp_a}
+        \caption{Raw data} 
+    \end{subfigure} 
+    \begin{subfigure}[b]{0.49\textwidth}
+    		\includegraphics[width=\textwidth]{images/results/drr-tp_b}
+            \caption{Normalized time per week} 
+    \end{subfigure}
+    \caption{Observation time for $TP$ array, broken-down per executive, using DRR}
+    \label{fig:drr-tp-exec}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+	\begin{subfigure}[b]{0.49\textwidth}
+		\includegraphics[width=\textwidth]{images/results/dsa-7m_a}
+        \caption{Raw data} 
+    \end{subfigure} 
+    \begin{subfigure}[b]{0.49\textwidth}
+    		\includegraphics[width=\textwidth]{images/results/dsa-7m_b}
+            \caption{Normalized time per week} 
+    \end{subfigure}
+    \caption{Observation time for $7m$ array, broken-down per executive, using DSA}
+    \label{fig:dsa-7m-exec}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+	\begin{subfigure}[b]{0.49\textwidth}
+		\includegraphics[width=\textwidth]{images/results/drr-7m_a}
+        \caption{Raw data} 
+    \end{subfigure} 
+    \begin{subfigure}[b]{0.49\textwidth}
+    		\includegraphics[width=\textwidth]{images/results/drr-7m_b}
+            \caption{Normalized time per week} 
+    \end{subfigure}
+    \caption{Observation time for $7m$ array, broken-down per executive, using DRR}
+    \label{fig:drr-7m-exec}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+	\begin{subfigure}[b]{0.49\textwidth}
+		\includegraphics[width=\textwidth]{images/results/dsa-c34-2_1a}
+        \caption{Raw data} 
+    \end{subfigure} 
+    \begin{subfigure}[b]{0.49\textwidth}
+    		\includegraphics[width=\textwidth]{images/results/dsa-c34-2_1b}
+            \caption{Normalized time per week} 
+    \end{subfigure}
+    \caption{Observation time for C34-2 array, broken-down per executive, using DSA}
+    \label{fig:dsa-c34-2-exec}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+	\begin{subfigure}[b]{0.49\textwidth}
+		\includegraphics[width=\textwidth]{images/results/drr-c34-2_1a}
+        \caption{Raw data} 
+    \end{subfigure} 
+    \begin{subfigure}[b]{0.49\textwidth}
+    		\includegraphics[width=\textwidth]{images/results/drr-c34-2_1b}
+            \caption{Normalized time per week} 
+    \end{subfigure}
+    \caption{Observation time for C34-2 array, broken-down per executive, using DRR}
+    \label{fig:drr-c34-2-exec}
+\end{figure}
+
 \section{Testing solution for the Array configuration planning problem} 
 As explained in section~\ref{sec:array-config-plan}, the algorithm will, first, narrow the search space based on the A-graded Scheduling blocks, the visibility for them is presented in figure~\ref{fig:results-sb-critical-set}. At same time each SB will be assigned to one or more Array Configurations. For the case of the input data used in this work, each A-graded SB is mapped to just one Array Configuration.
 
