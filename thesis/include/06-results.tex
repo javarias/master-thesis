@@ -36,7 +36,7 @@ C34-7 & 2015-09-01 & 2015-10-01 \\ \hline
 \begin{table}[h!]
 \centering
 \begin{tabular}{|r|c|c|c|} \hline
- & A-graded & B-graded & C-graded \\ \hline
+ N Projects & A-graded & B-graded & C-graded \\ \hline
  Completed & 24 & 126 & 43 \\ \hline
  Incomplete & 7 & 118 & 76 \\ \hline
  Non-Started & 2 & 58 & 472 \\ \hline
@@ -48,7 +48,7 @@ C34-7 & 2015-09-01 & 2015-10-01 \\ \hline
 \begin{table}[h!]
 \centering
 \begin{tabular}{|r|c|c|c|} \hline
- & A-graded & B-graded & C-graded \\ \hline
+ N Projects & A-graded & B-graded & C-graded \\ \hline
  Completed & 20 & 125 & 47 \\ \hline
  Incomplete & 11 & 123 & 81 \\ \hline
  Non-Started & 2 & 55 & 472 \\ \hline
@@ -66,6 +66,7 @@ C34-7 & 2015-09-01 & 2015-10-01 \\ \hline
 \multicolumn{1}{|r|}{12m} & 186 & 444 & 90 & 804 & 786 & 42 & 2352 \\ \hline
 \multicolumn{1}{|r|}{TP} & 64 & 1444 & 548 & 1214 & 1416 & 0 & 4686 \\ \hline
 \multicolumn{1}{|r|}{7m} & 74 & 178 & 34 & 278 & 218 & 0 & 782 \\ \hline
+\multicolumn{1}{|r|}{All} & 324 & 2066 & 672 & 2296 & 2420 & 42 & 7820 \\ \hline
 \end{tabular}
 \caption{Executives' observed time, broken down per array configuration type, for DSA run}
 \end{table}
@@ -79,8 +80,37 @@ C34-7 & 2015-09-01 & 2015-10-01 \\ \hline
  \multicolumn{1}{|r|}{12m} &	230 & 	472 &	110 &	778 & 	746 &	42 & 2378 \\ \hline
  \multicolumn{1}{|r|}{TP} & 116 & 944 & 632 &	1744 &	1298 & 	0 &	4734 \\ \hline
  \multicolumn{1}{|r|}{7m} & 74	& 178 & 34 & 278 & 216 & 0 & 780 \\ \hline
+ \multicolumn{1}{|r|}{All} & 420 & 1594 & 776 & 2800 & 2260 & 42 & 7892 \\ \hline
 \end{tabular}
 \caption{Executives' observed time, broken down per array configuration type, for DRR run}
+\end{table}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{c|c|c|c|c|c|c|} 
+\cline{2-7}
+ & \multicolumn{6}{c|}{Executive observation time $[\%]$} \\ \hline
+\multicolumn{1}{|r|}{Array Type} & CL	& EA & EA\_NA &	EU & NA & OTHER \\ \hline
+\multicolumn{1}{|r|}{12m} & 7.908 & 18.878 & 3.827 & 34.184 & 33.418 & 1.786 \\ \hline
+\multicolumn{1}{|r|}{TP} & 1.366 & 30.815 & 11.694 & 25.907 & 30.218 & 0 \\ \hline
+\multicolumn{1}{|r|}{7m} & 9.463 & 22.762 & 4.348 & 35.55 & 27.877 & 0 \\ \hline
+\multicolumn{1}{|r|}{All} & 4.143 & 26.419 & 8.593 & 29.361 & 30.946 & 0.537 \\ \hline
+\end{tabular}
+\caption{Time share assigned to each executive, broken down per array configuration type, for DSA run}
+\end{table}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{c|c|c|c|c|c|c|} 
+\cline{2-7}
+ & \multicolumn{6}{c|}{Executive observation time $[\%]$} \\ \hline
+\multicolumn{1}{|r|}{Array Type} & CL	& EA & EA\_NA &	EU & NA & OTHER \\ \hline
+\multicolumn{1}{|r|}{12m} & 9.672 & 19.849 & 4.626 & 32.717 & 31.371 & 1.766 \\ \hline
+\multicolumn{1}{|r|}{TP} & 2.45 & 19.941 & 13.35 & 36.84 & 27.419 & 0 \\ \hline
+\multicolumn{1}{|r|}{7m} & 9.487 & 22.821 & 4.359 & 35.641 & 27.692 & 0 \\ \hline
+\multicolumn{1}{|r|}{All} & 5.322 & 20.198 & 9.833 & 35.479 & 28.637 & 0.532 \\ \hline
+\end{tabular}
+\caption{Time share assigned to each executive, broken down per array configuration type, for DRR run}
 \end{table}
 
 \begin{figure}[h!]
