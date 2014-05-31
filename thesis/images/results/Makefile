@@ -5,7 +5,8 @@ PLOTS:= drr-7m_a.pdf drr-7m_b.pdf \
 	dsa-7m_a.pdf dsa-7m_b.pdf \
 	dsa-c34-2_1a.pdf dsa-c34-2_1b.pdf \
 	dsa-c34-4_1a.pdf dsa-c34-4_1b.pdf \
-	dsa-tp_a.pdf dsa-tp_b.pdf
+	dsa-tp_a.pdf dsa-tp_b.pdf \
+	acpp-instances.pdf
 
 all: $(PLOTS)
 
