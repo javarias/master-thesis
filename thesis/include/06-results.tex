@@ -27,6 +27,8 @@ C34-1 & 2015-06-01 & 2015-06-30 \\ \hline
 C34-4 & 2015-07-01 & 2015-07-31 \\ \hline
 C34-6 & 2015-08-01 & 2015-08-30 \\ \hline
 C34-7 & 2015-09-01 & 2015-10-01 \\ \hline
+7m & 2014-06-01 & 2015-10-01 \\ \hline
+TP & 2014-06-01 & 2015-10-01 \\ \hline
 \end{tabular}
 \end{center}
 \caption{Array configuration plan used to compare DRR algorithm vs DSA algorithm}
@@ -38,7 +40,7 @@ The metric to compare both algorithm will be the percentage of time given to eac
 \subsection{Fairness comparison analysis}
 The test to benchmark both algorithms will be based on the input data described in section~\ref{sec:input-data}. Although the array configuration planning will be fixed to the one presented in table~\ref{table:drr-test-array-config}
 
-The total amount of hours that the algorithm were able to schedule is summarized in table~\ref{table:dsa-hours-per-array} for the DSA execution, and in table~\ref{table:drr-hours-per-array}.
+The total amount of hours that the algorithm were able to schedule is summarized in table~\ref{table:dsa-hours-per-array} for the DSA execution, and in table~\ref{table:drr-hours-per-array}. Every DSA and DRR execution takes little less than $1\,[m]$
 
 \begin{table}[t]
 \centering
@@ -249,10 +251,14 @@ From the tables it is possible to see that DSA performs better completing projec
 \label{table:drr-run-summary}
 \end{table}
 
-\section{Testing solution for the Array configuration planning problem} 
-As explained in section~\ref{sec:array-config-plan}, the algorithm will, first, narrow the search space based on the A-graded Scheduling blocks, the visibility for them is presented in figure~\ref{fig:results-sb-critical-set}. At same time each SB will be assigned to one or more Array Configurations. For the case of the input data used in this work, each A-graded SB is mapped to just one Array Configuration.
+\section{Testing solution for the Array configuration planning problem}
+This tests will show whether the procedure described in chapter~\ref{sec:array-config-plan} is able to produce valid solutions for the problem or not. Also different instances of the problem will be considered to show how the algorithms behave related to the difficulty of the problem rises. Each problem instance will be defined as as the number of A-graded projects that the algorithm shall complete. The idea behind this is to know how many iterations, in average (due the stochastic nature of the algorithm design), require to get a feasible result for that problem instance.
 
-\begin{figure}
+For all the tests doing here the DRR algorithm will be used as the scheduling algorithm to solve the Astronomical observation scheduling problem. The same procedure can be applied using the DSA. The main difference that using the DSA would solve higher problem instances, due the DSA tends to complete more A-graded projects, however it is no expected a difference in the behavior for difficult problems, when the solution proposed is used to solve the Array configuration planning problem.   
+
+As explained in section~\ref{sec:array-config-plan}, the algorithm will first, narrow the search space based on the A-graded Scheduling blocks. The visibility for these Scheduling blocks is presented in figure~\ref{fig:results-sb-critical-set}. At same time each SB will be assigned to one or more Array Configurations. For the case of the input data used in this work, each A-graded SB is mapped to just one Array Configuration.
+
+\begin{figure}[htbp]
         \centering
         \begin{subfigure}[b]{0.45\textwidth}
                 \includegraphics[width=\textwidth]{images/c34-1_sources}
@@ -295,7 +301,7 @@ As explained in section~\ref{sec:array-config-plan}, the algorithm will, first, 
 
 Then the LST intervals proposed by the Scheduling Block classification software can be seen in table~\ref{table:lst-int-prop}.
 
-\begin{table}[h!]
+\begin{table}[htbp]
 \begin{center}
 \begin{tabular}{|c|c|c|}
 \hline
@@ -318,4 +324,60 @@ C34-7 & 9.76941 & 19.60800 \\ \hline
 \caption[LST intervals proposed by the Scheduling Blocks categorization]
 {LST intervals proposed by the Scheduling blocks categorization described in section~\ref{sec:array-sb-classification}}
 \label{table:lst-int-prop}
+\end{table}
+
+Comparing both, the sources elevation vs LST intervals proposed by the algorithm, it is possible to see that most of A-graded SB's sky sources are covered on those proposed LST intervals.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=\textwidth]{images/results/acpp-instances}
+\end{center}
+\caption{Simulated Annealing algorithm behavior related to the problem difficulty increasing}
+\label{fig:acpp-behavior}
+\end{figure}
+
+Different instances of the problem were tested several times, the summary of the testing can be seen in the graph represented by figure~\ref{fig:acpp-behavior}. A maximum of 1000 iterations will be allowed, if a solution is not found within that number of iterations, then the problem will be considered non-solved. A full execution of 1000 iterations takes around $800\,[m]$.
+
+
+In the graph, the x axis represents the problem instance to solve, the y axis represents the number of iterations that SA algorithm used, the dots represent the average number of iterations that the SA algorithm requires to find a valid solution for the problem instance and the vertical bars are the error presented as the standard deviation. 
+
+Here is possible the see that, for the instances before 20, the algorithms proposed easily finds a valid solution for the problem, requiring only 1 iteration to find a valid solution. From instance 20 there is an increment on the number of iterations required to find a solution, this increasing in the difficulty looks like exponential until instance 25, which is the most difficult problem instance that the algorithm is able to solve. Event though problem 25 was solved it was not solved always, this is represented by the error bar, which is bigger that the maximum allowed iterations (1000).
+
+\begin{table}[htbp]
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+Array configuration & Start date (UTC) & End date (UTC) \\ \hline
+C34-2 & 2014-06-01 & 2014-06-29  \\ \hline
+C34-3 & 2014-06-29 & 2014-07-27 \\ \hline
+C34-1 & 2014-07-27 & 2014-08-24 \\ \hline
+C34-6 & 2014-11-16 & 2014-12-14 \\ \hline
+C34-7 & 2014-12-21 & 2015-01-18 \\ \hline
+C34-3 & 2015-01-18 & 2015-02-15 \\ \hline
+C34-4 & 2015-02-15 & 2015-03-15 \\ \hline
+C34-7 & 2015-03-15 & 2015-04-12 \\ \hline
+C34-1 & 2015-04-12 & 2015-05-10 \\ \hline
+C34-7 & 2015-05-10 & 2015-06-07 \\ \hline
+C34-5 & 2015-06-07 & 2015-07-05  \\ \hline
+C34-2 & 2015-07-05 & 2015-08-02  \\ \hline
+7m & 2014-06-01 & 2015-10-01 \\ \hline
+TP & 2014-06-01 & 2015-10-01 \\ \hline
+\end{tabular}
+\end{center}
+\caption{Best array configuration found by the SA algorithm}
+\label{table:best-arr-conf}
+\end{table}
+
+Until now the best array configuration found by the SA algorithm is detailed in table~\ref{table:best-arr-conf}. Which it yields the project completion presented in table~\ref{table:best-solution-found} when the DRR algorithm is used.
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{|r|c|c|c|} \hline
+ N Projects & A-graded & B-graded & C-graded \\ \hline
+ Completed & 25 & 148 & 66 \\ \hline
+ Incomplete & 6 & 116 & 61 \\ \hline
+ Non-Started & 2 & 38 & 31 \\ \hline
+\end{tabular}
+\caption{Observation projects completion yielded by the best array configuration found}
+\label{table:best-solution-found}
 \end{table}

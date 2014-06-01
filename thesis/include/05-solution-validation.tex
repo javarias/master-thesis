@@ -10,11 +10,13 @@ The model designed for the Observatory project represented in figure~\ref{fig:da
 
 The most relevant parts are: 
 \begin{description}
-\item[bla1] \hfill \\
-Description of bla1
+\item[ObsProject] \hfill \\
+This is top-level container for a subset of observations requested. This container defines the scientific grade and rank, as well particular information of the executive, who has requested the observation. All this information is shared with the set of scheduling blocks contained within.
+\item[SchedBlock] \hfill \\
+This is the atomic scheduling unit for the scheduling algorithm. The SB will contain information related to scheduling constraints, like array type requested, representative band, max/min angular resolution, etc; weather constraints, like, max. opacity, max. wind speed, etc; time constraints, like max. observation time, temporal boundaries; and the sky source.
 \end{description}
 
-\begin{figure}[h!]	
+\begin{figure}[htbp]	
 \begin{center}
 \includegraphics[width=1.15\textwidth]{images/Obsproject}
 \end{center}
@@ -22,34 +24,49 @@ Description of bla1
 \label{fig:datamodel-obsproject}
 \end{figure}
 
-The model designed for handle the observatory instrumentation is represented in figure~\ref{fig:datamodel-observatory}
+The model designed for handle the observatory instrumentation is represented in figure~\ref{fig:datamodel-observatory}. This is an over simplification of what is presented in~\cite{avarias11, hoffstadt10}, the \textbf{ArrayConfiguration} class covers the minimal needs to allow to the algorithm to take a decision regarding the array configuration parameters. The simplification was done because the original classes defined did not add any extra value for the algorithm.
 
-\begin{figure}[h!]	
+\begin{figure}[htbp]	
 \begin{center}
-\includegraphics[width=\textwidth]{images/Observatory}
+\includegraphics[width=0.67\textwidth]{images/Observatory}
 \end{center}
 \caption{Observatory instrumentation data model}
 \label{fig:datamodel-observatory}
 \end{figure}
 
 The model designed for handle the Executive information and the observing season is represented in figure~\ref{fig:datamodel-executive}
+The most relevant parts are: 
+\begin{description}
+\item[Executive] This class holds the information related to each executive provided as input. It saves the percentage and associates each Principal Investigator (class \textbf{PI}). Originally, the model was designed to allow to every PI have assigned percentages to each executive. However in practice, this have not been used.
+\item[Observing Season] This class has the information relative to end and start dates for the observing season or observing cycle, also keeps the information relative to the daily schedule, in a \textbf{TimeInterval} instance.
+\end{description}
 
-\begin{figure}[h!]	
+\begin{figure}[htbp]	
 \begin{center}
-\includegraphics[width=\textwidth]{images/Executive}
+\includegraphics[width=0.67\textwidth]{images/Executive}
 \end{center}
 \caption{Executive and observing season data model}
 \label{fig:datamodel-executive}
 \end{figure}
 
-The model designed for handle the weather is represented in figure~\ref{fig:datamodel-weather}
+The model designed for handle the weather is represented in figure~\ref{fig:datamodel-weather}. The weather model is quite simple, it has several classes holding data for the simulated weather, like precipitable water vapor, temperature, wind speed and phase. Also the model has the class \textbf{AtmParamters}, which contains the interpolation tables to calculate the atmospheric opacity.
 
-\begin{figure}[h!]	
+\begin{figure}[htbp]	
 \begin{center}
-\includegraphics[width=0.6\textwidth]{images/Weather}
+\includegraphics[width=0.67\textwidth]{images/Weather}
 \end{center}
-\caption{Executive and observing season data model}
+\caption{Weather data model}
 \label{fig:datamodel-weather}
+\end{figure}
+
+The model designed for handle the observation progress status is represented in figure~\ref{fig:datamodel-observation}. This model defines \textbf{ExecBlock}, which keeps the time accounting and progress for each SB, array configuration and Executive. 
+
+\begin{figure}[htbp]	
+\begin{center}
+\includegraphics[width=0.67\textwidth]{images/Observation}
+\end{center}
+\caption{Observation progress status}
+\label{fig:datamodel-observation}
 \end{figure}
 
 The top-level architecture of the ALMA's scheduling planning simulator is represented in diagram~\ref{fig:sim-top-level-architecture}. The software design uses as glue the Spring Core library, using Inversion of Control paradigm is possible to define via a configuration file, the objects to inject into the simulator, this includes Data Access Objects instances and the algorithm instances. It is enough for the software developed in this work to implement the correct interfaces to make them compatible with the rest of the ALMA software.
