@@ -76,8 +76,7 @@ The calculation of $Tsys$ will be done in three steps:
 several ways of doing this:
 \begin{enumerate}
 \item Calculate PWV from the Relative Humidity (RH) or the Dew Point. One way
-of doing this is found in the MMA Memo No. 237, ``Precipitable Water at the VLA --
-1990-1998'', by Bryan Butler. In this paper the PWV is developed as
+of doing this is found in~\cite{butler98}. In this memo the PWV is developed as
 $$
 h = \frac{m_w P_0 H}{\rho_l k T_0}
 $$
@@ -87,7 +86,7 @@ exponential distribution, 1.5 km for the VLA), $\rho_l$ is the density of
 liquid water ($\mathrm{gr}/\mathrm{cm}^3$) and $k$ is the Boltzmann constant.
 
 This memo presents a way to estimate $P_0$ from the dew point. In the subsequent
-MMA Memo No. 238, ``Precipitable Water at KP -- 1993-1998'', a way of calculating
+MMA Memo~\cite{butler98_1}, a way of calculating
 $P_0$ from the relative humidity is given:
 $$
 P_0 = 2.409 \times 10^{12} \ RH\ \theta^4 \exp(-22.67\theta)
@@ -96,9 +95,7 @@ where $\theta$ is the inverse temperature ($\theta = 300/T_0 $ K), and $RH$ is
 the relative humidity.
 
 \item Calculate it from the opacity $\tau_{225}$ at 225 GHz measured by the
-tipper. In this case a way of calculating the $PWV$ can be seen in
-ALMA Memo 271 ``The Determination of Precipitable Water Vapour at Llano de
-Chajnantor from Observations of the 183 GHz Water Line''. $PWV$ can be obtained
+tipper. In this case a way of calculating the $PWV$ can be seen in~\cite{delgado99}. $PWV$ can be obtained
 by inverting
 $$
 \tau_{225} = 6.7787\cdot 10^{-3} + 4.0757\cdot 10^{-2} PWV + 9.59\cdot 10^{-4} PVW^2
@@ -138,7 +135,7 @@ where $T_{amb}$ is the ambient temperature, which is read from weather station.
 
 \section{ALMA Project Data Model}
 \label{sec:apdm}
-The ALMA Software system works using the concept of an Observing Project, the full description and the details of the model are available at~\cite{apdm-model}. The Observing Project is used throughout the ALMA software as the top level structure associated with a project resulting from a single observing proposal. In fact the Observing Project is a container for all the information relating to a project before it begins execution. During and following execution other data associated with the project are created and held in other structures, each of which holds a reference to the original observing project. Of particular interest is the Project Status structure, which holds a record of the execution status of the Project. The ALMA Project Data Model (APDM) defines the structure of both the Observing Project (ObsProject) and the execution status (ProjectStatus).
+The ALMA Software system works using the concept of an Observing Project, the full description and the details of the model are available at~\cite{bridger09}. The Observing Project is used throughout the ALMA software as the top level structure associated with a project resulting from a single observing proposal. In fact the Observing Project is a container for all the information relating to a project before it begins execution. During and following execution other data associated with the project are created and held in other structures, each of which holds a reference to the original observing project. Of particular interest is the Project Status structure, which holds a record of the execution status of the Project. The ALMA Project Data Model (APDM) defines the structure of both the Observing Project (ObsProject) and the execution status (ProjectStatus).
 
 The Scheduling Block (SchedBlock or SB) is the atomic unit of observing for ALMA, any given science observation will usually be broken into many SBs, which may, or may not be executed in sequence. The ALMA Scheduling Software will decide on which SB to execute at any given time on the basis of which is the best to execute now. An SB as a canonical execution length of around 30 minutes, however in practice the SBs observation duration could be up to 2 hours, depending of the Observation program.
 
@@ -208,32 +205,32 @@ The description of each one of the different categories is as follow:
 
 \begin{description}
     \item[Instrumentation] \hfill \\
-Every scheduling block execution is done in an \textit{Array} which is a subset of the available antennas in the observatory. Each antenna has its own hardware configuration to receive electromagnetic waves from the space. An array will have the hardware configuration common to all the antennas conforming the array, the idea is to observe the target with the same hardware in all the antennas as they were a single instrument. In general, in an observatory all the antennas conforming an array will have all the same capabilities, even they can be interchange each other and should not be any difference. The array configuration and the availability of the instrumentation is decided beforehand and for effects of the algorithm is considered an static constraint. 
+Every scheduling block execution is done in an \textit{Array} which is a subset of the available antennas in the observatory. Each antenna has its own hardware configuration to receive electromagnetic waves from the space. An array will have the hardware configuration common to all the antennas conforming the array, the idea is to observe the target with the same hardware in all the antennas as they were a single instrument. In general, in an observatory all the antennas conforming an array will have all the same capabilities, even they can be interchange each other and should not be any difference. The array configuration and the availability of the instrumentation is decided beforehand, and for effects of the algorithm is considered a static constraint. 
 
 Nonetheless, problems in some instruments during observatory operations could temporally remove some capabilities from some antennas, or even the entire antenna could be removed, altering the original instrumentation properties that the array was given initially. Since all these failure are not planned this is considered a dynamic constraint.
 
 	\item[Sky source] \hfill \\
 In general a sky source will be visible in daily basis for certain amount of time, then the source will go below horizon due the Earth's rotation, unless the source is circumpolar in which case the source will be always visible. Also the Earth's orbit movement around the sun would cause that a source will be visible during a period of the calendar year only. Both of these source properties are predictable and can be calculated before the execution of any observation.
 
-Every time that a observation starts, the telescope needs to be calibrated to adjust pointing corrections based on atmospheric conditions and source position. It is possible to predict how much time will be spent on calibrations if the observation plan is given before the execution of observations starts, however sometimes this is not the case due improvement or deterioration of weather conditions expected, making this constraint dependable on the time the observation being executed.
+Every time that a observation starts, the telescope needs to be calibrated to adjust pointing corrections based on atmospheric conditions and source position. It is possible to predict how much time will be spent on calibrations if the observation plan is given before the execution of observations starts, however sometimes this is not the case due improvement or deterioration of weather conditions expected, making this constraint dependable on the time when the observation is expected to be executed.
   
 	\item[Weather] \hfill \\
 The weather cannot be foreseen with exactitude, even the most accurate weather forecast will have a error margin, which will increase if the period of time foresaw increase. Once the weather condition has changed, for good or bad, usually the list of the scheduling blocks to be observed needs to be updated accordingly. The time frame on what the algorithm can optimize the observations is bounded to the reliability of the weather pattern prediction, doing optimization beyond that could be worthless.
 
 \end{description}
 
-Another important property of every project submitted to be observed in the observing season, is that they does not have the same science value, this means there are certain projects that are more interesting to observe and complete than others. This measure of how much value has a project is given by the Time Assignment Committee at the observatory, therefore the scheduler must be aware of this and try to complete most of the projects having the ``highest'' science qualification, this will be known as the \textit{scientific value}.
+Another important property of every project submitted to be observed in the observing season, is that they does not have the same science value, this means there are certain projects that are more interesting to observe and complete than others. This measure of how much value has a project is given by the Time Assignment Committee at the observatory, therefore the scheduler must be aware of this and try to complete most of the projects having the ``highest'' science qualification, this will be known as the \textit{scientific value} or \textit{scientific throughput}.
 
 \subsection{Completing Scheduling Blocks and Observation projects}
 \label{subsec:completing-obs}
-A scheduling block does not need to be completed in just one observation, in fact the scheduling block can be observed multiples times at different calendar time, hence different weather conditions and different array configurations, until the scheduling block is considered complete.
+A scheduling block does not need to be completed in just one observation, in fact the scheduling block can be observed multiples times at different calendar time, hence different weather conditions and different array configurations as well, until the scheduling block is considered complete.
 A scheduling block will be completed, and put its state as complete, if it meets any of following three criterion:
 \begin{itemize}
 	\item \textit{Number of repetitions}: A scheduling block could have a limit of how many times can be observed.
 	\item \textit{Total time observed}: A scheduling block could have a limit of how much time can be observed.
 	\item \textit{Sensitivity achieved}: As stated in section \ref{sec:sens} if the goal for the RMS noise accumulated is achieved, then the scheduling block will be considered completed.
 \end{itemize} 
-Some of the scheduling blocks could not met all the three criteria, it is enough for the Scheduling Block to have a least one of them.
+It is enough for the Scheduling Block to met at least one of the item in the criteria to be considered complete.
 
 The criteria to determine if a project was complete, for simplicity of this study, is based in how many scheduling blocks or ObsUnit sets, belonging to the Observation project, have been completed; or the total amount of time observed, which is the sum of all the scheduling blocks observations. Although in reality, human intervention is required to determine if the project has been completed based on the quality of science data extracted from the observations. The algorithm establishing whether a Observation project is completed or not for real, is far beyond the scope of this study. 
 
@@ -242,26 +239,26 @@ Until this point, this study has tried to explain and referred only to observati
 
 However, over the whole time available in the observing season, it is possible to have different \textit{Array configurations}, that can co-exist at the very same time with other array configurations, or can be created in serial over the time frame of the observation season, or a combination of both situations.
 
-Each array configuration can be composed of 1 or more antennas available at the observatory, each one can offer different science capabilities, which can be or cannot be used by the scheduling block, nonetheless each array will offer basic differences like the $uv$ coverage as seen in section \ref{sec:uvcover}, the angular resolution explained in section \ref{sec:angular-res} or the sensitivity achieved in every observation (section \ref{sec:sens}), which is dependent of the number of antennas in the array. As well one or more arrays can be available for observations at the same time as said before, however each scheduling block must be observed by just one array at a given time.
+Each array configuration can be composed of 1 or more antennas available at the observatory, each one can offer different science capabilities, which can be or cannot be used by the scheduling block, nonetheless each array will offer basic differences like the angular resolution or the sensitivity achieved in every observation, which is dependent of the number of antennas in the array (see section~\ref{sec:sens}). As well one or more arrays can be available for observations at the same time as said before, however each scheduling block must be observed by just one array at a given time.
 
 \subsection{Identified problems}
 \label{sec:problems}
 After the analysis of the different properties and constraints related to the astronomy scheduling problem it is possible to identify the following two different problems:
 \begin{description}
 
-\item[Scheduling array problem] \hfill \\
-The \textit{scheduling array problem} consists on determine a schedule for a given set of scheduling blocks, which all of them can be observed by the instrument, considering one array already created within a given period of time. 
-The idea is to generate a plan to try to observe all, or most of the projects with the highest scientific value in the less amount of time possible considering all, or the most critical of the scientific requirements. It may possible to not complete all the observation projects submitted for this array configuration. Slso is desirable to reduce the amount of idle time of the instrument.
+\item[Astronomical observation scheduling problem] \hfill \\
+The \textit{Astronomical observation scheduling problem} consists on determine a schedule for a given set of scheduling blocks, which all of them can be observed by the instrument, considering one array already created within a given fixed period of time. 
+The idea is to generate a plan to try to observe all, or most of the projects with the highest scientific value in the less amount of time possible considering all, or the most critical of the scientific requirements. It may possible to not complete all the observation projects submitted for this array configuration. Also is desirable to reduce the amount of idle time of the instrument.
 
-\item[Array configuration schedule problem]
+\item[Array configuration planning problem]
 
-The \textit{array configuration schedule problem} is on top of the scheduling array problem. It consists in try to determine a schedule of observations, for the observing season (which is a fixed amount of time and it lasts for several months, up to a couple of years), for a given set of the scheduling blocks and a given set the array configurations. The idea is to try to observe most of the projects with high scientific value considering all, or most of the scientific requirements during the observing season, however not all the observation projects may not be completed. Also it is desirable to reduce the idle time of the observatory as whole.
+The \textit{Array configuration planning problem} is on top of the astronomical observation scheduling problem. It consists in try to determine a plan for the array configurations given as input, for the observing season (which is a fixed amount of time and it lasts for several months, up to a couple of years) and for a given set of the scheduling blocks, which can be observed in multiple array configurations. At the same, maximizing the number of the projects with highest scientific value completed, considering all or most of the scientific requirements during the observing season, however not all the observation projects may be completed. Also it is desirable to reduce the idle time of the observatory as considering all the arrays configurations.
 \end{description}
 
 
 \section{ALMA Scheduling Problem}
 \label{sec:alma-sched-problem}
-The Atacama Large Millimeter/submillimeter Array (ALMA) is a major collaboration effort between European, North American and East Asian countries, under construction on the Chilean Chajnantor plateau, at 5.000 meters altitude. When completed in 2013 it will be the largest radio telescope on earth, with more than 60 antennas of 12 and 7 meters diameter, distributed over a wide extension, with up to 16 kilo-meters of baseline separation. The ALMA interferometer will provide the possibility to be used as a single array, or as up to six (due to limited centralized equipment, photonic references) minor independent arrays or groups of antennas. As each array is equivalent to one instrument, this can eventually be seen as a multi-telescope problem. Also, the antennas will be changing their positions over the year, as different distributions will be used to exploit various kinds of observations. As ALMA does not observe in the visible spectrum, observations are not limited to night time only, thus a 24/7 operation with as small downtime as possible is expected. However during commissioning operations, which is the current status of ALMA, it is expected only to use a fraction of the day and calendar year to schedule scientific operations.
+The Atacama Large Millimeter/submillimeter Array (ALMA) is a major collaboration effort between European, North American and East Asian countries, under construction on the Chilean Chajnantor plateau, at 5.000 meters altitude. When completed it will be the largest radio telescope on earth, with more than 60 antennas of 12 and 7 meters diameter, distributed over a wide extension, with up to 16 kilo-meters of baseline separation. The ALMA interferometer will provide the possibility to be used as a single array, or as up to six (due to limited centralized equipment, photonic references) minor independent arrays or groups of antennas. As each array is equivalent to one instrument, this can eventually be seen as a multi-telescope problem. Also, the antennas will be changing their positions over the year, as different distributions will be used to exploit various kinds of observations. As ALMA does not observe in the visible spectrum, observations are not limited to night time only, thus a 24/7 operation with as small downtime as possible is expected. However during commissioning operations, which is the current status of ALMA, it is expected only to use a fraction of the day and calendar year to schedule scientific operations.
 
 ALMA will operate exclusively in service mode. Therefore, the Scheduling software Subsystem is supposed to provide a fully automatic “quasi-real-time” dynamic scheduling platform, mostly with the only human participation of supervision. This Subsystem is still under development, and the algorithm(s) are still under heavy testing. The main problem is the dynamic priorities scheduling, which differs widely from the traditional dynamic job-shop. This particular problem is very similar for all ground based observatories, and ALMA is one real example, that needs this kind of scheduling to accomplish its operations requirements.
 
@@ -278,22 +275,21 @@ The ALMA telescope will be operated as one or more antenna arrays, executing obs
 \begin{figure}	
 \begin{center}
 \includegraphics[width=\textwidth]{images/scheduling_class_model}
-\caption{Basic class model of Scheduling subsystem.}
 \end{center}
- \texttt{MasterScheduler} and \texttt{Array} are the common classes used by all kind of Arrays. \texttt{DynamicSchedulingAlgorithm} is the class implementing the current ALMA's dynamic algorithm. At right side of the figure it is available the hierarchy of the the top level APDM classes used by the scheduling subsystem, which are accessed through the \texttt{ArchiveInterface}.
+\caption[Basic class model of Scheduling subsystem] {Basic class model of Scheduling subsystem.
+ \texttt{MasterScheduler} and \texttt{Array} are the common classes used by all kind of Arrays. \texttt{DynamicSchedulingAlgorithm} is the class implementing the current ALMA's dynamic algorithm. At right side of the figure it is available the hierarchy of the the top level APDM classes used by the scheduling subsystem, which are accessed through the \texttt{ArchiveInterface}. }
 \label{fig:sched-class-model}
 \end{figure}
 
 A huge part of the telescope operations will be handled through the ALMA software, which is divided into various subsystems, such as Control, Correlator (ACA and Baseline), Pipeline, Archive, Scheduling and Offline software. The big picture of ALMA Software can be seen in~\cite{schwarz04}.
-The Scheduling Subsystem is the one in charge of managing antenna arrays and dynamically executing scheduling blocks. The current software design details are in~\cite{clarke12}. The basic design considers 4 main parts which are represented in figure \ref{fig:sched-class-model}: The ``Master Scheduler'', The ``Array'', The ``Dynamic Scheduler instance'' and the ``Archive Interface''. The Master Scheduler is in charge of create and manage the creation of the Arrays and handle the management of the Scheduling Policies to be used in the DSA. The Array is the main operations unit of the scheduling subsystem, each array operates over Scheduling Blocks, executing, waiting for results of the observations and notifying to the user of the system what has been the outcome of the observation. The Array uses directly the Archive, which is the database storing the definition of each Observation project (see~\ref{sec:apdm}), through the Archive Interface. Each array has its own scheduling queue, which can contain several schedblocks waiting to be executed, but just one SchedBlock is observed at the same time in each Array. Finally the DSA acts as a component of an Array selecting the current best SB according to the algorithm policy selected for the given Array, the details of the ALMA's DSA is discussed in section \ref{sec:alma-dsa}. Additionally each scheduling array can operate in 3 different modes: Manual, in this mode the scheduling queue is set with a maximum of one item, in this mode the user is responsible to execute the observation manually using low level scripts. Automatic, in this mode the array has a unlimited size scheduling queue, once a observation has been completed a new SchedBlock is taken from this queue to observe the next one until the queue is empty or the scheduler is stopped. And Dynamic, in dynamic mode the scheduling queue behaves as the array in interactive mode, but when the queue is empty the DSA is triggered selecting the next best SchedBlock to observe, depending if the DSA is active or passive the selected SchedBlock will be put in the queue to start the observation or the Scheduler will notify the user only respectively. The state machine implemented as part of the current DSA can be seen in the figure~\ref{fig:sched-dsa-state-machine}, the DSA may be executed every time that a new Scheduling Block is needed to be queued, until there is no more Scheduling Blocks available.
+The Scheduling Subsystem is the one in charge of managing antenna arrays and dynamically executing scheduling blocks. The current software design details are in~\cite{clarke12}. The basic design considers 4 main parts which are represented in figure \ref{fig:sched-class-model}: The ``Master Scheduler'', The ``Array'', The ``Dynamic Scheduler instance'' and the ``Archive Interface''. The Master Scheduler is in charge of create and manage the creation of the Arrays and handle the management of the Scheduling Policies to be used in the DSA. The Array is the main operations unit of the scheduling subsystem, each array operates over Scheduling Blocks, executing, waiting for results of the observations and notifying to the user of the system what has been the outcome of the observation. The Array uses directly the Archive, which is the database storing the definition of each Observation project (see~\ref{sec:apdm}), through the Archive Interface. Each array has its own scheduling queue, which can contain several schedblocks waiting to be executed, but just one SchedBlock is observed at the same time in each Array. Finally the DSA acts as a component of an Array selecting the current best SB according to the algorithm policy selected for the given Array, the details of the ALMA's DSA is discussed in section \ref{sec:alma-dsa}. Additionally each scheduling array can operate in 3 different modes: Manual, in this mode the scheduling queue is set with a maximum of one item, and the user is responsible to execute the observation manually using low level scripts. Automatic, in this mode the array has a unlimited size scheduling queue, once a observation has been completed a new SchedBlock is taken from this queue to observe the next one until the queue is empty or the scheduler is stopped. And Dynamic, in dynamic mode the scheduling queue behaves as the array in interactive mode, but when the queue is empty, then DSA is triggered selecting the next best SchedBlock to observe, depending if the DSA is active or passive the selected SchedBlock will be put in the queue to start the observation or the Scheduler will only notify the user, respectively. The state machine implemented as part of the current DSA can be seen in the figure~\ref{fig:sched-dsa-state-machine}, the DSA may be executed every time that a new Scheduling Block is needed to be queued, until there is no more Scheduling Blocks available.
 
-\begin{figure}	
+\begin{figure}[htbp]	
 \begin{center}
 \includegraphics[width=0.9\textwidth]{images/DSA-state-machine}
+\end{center}
 \caption{Dynamic scheduling algorithm's state machine}
 \label{fig:sched-dsa-state-machine}
-\end{center}
 \end{figure}
-
 
 It is true that most of the scheduling software will be run in the on-line software, however there is a planning stage where the Scheduling algorithm will contribute to plan different scenarios within a season. The on-line usage of the algorithm is known as the \textit{short-term scheduler}, this scheduler either can be used in quasi-real time or to planning the night observations. A \textit{medium-term scheduler} used to planning the observations for a time frame where the array configurations are the same. And finally \textit{long-term scheduler} which should be able to plan an entire season of observation across the different array configurations, ideally the algorithm should define the duration of each configuration given as a input. For the two last use cases a ALMA scientific operations uses a simulator, which is mostly described in~\cite{hoffstadt10}. Although new features have been added, the basic workflow has been kept until nowadays.

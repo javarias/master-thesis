@@ -252,11 +252,11 @@ From the tables it is possible to see that DSA performs better completing projec
 \end{table}
 
 \section{Testing solution for the Array configuration planning problem}
-This tests will show whether the procedure described in chapter~\ref{sec:array-config-plan} is able to produce valid solutions for the problem or not. Also different instances of the problem will be considered to show how the algorithms behave related to the difficulty of the problem rises. Each problem instance will be defined as as the number of A-graded projects that the algorithm shall complete. The idea behind this is to know how many iterations, in average (due the stochastic nature of the algorithm design), require to get a feasible result for that problem instance.
+This tests will show whether the procedure described in chapter~\ref{sec:array-config-plan} is able to produce valid solutions for the problem or not. Also different instances of the problem will be considered to show how the algorithms behave related to when difficulty of the problem increases. Each problem instance will be defined as as the number of A-graded projects that the algorithm shall complete. The idea behind this is to know how many iterations, in average (due the stochastic nature of the algorithm design), require to get a feasible result for that problem instance.
 
-For all the tests doing here the DRR algorithm will be used as the scheduling algorithm to solve the Astronomical observation scheduling problem. The same procedure can be applied using the DSA. The main difference that using the DSA would solve higher problem instances, due the DSA tends to complete more A-graded projects, however it is no expected a difference in the behavior for difficult problems, when the solution proposed is used to solve the Array configuration planning problem.   
+For all the tests done, the DRR algorithm is the one used as the scheduling algorithm to solve the Astronomical observation scheduling problem. The same procedure can be applied using the DSA. The main difference is that using the DSA would solve higher problem instances, due the DSA tends to complete more A-graded projects, however it is no expected a difference in the behavior for difficult problems, when the solution proposed is used to solve the Array configuration planning problem.   
 
-As explained in section~\ref{sec:array-config-plan}, the algorithm will first, narrow the search space based on the A-graded Scheduling blocks. The visibility for these Scheduling blocks is presented in figure~\ref{fig:results-sb-critical-set}. At same time each SB will be assigned to one or more Array Configurations. For the case of the input data used in this work, each A-graded SB is mapped to just one Array Configuration.
+As explained in section~\ref{sec:acpp-sa-alg-design}, the algorithm will first, narrow the search space based on the A-graded Scheduling blocks.  The visibility for these Scheduling blocks is presented in figure~\ref{fig:results-sb-critical-set}. Once the visibility of the sources, then each SB will be assigned to one or more Array Configurations. For the case of the input data used in this work, each A-graded SB sky source is mapped to just one Array Configuration.
 
 \begin{figure}[htbp]
         \centering
@@ -336,12 +336,12 @@ Comparing both, the sources elevation vs LST intervals proposed by the algorithm
 \label{fig:acpp-behavior}
 \end{figure}
 
-Different instances of the problem were tested several times, the summary of the testing can be seen in the graph represented by figure~\ref{fig:acpp-behavior}. A maximum of 1000 iterations will be allowed, if a solution is not found within that number of iterations, then the problem will be considered non-solved. A full execution of 1000 iterations takes around $800\,[m]$.
+Different instances of the problem were tested several times, the summary of the testing can be seen in the graph represented by figure~\ref{fig:acpp-behavior}. A maximum of 1000 iterations are allowed, if a solution is not found within that number of iterations, then the problem will be considered non-solved. A full execution of 1000 iterations takes around $800\,[m]$.
 
 
 In the graph, the x axis represents the problem instance to solve, the y axis represents the number of iterations that SA algorithm used, the dots represent the average number of iterations that the SA algorithm requires to find a valid solution for the problem instance and the vertical bars are the error presented as the standard deviation. 
 
-Here is possible the see that, for the instances before 20, the algorithms proposed easily finds a valid solution for the problem, requiring only 1 iteration to find a valid solution. From instance 20 there is an increment on the number of iterations required to find a solution, this increasing in the difficulty looks like exponential until instance 25, which is the most difficult problem instance that the algorithm is able to solve. Event though problem 25 was solved it was not solved always, this is represented by the error bar, which is bigger that the maximum allowed iterations (1000).
+Here is possible the see that, for the instances before 20, the algorithms proposed easily finds a valid solution for the problem, requiring only 1 iteration to find a valid solution. From instance 20 there is an increment on the number of iterations required to find a solution, this increasing in the difficulty looks like exponential until instance 25, which is the most difficult problem instance that the algorithm is able to solve. Even though problem 25 was solved it was not solved always, this is represented by the error bar, which is bigger that the maximum allowed iterations (1000).
 
 \begin{table}[htbp]
 \begin{center}

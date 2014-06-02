@@ -37,7 +37,7 @@ The model designed for handle the observatory instrumentation is represented in 
 The model designed for handle the Executive information and the observing season is represented in figure~\ref{fig:datamodel-executive}
 The most relevant parts are: 
 \begin{description}
-\item[Executive] This class holds the information related to each executive provided as input. It saves the percentage and associates each Principal Investigator (class \textbf{PI}). Originally, the model was designed to allow to every PI have assigned percentages to each executive. However in practice, this have not been used.
+\item[Executive] This class holds the information related to each executive provided as input. It saves the percentage and associates each Principal Investigator (class \textbf{PI}). Originally, the model was designed to allow to every PI have assigned percentages to each executive. However in practice, this has not been used.
 \item[Observing Season] This class has the information relative to end and start dates for the observing season or observing cycle, also keeps the information relative to the daily schedule, in a \textbf{TimeInterval} instance.
 \end{description}
 
@@ -81,7 +81,7 @@ For the development of the validation software prepared for this work, some chan
 \label{fig:sim-top-level-architecture}
 \end{figure}
 
-In other hand, the algorithm implemented by ALMA software (DSA) was replaced with the modified Deficit Round-Robin algorithm implmentation presented in this work. The ALMA software design also make provisions at the algorithm level, defining an interface. Which, as well with the DAOs, was fairly easy to replace with new classes developed to implement the modified DRR algorithm.
+In other hand, the algorithm implemented by ALMA software (DSA) was replaced with the modified Deficit Round-Robin algorithm implementation presented in this work (see chapter~\ref{sec:astro-schedule-problem}). The ALMA software design also make provisions at the algorithm level, defining an interface. Which, as well with the DAOs, was fairly easy to replace with new classes developed to implement the modified DRR algorithm.
 
 \section {Simulation}
 The simulator is the one used in the ALMA's scheduling subsystem. At the time when this document was written it remains mostly unchanged from its original design explained in detail in~\cite{hoffstadt10}. Nevertheless some modifications where done during the development of this work to support the simulation of several scenarios for the solution provided for the``Array configuration planning problem''. Next a briefly description of the simulator work-flow, shown in figure~\ref{fig:sim-state-machine}, is presented:
