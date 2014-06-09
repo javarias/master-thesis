@@ -5,7 +5,7 @@ The largest single telescopes are antennas having diameters $D\approx 100\,[m]$.
 
 Interferometers comprising $N > 2$ smaller dishes have mitigated many practical problems found in huge single-dishes, increasing the collecting area into the order of $[km]$. Nevertheless, the interferometer requires extra electronic and computing power to correlate all the raw data coming from the antennas in real-time.
  
-The most basic interferometer is a pair of radio telescopes whose voltage outputs are multiplied and averaged or \textit{correlated}, which has the effect of filtering out high frequencies~\cite{thompson01}. Even the most elaborated interferometers with $N\gg2$ elements are treated as $\frac{N(N-1)}{2}$ independent interferometer pairs, each one of these pairs are called \textit{baselines}. The two antennas basic interferometer is presented in figure~\ref{fig:interometer}. The wavefront from the source in direction $\theta$ reaches the right-hand antenna at a time $\tau_g = (D/c)\sin\theta$ before it reaches the left-hand antenna. $\tau_g$ is the geometric delay and $c$ is the speed of light.
+The most basic interferometer is a pair of radio telescopes whose voltage outputs are multiplied and averaged or \textit{correlated}, which has the effect of filtering out high frequencies~\cite{thompson01}. Even the most elaborated interferometers with $N\gg2$ elements are treated as $\frac{N(N-1)}{2}$ independent interferometer pairs, each one of these pairs are called \textit{baselines}. The two antennas basic interferometer is presented in figure~\ref{fig:interometer}. The wavefront from the source in direction $\theta$ reaches the right-hand antenna at a time $\tau_g = \frac{D}{c}\sin\theta$ before it reaches the left-hand antenna. $\tau_g$ is the geometric delay and $c$ is the speed of light.
 
 Then, the output voltage of antennas 1 and 2 can be written as:
 \begin{eqnarray}
@@ -21,7 +21,7 @@ V_1V_2 = \frac{V^2}{2}\Bigg(\cos(2\omega t - \omega \tau_g) + cos(\omega \tau_g)
 and finally taking a time average long enough $\Delta t \gg \frac{1}{2\omega} = T$
 \begin{equation}
 R = \langle V_1V_2\rangle = \frac{V^2}{2} \int_{-\frac{T}{2}}^{\frac{T}{2}} \big(\cos(2\omega t - \omega \tau_g) + cos(\omega \tau_g)\big) dt
-\sim \frac{V^2}{2} \cos(\omega \tau_g)
+\propto \cos(\omega \tau_g)
 \end{equation} 
  
 The correlator output voltage $R$ varies sinusoidally with the change of source direction in the interferometer frame. These variations are called \textit{fringes}. Thus, in terms of frequency $\nu$, the output multiplier is proportional to
