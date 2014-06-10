@@ -36,23 +36,23 @@ requirements during the observing season, however not all the projects could be 
 ALMA software currently has an algorithm, the Dynamic Scheduling Algorithm implemented as
 part of the scheduling subsystem, which does not try optimize the set of selected scheduling unit
 as a function of time for long periods of time. Also the algorithm does not try to come up with an
-optimal program for array configurations which are given for a season. This algorithm suffers of
-serious problems of fairness were it is possible under certain circumstances to get as result a
+optimal program for array configurations, what are given as input for a season. This algorithm suffers of
+serious problems of fairness, it is possible under certain circumstances, to get as result a
 scheduling unit repeated all over an observation time frame (like a week) letting to starve
 projects with the same or higher priority, but belonging to a different participant.
 In other hand the most recent model proposal lacks of all astronomical analysis of constraints and
-results to decide if the algorithm could be feasible to adapt to the ALMA scheduling requirements
-and use into ALMA software.
-None of the described methodologies deal with the problem of trying to schedule the proposed
-array configurations necessary for the ALMA’s long-term scheduling.
+results to decide whether the algorithm could be feasible to adapt to the ALMA scheduling requirements
+and use into ALMA software or not.
+Currently, no methodology deals with the problem of trying to schedule the proposed
+array configurations necessary to solve the ALMA’s long-term scheduling.
 
 Therefore the hypothesis presented is the following: \textbf{``It is feasible to design and implement an algorithm for the ALMA scheduling problem that can meet most of the astronomical, instrument and weather constraints''}.
 
 \section{Objectives}
 
 \begin{itemize}
-\item Develop a new scheduling algorithm that meets the ALMA’s scientific, instrument and
-weather constraints, and requirements and successfully integrate it within ALMA software.
+\item One of the main objective of this work is, to develop a new scheduling algorithm that meets the ALMA’s scientific, instrument and
+weather constraints, and requirements; and successfully integrate it within ALMA software.
 The development will be focused in try to solve the long-term scheduling problem, where
 the algorithm shall provide a schedule for different array configurations within an
 observing season.

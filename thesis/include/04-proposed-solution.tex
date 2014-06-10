@@ -1,6 +1,4 @@
-\part{Proposed Solution}
-
-\chapter{Overview}
+\chapter{Proposed Solution} 
 
 As stated in section~\ref{sec:problems} two problems were identified, these both problems are part of the ALMA Observation scheduling problem.
 This part of the work describes the proposed solution for both problems, which are related between each other.
@@ -20,7 +18,7 @@ The current ALMA DSA does the search based on the Local Sidereal Time (LST). The
 
 The arrays configurations are given as input to the algorithm, the algorithm will try to accommodate over the observing season the given configurations. It is not responsibility of the algorithm to come up with suggestions related to changes in the configurations.
  
-\chapter{ALMA's Astronomical observation scheduling problem}
+\section{ALMA's Astronomical observation scheduling problem}
 \label{sec:astro-schedule-problem}
 This problem only considers the execution of Scheduling Block inside the same Array Configuration. The algorithm lifecycle is tied to the current ALMA requirements shown in section~\ref{sec:alma-sched-problem} figure~\ref{fig:sched-dsa-state-machine}, which is detailed as follows:
 
@@ -42,7 +40,7 @@ The algorithm will select, and will return, the ``best'' suitable Scheduling Blo
 
 \end{description}
 
-\section{Mathematical model}
+\subsection{Mathematical model}
 \label{sec:array-sched-math-model}
 A generic representation of the model is presented in figure~\ref{fig:obs-schedule-representation}. The model considers only one array configuration, its life is represented by the horizontal arrow at top of the figure. On this time the proposed algorithm should be able to schedule observations. These observations are represented by the Exec Block (boxes labeled $EB_x$), each Exec Block may have different durations, as shown by the figure. If the algorithm is unable to allocate a observation in a time period then, the telescope operations software (or simulator) must skip certain amount of time, and then try again. The figure also shows a bug jump in time between $EB_3$ and $EB_4$, this represents the daily time not used for scientific operations.
 
@@ -53,7 +51,7 @@ A generic representation of the model is presented in figure~\ref{fig:obs-schedu
 \label{fig:obs-schedule-representation}
 \end{figure}
 
-\subsection{Static parameters}
+\subsubsection{Static parameters}
 These parameters are statically provided at the beginning of the period. They do not change over the time period on which the algorithm calculates a valid solution.
 
 \begin{description}
@@ -77,7 +75,7 @@ These parameters are statically provided at the beginning of the period. They do
 
 \end{description} 
 
-\subsection{Dynamic parameters}
+\subsubsection{Dynamic parameters}
 Contrary to the static parameters, these parameters may change at any time during the time period being used by the algorithm.
 
 \begin{description}
@@ -109,7 +107,7 @@ false & \mbox{if  } SB_{ik} \mbox{ not completed} \\
 
 \end{description}
 
-\subsection{Objective functions}
+\subsubsection{Objective functions}
 
 The main objective of the algorithm is to maximize the number of scientific projects completed at the end of the time frame given. Also it can be interpreted as to maximize the scientific value of the completed projects (see equation~\ref{eq:max-sci-value}). However there is a caveat, there must be priority on complete the best graded projects.
 
@@ -126,7 +124,7 @@ max \mbox{ }\Bigg( \frac{\sum_{i}T(EB_i)}{T(AC_j)}\Bigg)
 \end{equation}
 
 
-\subsection{Constraints}
+\subsubsection{Constraints}
 \label{sec:sched-constraints}
 It is assumed that all the constraints operate over one or more Scheduling Block's properties, unless stated.
 
@@ -263,7 +261,7 @@ The selection operation filters out all the SBs that don't comply with equation~
 
 \end{description}
 
-\section{Algorithm design rationale}
+\subsection{Algorithm design rationale}
 
 So far, the study has been focused in the definition of the ALMA's Scheduling array problem and the study of its mathematical model. However, this have not provided the background about how the algorithm will operate internally to return a plan for a given time period. The decision of the algorithm design is driven by the following properties:
 \begin{enumerate}
@@ -296,7 +294,7 @@ The quantum size will be fixed number as explained in the original DRR design. H
 W_{h} = \frac{TP(Ex_h)}{max(TP(Ex_x))}
 \end{equation}
 
-The initialization of the DRR algorithm proposed to this problem is detailed in listing~\ref{alg:drr-init}. The initialization uses the weighted quantum for each participant executive.
+The initialization of the DRR algorithm proposed is detailed in listing~\ref{alg:drr-init}. The initialization procedures sets the weighted quantum for each participant executive.
 
 \begin{algorithm}                     
 \caption{Deficit Round Robin initialization}          
@@ -313,7 +311,7 @@ The initialization of the DRR algorithm proposed to this problem is detailed in 
 \end{algorithmic}
 \end{algorithm}
 
-In the original DRR algorithm, the service flows are filled with network packets arriving from the media, and they are kept in the queues until they are dispatched. In ALMA, each service flow will be filled with the result of the Scheduling Block filtering for the given time based on the mathematical model constraints explained in section~\ref{sec:array-sched-math-model}. The difference with DRR is that the service flows will be recalculated every time the algorithm runs, filtering-out and putting-in the no longer and new suitable Scheduling Blocks respectively. The queuing mechanism is presented in listing~\ref{alg:drr-queuing}.
+In the original DRR algorithm, the service flows are filled with network packets arriving from the media, and they are kept in the queues until they are dispatched. In ALMA, each service flow will be filled with the result of the Scheduling Block filtered for the given time based on the mathematical model constraints explained in section~\ref{sec:array-sched-math-model}. The difference with DRR is that the service flows will be recalculated every time the algorithm runs, filtering-out and putting-in the no longer and new suitable Scheduling Blocks respectively. The queuing mechanism is presented in listing~\ref{alg:drr-queuing}.
 
 \begin{algorithm}                     
 \caption{Deficit Round Robin queuing}          
@@ -380,14 +378,14 @@ This selector is based on the $T_{sys}$ as shown by equation~\ref{eq:weather-sco
 \end{equation}
 \end{description}
 
-Therefore, every Scheduling Block queued into the service flow is given a score represented by equation~\ref{eq:sb-final-score}. Given this, every Scheduling Block is inserted in order into the service queue, selecting just the top Scheduling Block to executive serviced at the given time.
+Therefore, every Scheduling Block queued into the service flow is given a score represented by equation~\ref{eq:sb-final-score}. Given this, every Scheduling Block is inserted in order into the service queue, selecting just the top Scheduling Block from the serviced executive at a given time.
 
 \begin{equation}
 \label{eq:sb-final-score}
 \sum_{i}^{n} w_i\times Sc_i(SB_{xy})
 \end{equation}
 
-The DRR proposed is presented in listing~\ref{alg:drr-select}. Nevertheless one extra complication is expected, the original DRR is designed for continuous operation. In the case of ALMA, the software must have to define provisions to save the deficit counters and current round-robin pointer, due the algorithm is suspended every time after a selection is done. In the case of the simulation, this is not a bib problem because these variables can be saved as long the simulator instance remains in memory.
+The DRR proposed is presented in listing~\ref{alg:drr-select}. Nevertheless one extra complication is expected, the original DRR is designed for continuous operation. In the case of ALMA, the software must have to define provisions to save the deficit counters and current round-robin pointer, due the algorithm is suspended every time after a selection is done. In the case of the simulation, this is not a problem because these variables can be saved as long the simulator instance remains in memory.
 
 \begin{algorithm}                     
 \caption{Deficit Round Robin selection}          
@@ -419,7 +417,7 @@ The DRR proposed is presented in listing~\ref{alg:drr-select}. Nevertheless one 
 \end{algorithm}
 
 
-\chapter{ALMA's Array configuration planning problem}
+\section{ALMA's Array configuration planning problem}
 \label{sec:array-config-plan}
 This problem depends upon the result of the algorithm output for the ``Scheduling Array'' sub-problem as illustrated on figure~\ref{fig:array-config-problem-overview}. This problem is part of the ``ALMA's  long-term scheduling problem'', therefore multiple Array configurations are considered as input.
 \begin{figure}[h!]
@@ -430,7 +428,7 @@ This problem depends upon the result of the algorithm output for the ``Schedulin
 \label{fig:array-config-problem-overview}
 \end{figure}
 
-\section{General conditions and assumptions}
+\subsection{General conditions and assumptions}
 \label{sec:array-problem-general-condition}
 The problem will consider 3 different possible Array types: \textit{12-meter arrays} ($12m$) intended to be used in together with the baseline correlator computer, \textit{7-meter arrays} ($7m$) intended to be used together with ACA correlator computer (zero-spacing interferometer) and \textit{Total Power arrays} ($TP$) intended to use in auto-correlations (single-dish). 
 
@@ -442,7 +440,7 @@ The algorithm will not propose changes in properties of the array configurations
 
 Science observations will be carried over a daily time period considerably less than 24 hours. If there was 24 hours operations for every array, then this problem would be reduced to calculate the sum of the hours requested by every relevant project assigned to a every array configuration, as the requested array duration.
 
-\section{Mathematical model}
+\subsection{Mathematical model}
 
 A generic representation of the model proposed is presented in figure~\ref{fig:array-planning-representation}. There the different array configurations are scheduled over the season presented in the horizontal coordinate as a time-tile each one of the separation along the time-line represents a month. A configuration can be scheduled more than once over the season like the $12m_1$ configuration in the diagram, and a configuration can spawn for the whole season, if there are no conflicting arrays configurations, like the $TP$ in the representation.
 
@@ -466,14 +464,14 @@ A generic representation of the model proposed is presented in figure~\ref{fig:a
 \item[$\mathbf{Gr(P_i)}$] Grade given to the project $i$ $\Big\slash\: Gr(P_x) \in \{A,B,C,D\}$, where $A$ denotes the highest grade and $D$ the lowest grade.
 \end{description}
 
-\subsection{Objective function}
+\subsubsection{Objective function}
 The main objective of the algorithm for this problem is to try to complete the highest scientific graded projects as shown by the equation~\ref{eq:array-max-a-graded-projects}.
 \begin{equation}
 \label{eq:array-max-a-graded-projects}
 max \: \bigg(\sum_{i} St(P_i)\bigg) \:\: \mid\; \forall Gr(P_i) = A
 \end{equation}
 
-\subsection{Constraints}
+\subsubsection{Constraints}
 \begin{description}
 \item[Array configurations duration overlap] \hfill \\
 The antennas and the correlator computers are unique instrument components that can be present in just one array configuration at the very same time. Hence, to avoid duplication of resources, just one type of array configuration of the same type is allowed at a given time period. There is one exception, the Total power arrays, but for simplification it is considered as the other configuration types. The constraint can be expressed as shown by equation~\ref{eq:array-uniqness}
@@ -498,7 +496,7 @@ The observatory can setup several times, at different dates, over the observing 
 
 \end{description}
 
-\section{Scheduling Block classification}
+\subsection{Scheduling Block classification}
 \label{sec:array-sb-classification}
 From section~\ref{sec:sched-constraints}, it is possible to deduce that, there is a subset of these restriction which might help to narrow the search space for this problem. In fact, it may be possible to define a ``Scheduling Block critical subset'', inherent to each Array Configuration. Although the Scheduling Blocks belonging to one array configuration could not be exclusive to it.
 
@@ -532,7 +530,7 @@ From these equations is possible to derive that the highest altitude in the sky 
 Nevertheless also it is possible to observe a sky source 
 while it is not at its highest altitude in the sky, the key is to set a minimal altitude to allow to carry on observations properly. This minimum allowed altitude for ALMA observatory is set to $15^\circ$ mostly due to the surrounding mountains around the site. 
 
-\subsection{Array Configuration duration and LST relationship}
+\subsubsection{Array Configuration duration and LST relationship}
 As stated in the general condition in section~\ref{sec:array-problem-general-condition} the minimum resolution for the problem is one (1) week.
 
 From the algorithm used to calculate the LST found in~\cite{kaplan05}, it is possible to deduce that the LST drifts from the calendar time. The drift calculated rate is approximately $1654.7328\,[s]$ or $27.57888\,[min]$ ahead for every calendar week.
@@ -542,7 +540,7 @@ Of course the borders of the configuration interval, in LST terms, would not be 
 
 The minimum configuration duration set by the problem and its model definition (4 weeks), may be changed according to the total time requested by the Scheduling Blocks covered under the calculated LST range for the given array configuration. Then, the array configuration lifespan could be either the minimum duration defined by the problem, or the total time requested by the Scheduling Blocks, or a value between both.
 
-\section{Algorithm design rationale}
+\subsection{Algorithm design rationale}
 \label{sec:acpp-sa-alg-design}
 The search space of the problem is related to the combinations that each array configuration's start date and duration can produce, modifying either its start time, duration or both, during the span of the whole observing season as shown by equation~\ref{eq:one-array-search-space}
 

@@ -1,4 +1,4 @@
-\chapter{Tests and results}
+\section{Tests and results}
 
 Two sets of tests will be performed to benchmark the algorithms proposed for both problems presented in this work.
 The first set will show how the solution given to ``Astronomical observation scheduling problem'', focusing the comparison with current DSA implementation done for ALMA.
@@ -6,9 +6,9 @@ The second set will show the feasibility of the proposed algorithm to solve the 
 
 All the tests will be run on a 2 x Intel Xeon X5675 running at 3.06 $[GHz]$, with 48 $[GiB]$ of RAM DDR3 1333 $[MHz]$, configured in 6 channels (2 x QPI 6.4 $[GT/s]$). Running Red Hat Enterprise Linux 5.9 (x86 PAE) and Oracle's Java (JRE) 1.7.0\_51.
 
-\section{Testing the algorithms for the Astronomical observation scheduling problem}
+\subsection{Testing the algorithms for the Astronomical observation scheduling problem}
 
-\subsection{Setup and objectives}
+\subsubsection{Setup and objectives}
 The main feature of the DRR algorithm, presented in this work, is to try to keep the observation time given to each Executive, according to the values presented in table~\ref{table:input-executive}, along the time array configuration life. For this reason, a comparison between the ALMA's DSA and the DRR will be done. 
 
 \begin{table}[b]
@@ -37,7 +37,7 @@ TP & 2014-06-01 & 2015-10-01 \\ \hline
 
 The metric to compare both algorithm will be the percentage of time given to each executive every week, every two weeks, every four weeks and for the whole array configuration duration. At the same time, it will be analyzed the impact of the DRR algorithm for the project completion rate at the end of the whole simulation, checking if there is any adverse effect over this parameter. The completion rate will be based at project level, accounting projects completed, started but non-completed and non-started, these categories will be broken down based on the projects science grade given: $A$, $B$ and $C$.
 
-\subsection{Fairness comparison analysis}
+\subsubsection{Fairness comparison analysis}
 The test to benchmark both algorithms will be based on the input data described in section~\ref{sec:input-data}. Although the array configuration planning will be fixed to the one presented in table~\ref{table:drr-test-array-config}
 
 The total amount of hours that the algorithm were able to schedule is summarized in table~\ref{table:dsa-hours-per-array} for the DSA execution, and in table~\ref{table:drr-hours-per-array}. Every DSA and DRR execution takes little less than $1\,[m]$
@@ -219,7 +219,7 @@ The qualitative analysis for $7m$ array configuration is presented in figure~\re
 
 As expected there is no surprises, looks like DRR balance better the time sharing among all the executives, this is clear at the beginning of the season. 
 
-\subsection{Project completion analysis}
+\subsubsection{Project completion analysis}
 
 Until this point it is possible to acknowledge that DRR algorithm performs much better in terms of global fairness, giving to each participant executive a more equitable time share, in comparison to what has been proposed. Nevertheless this is not the only one parameter to consider the effectiveness of the algorithm, another very important parameter is how much projects the scheduling algorithm is able to complete for the given observing season.
 
@@ -251,7 +251,7 @@ From the tables it is possible to see that DSA performs better completing projec
 \label{table:drr-run-summary}
 \end{table}
 
-\section{Testing solution for the Array configuration planning problem}
+\subsection{Testing solution for the Array configuration planning problem}
 This tests will show whether the procedure described in chapter~\ref{sec:array-config-plan} is able to produce valid solutions for the problem or not. Also different instances of the problem will be considered to show how the algorithms behave related to when difficulty of the problem increases. Each problem instance will be defined as as the number of A-graded projects that the algorithm shall complete. The idea behind this is to know how many iterations, in average (due the stochastic nature of the algorithm design), require to get a feasible result for that problem instance.
 
 For all the tests done, the DRR algorithm is the one used as the scheduling algorithm to solve the Astronomical observation scheduling problem. The same procedure can be applied using the DSA. The main difference is that using the DSA would solve higher problem instances, due the DSA tends to complete more A-graded projects, however it is no expected a difference in the behavior for difficult problems, when the solution proposed is used to solve the Array configuration planning problem.   
@@ -381,3 +381,7 @@ Until now the best array configuration found by the SA algorithm is detailed in 
 \caption{Observation projects completion yielded by the best array configuration found}
 \label{table:best-solution-found}
 \end{table}
+
+\chapter{Conclusions}
+
+\section{Future work}
