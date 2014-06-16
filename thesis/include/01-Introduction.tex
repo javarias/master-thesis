@@ -42,20 +42,26 @@ scheduling unit repeated all over an observation time frame (like a week) lettin
 projects with the same or higher priority, but belonging to a different participant.
 In other hand the most recent model proposal lacks of all astronomical analysis of constraints and
 results to decide whether the algorithm could be feasible to adapt to the ALMA scheduling requirements
-and use into ALMA software or not.
+and use as part of the ALMA software or not.
 Currently, no methodology deals with the problem of trying to schedule the proposed
 array configurations necessary to solve the ALMA’s long-term scheduling.
 
 Therefore the hypothesis presented is the following: \textbf{``It is feasible to design and implement an algorithm for the ALMA scheduling problem that can meet most of the astronomical, instrument and weather constraints''}.
 
 \section{Objectives}
+\label{sec:objectives}
+The proposed work aims to provide a fully functional algorithm that can be used in the astronomical scheduling problem in ALMA observatory.
+The following are the general objectives to accomplish at the end of this work:
 
-\begin{itemize}
-\item One of the main objective of this work is, to develop a new scheduling algorithm that meets the ALMA’s scientific, instrument and
+\begin{enumerate}
+
+\item To develop a new scheduling algorithm that meets the ALMA’s scientific, instrument and
 weather constraints, and requirements; and successfully integrate it within ALMA software.
 The development will be focused in try to solve the long-term scheduling problem, where
 the algorithm shall provide a schedule for different array configurations within an
 observing season.
+
+The specific goals for this objective are:
 \begin{itemize}
 \item Study real world constraints gathered from ALMA scheduling requirements.
 \item Implement the algorithm in a suitable programming language.
@@ -63,17 +69,19 @@ observing season.
 scheduling problem. Focusing in the long-term problem.
 \item Define and develop an algorithm that satisfy the ALMA’s scheduling problem requirements
 studied prior.
-\item Algorithm must minimize array configuration time, at the same time the number of source
+\item The algorithm must minimize array configuration time, at the same time the number of source
 must be maximize. This should minimize the array idle-time.
 \end{itemize}
 \item Define metrics to evaluate the algorithm performance in terms of idle-time or instrument
-usage, scientific performance and completed projects.
+usage, scientific throughput and completed projects.
+
+The specific goals for this objective are:
 \begin{itemize}
 \item Metrics must consider idle observatory time and executive time fairness.
 \item Develop a suitable test-bench software to evaluate the algorithm.
 \item Validate the algorithm using the test-bench.
 \end{itemize}
-\end{itemize}
+\end{enumerate}
 
 \section{Expected results and validation}
 The main contribution expected by this work is the implemented algorithm which will be used as
@@ -100,4 +108,7 @@ available after a period of time (2 years).
 Even when the projects are not publicly available, this shall not affect the thesis results due the
 results does not show in detail what project have more chance to be completely observed, the
 restriction imposed by ALMA is related to the ability to identify a particularly project and this is
-not the purpose of the results that this work will show.
+not the purpose of the results that this work will present.
+
+\section{Document structure}
+This document is divided into 4 chapters. Chapter 2 presents the relevant state of the art, starting with classical scheduling problems and given an overview of the current of some schedulers used in observatories. Chapter 3 discusses the problem to solve, describes necessary concepts to understand the problem focusing in the ALMA observatory. Chapter 4 introduces the mathematical description of the solution given to the problem, and the details of the algorithms to be used to solve the problem. Chapter 5 presents the validation done to the algorithms proposed, the software to used to validate the solution is quite close to the one used in ALMA software. Finally, chapter 6 presents the conclusions of the work and how the work developed in this document fulfills the hypothesis and completes the objectives. Some future work is proposed also.

@@ -2,11 +2,11 @@
 
 As stated in section~\ref{sec:problems} two problems were identified, these both problems are part of the ALMA Observation scheduling problem.
 This part of the work describes the proposed solution for both problems, which are related between each other.
-The solution is modeled after ALMA requirements and current software design detailed in~\cite{avarias11,clarke12,schwarz04,apdm-model} and aims to solve the whole ALMA Observation scheduling problem. Although some simplifications are considered, mainly because either there are still certain requirements that are under discussion or they are still unclear. 
+The solution is modeled after ALMA requirements and current software design detailed in~\cite{avarias11,clarke12,schwarz04,bridger09} and aims to solve the whole ALMA Observation scheduling problem. Although some simplifications are considered, mainly because there are certain requirements that are either still under discussion or they are still unclear. 
 
 As stated in section~\ref{sec:alma-sched-problem}, each array is handled independently by the scheduling subsystem software, this means that each array will have its own scheduler instance, and they are considered a different instrument during them life. At very same time one or more arrays can be running, hence the multiple schedulers instances can be active, and the data containing the Observation Projects and Scheduling Blocks is common to all the schedulers.
 
-Even though is possible to have linked Scheduling Blocks between each other as prerequisites, the solution proposed here will not considered here due they are not well defined in the ALMA software requirements and they are still in discussion. This implies that the Scheduling Blocks belonging to an Observation Project can be observed and completed in any order.
+Even though is possible to have linked Scheduling Blocks between each other as prerequisites, the solution proposed here will not considered here, due they are not well defined in the ALMA software requirements and they are still in discussion. This implies that the Scheduling Blocks belonging to an Observation Project can be observed and completed in any order.
 
 Instrument calibrations and pointing calibration is a very important step before the actual usage of the instrument, increasing the accuracy and sensitivity of the instruments. However for now, the algorithm will consider that the telescope is always calibrated and ready to observe. Also observation session management will not be considered at all due calibrations dependencies.
 
@@ -42,7 +42,7 @@ The algorithm will select, and will return, the ``best'' suitable Scheduling Blo
 
 \subsection{Mathematical model}
 \label{sec:array-sched-math-model}
-A generic representation of the model is presented in figure~\ref{fig:obs-schedule-representation}. The model considers only one array configuration, its life is represented by the horizontal arrow at top of the figure. On this time the proposed algorithm should be able to schedule observations. These observations are represented by the Exec Block (boxes labeled $EB_x$), each Exec Block may have different durations, as shown by the figure. If the algorithm is unable to allocate a observation in a time period then, the telescope operations software (or simulator) must skip certain amount of time, and then try again. The figure also shows a bug jump in time between $EB_3$ and $EB_4$, this represents the daily time not used for scientific operations.
+A generic representation of the model is presented in figure~\ref{fig:obs-schedule-representation}. The model considers only one array configuration, its life is represented by the horizontal arrow at top of the figure. On this time the proposed algorithm should be able to schedule observations. These observations are represented by the Exec Block (boxes labeled $EB_x$), each Exec Block may have different durations, as shown by the figure. If the algorithm is unable to allocate a observation in a time period then, the telescope operations software (or simulator) must skip certain amount of time, and then try again. The figure also shows a big jump in time between $EB_3$ and $EB_4$, this represents the daily time not used for scientific operations.
 
 \begin{figure}
 \def\svgwidth{\textwidth}
@@ -59,7 +59,7 @@ These parameters are statically provided at the beginning of the period. They do
 
 \item[$\mathbf{SB_{ik}}$] Scheduling Block $k$ $\Big\slash \forall SB_{ik} | SB_{ik} \in P_i \land SB_{ik} \notin P_x \Leftrightarrow x \neq i$.
 
-\item[$\mathbf{SciVal(P_i)}$] Scientific value for $P_i$ $\Big\slash \forall P_i \land SB_{ik} \in P_i \mid SciVal(P_i) \Leftrightarrow SciVal(SB_{ij}) $.
+\item[$\mathbf{SciVal(P_i)}$] Scientific value for $P_i$ $\Big\slash \forall P_i \land SB_{ik} \in P_i \mid SciVal(P_i) \Leftrightarrow SciVal(SB_{ik}) $.
 
 \item[$\mathbf{T(SB_{ik})}$] Duration (time) of a single execution (observation) for Scheduling Block $ik$.
 
@@ -287,7 +287,7 @@ The algorithm proposed in this study will be based on the Deficit Round-Robin (D
 \item[Service flows] are mapped into the \textit{Executives' observation times}. Actually, the flows will be mapped into the percentage of the Executives' observation times, what is a measurable quantity given an arbitrary time frame inside the total duration of the time given as input to the algorithm. Nevertheless, the mapping here does not fit perfectly, due the design of DRR establishes that every service flow will have the same priority than the others. For the ALMA case, each Executive should have different priorities, to deal with this issue a weight will be applied to the quantum size, based on the time percentage assigned to each executive, this is similar to what is proposed in the weighted Round-Robin algorithm explained in~\cite{katevenis91}.
 \end{description}
 
-The quantum size will be fixed number as explained in the original DRR design. However, the quantum size applied to a Executive's service flow will be multiplied by a weight defined in equation~\ref{eq:alg-quantum-weight}, which is different for every Executive.
+The quantum size will be a fixed number as explained in the original DRR design. However, the quantum size applied to a Executive's service flow will be multiplied by a weight defined in equation~\ref{eq:alg-quantum-weight}, which is different for every Executive.
 
 \begin{equation}
 \label{eq:alg-quantum-weight}
@@ -306,8 +306,8 @@ The initialization of the DRR algorithm proposed is detailed in listing~\ref{alg
     \FOR{$i=0$ to $n$}
     \STATE $EQ_i = ExecPercentage_i\times MaxQFactor \times Q$
     \STATE $DC_i = 0$ \COMMENT{Deficit counters}
-    \STATE $RRp = 0$ \COMMENT{Round robin pointer initialized to point ot the first Executive service queue}
     \ENDFOR
+	\STATE $RRp = 0$ \COMMENT{Round robin pointer initialized to point ot the first Executive service queue}
 \end{algorithmic}
 \end{algorithm}
 
@@ -430,7 +430,7 @@ This problem depends upon the result of the algorithm output for the ``Schedulin
 
 \subsection{General conditions and assumptions}
 \label{sec:array-problem-general-condition}
-The problem will consider 3 different possible Array types: \textit{12-meter arrays} ($12m$) intended to be used in together with the baseline correlator computer, \textit{7-meter arrays} ($7m$) intended to be used together with ACA correlator computer (zero-spacing interferometer) and \textit{Total Power arrays} ($TP$) intended to use in auto-correlations (single-dish). 
+The problem will consider 3 different possible Array types: \textit{12-meter arrays} ($12m$) intended to be used together with the baseline correlator computer, \textit{7-meter arrays} ($7m$) intended to be used together with ACA correlator computer (zero-spacing interferometer) and \textit{Total Power arrays} ($TP$) intended to use in auto-correlations (single-dish). 
 
 The array configurations duration has been discretized in terms of weeks. Keeping the configurations with shorter durations may be introduce a lot of overhead for operations, due in every configuration change several antennas might be moved from one pad to another, using valuable time not destined to science.
 

@@ -41,7 +41,7 @@ The metric to compare both algorithm will be the percentage of time given to eac
 \subsubsection{Fairness comparison analysis}
 The test to benchmark both algorithms will be based on the input data described in section~\ref{sec:input-data}. Although the array configuration planning will be fixed to the one presented in table~\ref{table:drr-test-array-config}
 
-The total amount of hours that the algorithm were able to schedule is summarized in table~\ref{table:dsa-hours-per-array} for the DSA execution, and in table~\ref{table:drr-hours-per-array}. Every DSA and DRR execution takes little less than $1\,[m]$
+The total amount of hours that the algorithm were able to schedule is summarized in table~\ref{table:dsa-hours-per-array} for the DSA execution, and in table~\ref{table:drr-hours-per-array}. Every DSA and DRR execution takes little less than $1\,[min]$
 
 \begin{table}[t]
 \centering
@@ -228,7 +228,7 @@ The summary for DSA algorithm instance is presented in table~\ref{table:dsa-run-
 
 From the tables it is possible to see that DSA performs better completing projects, specially A-graded projects. This can be explained because DSA can be modeled as a DRR with only one service flow, therefore the better graded Scheduling Blocks will be always on top of the other SBs, having a chance to complete more better graded projects. However, the DRR is able to start more projects, but as well leaves more of these started projects incomplete. Having that in mind a special scorer was introduced to pump-up the score of the started projects. But at the end, the result did not vary significantly from what is presented in the table~\ref{table:drr-run-summary}.
 
-\begin{table}[b!]
+\begin{table}[t!]
 \centering
 \begin{tabular}{|r|c|c|c|} \hline
  N Projects & A-graded & B-graded & C-graded \\ \hline
@@ -240,7 +240,7 @@ From the tables it is possible to see that DSA performs better completing projec
 \label{table:dsa-run-summary}
 \end{table}
 
-\begin{table}[b!]
+\begin{table}[t!]
 \centering
 \begin{tabular}{|r|c|c|c|} \hline
  N Projects & A-graded & B-graded & C-graded \\ \hline
@@ -337,7 +337,7 @@ Comparing both, the sources elevation vs LST intervals proposed by the algorithm
 \label{fig:acpp-behavior}
 \end{figure}
 
-Different instances of the problem were tested several times, the summary of the testing can be seen in the graph represented by figure~\ref{fig:acpp-behavior}. A maximum of 1000 iterations are allowed, if a solution is not found within that number of iterations, then the problem will be considered non-solved. A full execution of 1000 iterations takes around $800\,[m]$.
+Different instances of the problem were tested several times, the summary of the testing can be seen in the graph represented by figure~\ref{fig:acpp-behavior}. A maximum of 1000 iterations are allowed, if a solution is not found within that number of iterations, then the problem will be considered non-solved. A full execution of 1000 iterations takes around $800\,[min]$.
 
 
 In the graph, the x axis represents the problem instance to solve, the y axis represents the number of iterations that SA algorithm used, the dots represent the average number of iterations that the SA algorithm requires to find a valid solution for the problem instance and the vertical bars are the error presented as the standard deviation. 
@@ -384,5 +384,60 @@ Until now the best array configuration found by the SA algorithm is detailed in 
 \end{table}
 
 \chapter{Conclusions}
+This document has presented the ALMA's scheduling problem, analyzing in details the particularities found during the study of this problem. This problem has been separated in two different subproblems: the ``Astronomical observation scheduling problem'' describing the short and medium term scheduling subproblems proposed by ALMA; and the ``Array configuration planning problem'' detailing the long-term scheduling subproblem proposed by ALMA.
+
+Solutions were discussed, implemented and validated for both problems presented in this work, although some simplifications were done during the discussion of these problems, all (or most of) the constraints are currently used in ALMA scheduling subsystem. Therefore, given the final results, the algorithms discussed in this work, can be used directly in ALMA observatory, however small modification are required in the current ALMA scheduling software, in particular for the solution for the Astronomical observation scheduling problem, where DRR needs to save the round robin pointers and deficit values.
+
+The objectives (see section~\ref{sec:objectives}) were fulfilled as follows:
+\begin{enumerate}
+\item \textbf{To develop a new scheduling algorithm that meets the ALMA’s scientific, instrument and
+weather constraints, and requirements; and successfully integrate it within ALMA software.
+The development will be focused in try to solve the long-term scheduling problem, where
+the algorithm shall provide a schedule for different array configurations within an
+observing season.} The whole problem was introduced and discussed considering the constraints and requirements currently in use by the ALMA scheduling subsystem, the mathematical models and the algorithms proposed as solutions covers the short, medium and long term ALMA scheduling problem. A new approach is considered for the ``Astronomical observation scheduling problem'' a solution modeled after a fair scheduling algorithm, a modified deficit Round-Robin. But also, this work introduces the analysis and solution for the ``Array configuration planning problem'', which is the long-term problem prosed by ALMA.
+\item \textbf{Define metrics to evaluate the algorithm performance in terms of idle-time or instrument
+usage, scientific throughput and completed projects.} To validate the specific problem presented in ALMA, new metrics were introduced based on participant executive fairness within a fixed period of time, this work also considers previous defined metrics as number of projects completed, but including ALMA specific details, like the scientific grade given to the projects and SBs. The software developed is based on the current simulator tools used in ALMA, therefore the adaptation to make the new algorithms developed in this work available for ALMA software is easy. 
+\end{enumerate}
+
+Therefore, the initial hypothesis was successfully proven, as \textit{it is possible to design and implement an algorithm for the ALMA scheduling problem, considering most of its particular constraints}.
+
+The proposed model, algorithms and its implementations have the following features, for the ``Astronomical observation scheduling problem'':
+\begin{itemize}
+\item The time on what the model has been designed and the algorithm operates, has not been discretized as previous works.
+
+\item The model considers dynamic constraints at job level (Scheduling Block) and as well in constraint level. Also introduces a very particular constraint, related to the time-share partition given to each executive participant of the telescope.
+
+\item This work introduces a solution based on fair scheduling approach, proven that is feasible to adapt that kind of problem to the Astronomical observation scheduling problem.
+
+\item The algorithm and the software over what was developed have provisions to do the solution usable on the ALMA's on-line system. In this environment the algorithm must be able to read real world data, changing constantly over the time. 
+
+\item Although the model and solutions are particular to the ALMA scheduling problem, they can be adapted in more generic way and to be adapted to similar observatory problems.
+
+\end{itemize} 
+
+The proposed model, algorithms and its implementations have the following features, for the ``Array configuration planning problem'':
+\begin{itemize}
+\item The observing cycle has been discretized in terms of week, each array configuration must have a minimum lifespan of 4 weeks.
+
+\item The approach used to solve the problem considers that the array configurations are input data, as well the projects and their initial scientific appraisal (grades and scores).
+
+\item The long-term problem and solution presented deals with the current problem in commissioning stage of ALMA observatory, where the telescope is not operating 24/7.
+
+\item The solution is only usable in simulation mode, this is an inherent characteristic of the long-term scheduling problem.
+
+\item The model proposed is much more static in nature than the Astronomical observation scheduling problem, however, given the dependency on this last problem, all the characteristics are inherited and expanded in the Array configuration planning problem. Even though, is possible to have accurate simulation of weather patterns within the simulation, the problem may not be solved without the dependency on the Astronomical observation scheduling problem, given that it is very important to know how the sort-term solution behaves in medium and long-term simulations.
+
+\end{itemize}
 
 \section{Future work}
+The solution given to ``Astronomical observation scheduling problem'' does not try to optimize for periods of time longer than the next period to observe, this is mostly because of the weather constraints that cannot be exactly foreseen. However, having a good weather forecast it may possible to verify whether it is feasible to implement an algorithm than can schedule the observation for longer period, like one day or at most two nights.
+
+The long-term scheduling problem can be classified as a chicken or the egg dilemma, this is because there are two approaches to define it:
+\begin{itemize}
+\item The proposals submitted by the astronomers are based on the telescope capabilities offered for the observing cycle; or
+\item The telescope capabilities will be based on what proposals the astronomers have been submitted for the observing cycle.
+\end{itemize}
+
+The current approach used in the telescope commissioning stage, is the first. Hence, the problem in this work has been defined accordingly. However, when ALMA observatory reaches full operations and capabilities, it could be that the second approach would be taken. Then, given that, the problem has to be completely redefined, and new solutions has to be provided. Therefore, the ALMA scheduling problem, as presented in this document, might not be completely defined yet.
+
+Perhaps another interesting approach to the classification of a critical SB set for a array configuration, is to try to classify the SBs based on weather patterns along the whole observing cycle. So far, it is known that there are certain months in the calendar year that are very bad or quite good weather patterns to carry-on observation, an algorithm might introduce this ``intelligence'' to come with a better array configuration plan, or to come up with a better solution faster than the algorithms presented in this work.
