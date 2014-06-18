@@ -1,11 +1,17 @@
 \chapter{Problem description}
 \section{Radio Astronomy topics related to observations scheduling problem}
 
-The largest single telescopes are antennas having diameters $D\approx 100\,[m]$. The angular resolution of diffraction-limited telescope is $\theta \approx \frac{\lambda}{D}$, where $\lambda$ is the wavelength of the received electromagnetic wave. Therefore, much bigger diameters are required to archive sub-arcsecond resolutions in radio waves. Mechanically these huge dishes are complicated to move with precision to point and track the sky sources to observe.
+The largest single telescopes are antennas having diameters $d\approx 100\,[m]$. The angular resolution of diffraction-limited telescope is $\theta \approx \frac{\lambda}{d}$, where $\lambda$ is the wavelength of the received electromagnetic wave. Therefore, much bigger diameters are required to archive sub-arcsecond resolutions in radio waves. Mechanically these huge dishes are complicated to move with precision to point and track the sky sources to observe.
 
 Interferometers comprising $N > 2$ smaller dishes have mitigated many practical problems found in huge single-dishes, increasing the collecting area into the order of $[km]$. Nevertheless, the interferometer requires extra electronic and computing power to correlate all the raw data coming from the antennas in real-time.
- 
-The most basic interferometer is a pair of radio telescopes whose voltage outputs are multiplied and averaged or \textit{correlated}, which has the effect of filtering out high frequencies~\cite{thompson01}. Even the most elaborated interferometers with $N\gg2$ elements are treated as $\frac{N(N-1)}{2}$ independent interferometer pairs, each one of these pairs are called \textit{baselines}. The two antennas basic interferometer is presented in figure~\ref{fig:interometer}. The wavefront from the source in direction $\theta$ reaches the right-hand antenna at a time $\tau_g = \frac{D}{c}\sin\theta$ before it reaches the left-hand antenna. $\tau_g$ is the geometric delay and $c$ is the speed of light.
+The most basic interferometer is a pair of radio telescopes whose voltage outputs are multiplied and averaged or \textit{correlated}, which has the effect of filtering out high frequencies~\cite{thompson01}. Even the most elaborated interferometers with $N\gg2$ elements are treated as $\frac{N(N-1)}{2}$ independent interferometer pairs, each one of these pairs are called \textit{baselines}. The two antennas basic interferometer is presented in figure~\ref{fig:interferometer}. The wavefront from the source in direction $\theta$ reaches the right-hand antenna at a time $\tau_g = \frac{b}{c}\sin\theta$ before it reaches the left-hand antenna. $\tau_g$ is the geometric delay and $c$ is the speed of light.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.5\textwidth]{images/intblock}
+\caption[Two-element interferometer observing a narrow frequency $\nu=\frac{\omega}{2\pi}$]{Two-element interferometer observing a narrow frequency $\nu=\frac{\omega}{2\pi}$. Source \url{http://www.cv.nrao.edu/course/astr534/images/intblock.svg}}
+\label{fig:interferometer}
+\end{figure}
 
 Then, the output voltage of antennas 1 and 2 can be written as:
 \begin{eqnarray}
@@ -26,11 +32,28 @@ R = \langle V_1V_2\rangle = \frac{V^2}{2} \frac{1}{T}\int_{-\frac{T}{2}}^{\frac{
  
 The correlator output voltage $R$ varies sinusoidally with the change of source direction in the interferometer frame. These variations are called \textit{fringes}. Thus, in terms of frequency $\nu$, the output multiplier is proportional to
 \begin{equation}
-F = \cos(2\pi \nu \tau_g) = \cos\Bigg(\frac{2\pi\, D \sin \theta}{\lambda}\Bigg)
+F = \cos(2\pi \nu \tau_g) = \cos\Bigg(\frac{2\pi\, b \sin \theta}{\lambda}\Bigg)
+\end{equation}
+
+A development of the simple analysis can be make if we consider two Fourier components of the received signal at frequencies $\nu_1$ and $\nu_2$. These frequencies components are statically independent so that the interferometer output is the linear sum of the responses component~\cite{thompson01}. Hence the output has component $F_1$ and $F_2$ as shown by equation~\ref{eq:sinc-fringe}. Where $l = \sin \theta$.
+\begin{equation}
+\label{eq:sinc-fringe}
+F(l) = \frac{1}{\Delta\nu}\int_{v_0-\frac{\Delta\nu}{2}}^{v_0+\frac{\Delta\nu}{2}}\cos\Bigg(\frac{2\pi b l \nu}{c}\Bigg)dv=
+\cos\Bigg(\frac{2\pi b l \nu_0}{c}\Bigg)\frac{\sin(\frac{\pi b l \Delta \nu}{c})}{\frac{\pi b l \Delta \nu}{c}}
 \end{equation}
  
- 
-\textit{(TODO:Pending an introduction to radio astronomy)}
+Thus the fringe pattern has an envelope in the form of a $sinc$ function ($sinc(x) = \frac{\sin\pi x}{\pi x}$)
+
+The response of a two-element interferometer with directive antennas is that sinusoid multiplied by the product of the voltage patterns of the individual antennas. Normally the two antennas a re identical, therefore the product is the power pattern of the much wider individual antennas, and is called the \textit{primary beam}. The primary beam is usually a Gaussian much wider than fringe period. The Fourier transform of the product of two functions is the convolution of the Fourier transforms, therefore the interferometer with directive antennas responds to a finite range of angular frequencies centered on $\frac{b\sin\theta}{\lambda}$.
+
+Improving the instantaneous point-source response requires more Fourier components; which means more baselines. Increasing the number of baselines have an effect over the point-source response obtained by averaging the outputs of all the pairs, which rapidly approaches a Gaussian as the number of antennas increases. The figure~\ref{fig:interf-components} presents the synthesized main beam of the two, three and four-element interferometer, which is nearly Gaussian with \textit{angular resolution} $\sim \frac{\lambda}{b}$, where $b$ is the longest baseline.  
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.5\textwidth]{images/interf4}
+\caption[Instantaneous point-source responses of interferometers with overall projected length $b$]{Instantaneous point-source responses of interferometers with overall projected length $b$. Source \url{http://www.cv.nrao.edu/course/astr534/images/interf4.svg}}
+\label{fig:interf-components}
+\end{figure}
+
 \subsubsection{Sensitivity}
 \label{sec:sens}
 The observation total RMS noise could be accumulated over different observation sessions, only if all the observations are done over the same target, with the same observational setup (i.e., same correlator configuration and observing frequency). The accumulated RMS noise over the time for a given setup is known as \textit{sensitivity}.
@@ -62,14 +85,6 @@ $\sim \sqrt{2}$ for switched observations).
 The RMS values are expressed in degrees Kelvin. To convert them to flux units, they are multiplied by the factor $2k/A_e$ where $k$ is the Boltzmann constant and $A_e$ is the antenna effective aperture.
 
 These equations do not cover the case of the combined array, where the antennas in the array have different sizes, nor cover the cases where the bandwidth has been changed (multi-resolution modes, etc.).
-
-\subsubsection{Angular resolution}
-\label{sec:angular-res}
-A first order approximation of the resolution that can be attained with a give
-array configuration is $\theta = \lambda / l_{max}$ where $l_{max}$ is the maximum
-baseline in the array.
-
-\textit{TODO: Try to get the derivation of the angular resolution of an array}
 
 \subsection{Weather considerations}
 
