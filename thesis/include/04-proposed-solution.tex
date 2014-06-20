@@ -137,7 +137,7 @@ Since each executive contributed with different resources, which may differ from
 
 Ideally, the observation time percentage for each executive, has to be kept accordingly to the assigned percentage in the observation cycle. Nonetheless, this could carry unfairness within each observation sub-period (e.g within one week only NA Scheduling blocks were observed). This could trigger unhappiness and some concerns among the different executives, whom expects to have their observation time proportion assigned during a sub-period of time within the observation cycle.
 
-It has been defined the period of time, as one week of observation (this coincides with the early science block carried on bi-weekly). Within this period of time each executive shall get as near as possible the amount of time assigned initially. If it is not possible, then the scheduler shall carry over the unfairness among the executive's times and apply corrections in future schedules (see equation~\ref{eq:exec-balance}).
+It has been defined the period of time, as one week of observation (this coincides with the early science block carried on bi-weekly). Within this period of time each executive shall get as near as possible the amount of time assigned initially. If it is not possible, then the scheduler shall carry over the unfairness among the current executives' time shares and apply corrections in future schedules (see equation~\ref{eq:exec-balance}).
 
 \begin{equation}
 \label{eq:exec-balance}
@@ -265,9 +265,9 @@ The selection operation filters out all the SBs that don't comply with equation~
 
 So far, the study has been focused in the definition of the ALMA's Scheduling array problem and the study of its mathematical model. However, this have not provided the background about how the algorithm will operate internally to return a plan for a given time period. The decision of the algorithm design is driven by the following properties:
 \begin{enumerate}
-\item The algorithm must work on the on-line system and as well on simulation mode. The idea behind the simulation, is to evaluate how well (or bad) behave the algorithm for a given set of Scheduling Blocks, Array Configurations and time period. Since the ultimate goal is to use the algorithm in on-line system to contribute to take a decision for the best Scheduling Block at a given time.
+\item The algorithm must work on the on-line system and as well on simulation mode. The idea behind the simulation, is to evaluate how well (or bad) behave the algorithm for a given set of Scheduling Blocks, Array Configurations and time period. Since the ultimate goal is to use the algorithm in on-line system to contribute to take a decision to choose the best Scheduling Block to observe at a given time.
 
-\item The time within a time period, used by the algorithm, might not be discretized because of the variable duration of each Scheduling Block. Also a single execution of a Scheduling Block is not be preemptable until it completes (success ot failure). 
+\item The time within a time period, used by the algorithm, might not be discretized because of the variable duration of each Scheduling Block. Also, a single execution of a Scheduling Block is not be preemptable until it completes (success ot failure). 
 
 \item The algorithm must try to optimize the objective functions (equations~\ref{eq:max-sci-value} and~\ref{eq:min-idle-time}), but at the same time the executive percentage time balance must be kept in line, according to the original defined values, within an observation time frame of one (1) week (see equation~\ref{eq:exec-balance}).
 
@@ -275,7 +275,7 @@ So far, the study has been focused in the definition of the ALMA's Scheduling ar
 
 \end{enumerate}
 
-Given the uncertain number of possible Execution Blocks, duration of them and the time when they are scheduled for execution, it might result impossible to determine a domain model where a complete search technique could be applied. Also, every time a Scheduling Block is scheduled for observation, the search tree for the problem changes, creating a whole new set of options based on the previous decision. Of course, the dynamism on the number of branches in the search tree, greatly depends on the number of Scheduling Block given as input for the algorithm. According to ALMA's system requirements the scheduling subsystem (including the algorithm) must be able to handle easily~\footnote{Easily is a quality property for the system, which should be interpreted as ``The algorithm must return a solution in a reasonable human time (usually between $1-2$ seconds)'' for the given input time} $10000$ Scheduling Blocks as input.
+Given the uncertain number of possible Execution Blocks, duration of them and the time when they are scheduled for execution, it might result impossible to determine a domain model where a complete search technique could be applied. Also, every time a Scheduling Block is scheduled for observation, the search tree for the problem changes, creating a whole new set of options based on the previous decision. Of course, the dynamism on the number of branches in the search tree, greatly depends on the number of Scheduling Block given as input for the algorithm. According to ALMA's system requirements the scheduling subsystem (including the algorithm) must be able to handle easily~\footnote{Easily is a quality property for the system, which should be interpreted as ``The algorithm must return a solution in a reasonable human time (usually between $1-2$ minutes)'' for the given input time} $10000$ Scheduling Blocks as input.
 
 The algorithm proposed in this study will be based on the Deficit Round-Robin (DRR) algorithm~\cite{shreedhar96}. The original algorithm defines service flows (queues) and a processor dispatching the network packets arrived and already sorted in one of the flows. Making a comparative between the model proposed in the original paper and the ALMA's scheduling problem, it is possible to map the original proposed domain model into the ALMA's model as follows:
 
@@ -284,7 +284,7 @@ The algorithm proposed in this study will be based on the Deficit Round-Robin (D
 
 \item[Processor] is mapped into the \textit{Array Configuration}. The Array is unique and can execute just one Scheduling Block at a given time.
 
-\item[Service flows] are mapped into the \textit{Executives' observation times}. Actually, the flows will be mapped into the percentage of the Executives' observation times, what is a measurable quantity given an arbitrary time frame inside the total duration of the time given as input to the algorithm. Nevertheless, the mapping here does not fit perfectly, due the design of DRR establishes that every service flow will have the same priority than the others. For the ALMA case, each Executive should have different priorities, to deal with this issue a weight will be applied to the quantum size, based on the time percentage assigned to each executive, this is similar to what is proposed in the weighted Round-Robin algorithm explained in~\cite{katevenis91}.
+\item[Service flows] are mapped into the \textit{Executives' observation time-shares}. Actually, the flows will be mapped into the percentage of the Executives' observation time-shares, what is a measurable quantity given an arbitrary time frame, inside the total duration of the time given as input to the algorithm. Nevertheless, the mapping here does not fit perfectly, due the design of DRR, which establishes that every service flow will have the same priority than the others. For the ALMA case, each Executive should have different priorities, to deal with this issue a weight will be applied to the quantum size, based on the time percentage assigned to each executive, this is similar to what is proposed in the weighted Round-Robin algorithm explained in~\cite{katevenis91}.
 \end{description}
 
 The quantum size will be a fixed number as explained in the original DRR design. However, the quantum size applied to a Executive's service flow will be multiplied by a weight defined in equation~\ref{eq:alg-quantum-weight}, which is different for every Executive.
@@ -432,17 +432,17 @@ This problem depends upon the result of the algorithm output for the ``Schedulin
 \label{sec:array-problem-general-condition}
 The problem will consider 3 different possible Array types: \textit{12-meter arrays} ($12m$) intended to be used together with the baseline correlator computer, \textit{7-meter arrays} ($7m$) intended to be used together with ACA correlator computer (zero-spacing interferometer) and \textit{Total Power arrays} ($TP$) intended to use in auto-correlations (single-dish). 
 
-The array configurations duration has been discretized in terms of weeks. Keeping the configurations with shorter durations may be introduce a lot of overhead for operations, due in every configuration change several antennas might be moved from one pad to another, using valuable time not destined to science.
+The array configurations duration has been discretized in terms of weeks. Keeping the configurations with shorter durations might introduce a lot of overhead for operations, due in every configuration change several antennas might be moved from one pad to another, using valuable time not destined to science.
 
 The antenna movement duration among pads is not considered in the model.
 
-The algorithm will not propose changes in properties of the array configurations (e.g. angular resolution, number of antennas, bands available, etc). It will only propose changes in terms of duration and staring time.
+The algorithm will not propose changes in properties of the array configurations (e.g. angular resolution, number of antennas, bands available, etc). It will only propose changes in terms of duration and starting time.
 
 Science observations will be carried over a daily time period considerably less than 24 hours. If there was 24 hours operations for every array, then this problem would be reduced to calculate the sum of the hours requested by every relevant project assigned to a every array configuration, as the requested array duration.
 
 \subsection{Mathematical model}
 
-A generic representation of the model proposed is presented in figure~\ref{fig:array-planning-representation}. There the different array configurations are scheduled over the season presented in the horizontal coordinate as a time-tile each one of the separation along the time-line represents a month. A configuration can be scheduled more than once over the season like the $12m_1$ configuration in the diagram, and a configuration can spawn for the whole season, if there are no conflicting arrays configurations, like the $TP$ in the representation.
+A generic representation of the model proposed is presented in figure~\ref{fig:array-planning-representation}. There, the different array configurations are scheduled over the season presented in the horizontal coordinate as a time-line, each one of the separation along the time-line represents a month. A configuration can be scheduled more than once over the season like the $12m_1$ configuration in the diagram, and a configuration can spawn for the whole season, if there are no conflicting array configurations, like the $TP$ in the representation.
 
 \begin{figure}
 \def\svgwidth{\textwidth}
@@ -498,7 +498,7 @@ The observatory can setup several times, at different dates, over the observing 
 
 \subsection{Scheduling Block classification}
 \label{sec:array-sb-classification}
-From section~\ref{sec:sched-constraints}, it is possible to deduce that, there is a subset of these restriction which might help to narrow the search space for this problem. In fact, it may be possible to define a ``Scheduling Block critical subset'', inherent to each Array Configuration. Although the Scheduling Blocks belonging to one array configuration could not be exclusive to it.
+From section~\ref{sec:sched-constraints}, it is possible to deduce that, there is a subset of these restrictions, which might help to narrow the search space for this problem. In fact, it may be possible to define a ``Scheduling Block critical subset'', inherent to each Array Configuration. Although the Scheduling Blocks belonging to one array configuration could not be exclusive to it.
 
 The list of constraints is the following:
 \begin{enumerate}
@@ -556,7 +556,7 @@ Nevertheless the effectiveness of the method is not guaranteed, given the schedu
 
 The algorithm needs to be able to explore the search space given by the different starting dates for the array configurations, as well the different durations. But once it finds a good solution, the algorithm must optimize that based on the best-found solution until now, to try complete as much projects as possible. For this reason, this work propose to solve this problem implementing a Simulated annealing algorithm.
 
-At the start the algorithm must able to map the requested LST ranges of each array configuration, into an interval of a calendar dates. This mapping will depend on the adjustments given for the Observation season: its start time and its duration. This could return multiple calendar dates indicating when the array configuration can start. A ``random'' greedy algorithm is defined in~\ref{alg:array-greedy}, which will return a plan for the array configuration over the observation season.
+At the start the algorithm must able to map the requested LST ranges of each array configuration, into an interval of a calendar dates. This mapping will depend on the adjustments given for the Observing season: its start time and its duration. This could return multiple calendar dates indicating when the array configuration can start. A ``random'' greedy algorithm is defined in listing~\ref{alg:array-greedy}, which will return a plan for the array configuration over the observing season.
 \begin{algorithm}[h!]
 \caption{Greedy Algorithm used for random restarts in Array configuration planning problem solution}          
 \label{alg:array-greedy}                   
@@ -587,7 +587,7 @@ At the start the algorithm must able to map the requested LST ranges of each arr
 
 This greedy algorithm is random in the sense to choose what array configuration is selected to operate over it. Once one of them is selected, one of the start dates in selected, also randomly. There may be conflicts with other already scheduled array configurations, but this algorithm does not has the ability to resolve these conflicts, it just ignore them and continues trying to allocate others array configurations, randomly.
 
-This should give enough combinations, as return values, where a more intelligent algorithm could operate over them. Nevertheless, the lack of a more smart resolution over the array configurations schedule conflicts, may not consider certain valid solutions or it could take several invokes to the proposed greedy algorithm to give it, since it is just random-based. 
+This should give enough combinations, as return values, where a more intelligent algorithm could operate over them. Nevertheless, the lack of a smarter resolution over the array configurations schedule conflicts, may not consider certain valid solutions or it could take several invokes to the proposed greedy algorithm to get it, since the greedy algorithm is just random-based. 
 
 A simulated annealing algorithm may help to fine tune the solution returned by the greedy algorithm. The proposed algorithm is shown is listing~\ref{alg:array-sa}.
 \begin{algorithm}                     
@@ -624,13 +624,13 @@ A simulated annealing algorithm may help to fine tune the solution returned by t
     \end{algorithmic}
 \end{algorithm}
 
-The idea behind the design or the proposed SAA is to fine-tune the solution found by the greedy algorithm, exploring the neighborhood of the given solution. Of course, the SAA defined also will jump, trying to explore into solutions that are not part of the neighbor, using as random restart a result from the invocation of the proposed greedy algorithm, again. The SAA will iterate until it found a feasible solution for the requested problem, which is: ``Find a array configuration plan to complete $N$ number of A-graded projects'', where $N < TOTAL\_A\_GRADED\_PROJECTS$; or when iterates reaching the $N\_ITER$ limit.
+The idea behind the design or the proposed SAA is to fine-tune the solution found by the greedy algorithm, exploring the neighborhood of the given solution. Of course, the SAA defined also will jump, trying to explore into solutions that are not part of the neighbor, using as random restart a result of the invocation of the proposed greedy algorithm, again. The SAA will iterate until it found a feasible solution for the requested problem, which is: ``Find a array configuration plan to complete $N$ number of A-graded projects'', where $N < TOTAL\_A\_GRADED\_PROJECTS$; or when iterates reaching the $N\_ITER$ limit.
 
 The possible movements that SAA can execute to alter the initial solution are discussed next, as follows:
 \begin{description}
-\item[Change the start date for a given Array Configuration] This is considered a medium-change, it may allow to the solution to partially jump-out from the LST interval where there are more observable scheduling block. The contrary is also possible, but not both together, unless the configuration duration is also increased. The proposed SAA implements this, selecting randomly the Array Configuration.
+\item[Change the start date for a given Array Configuration] This is considered a medium-change, it may allow to the solution to partially jump-out from the LST interval where there are more observable scheduling block. The contrary is also possible, but not both together, unless the configuration duration is also increased. The proposed SAA implements this, selecting randomly the Array Configuration to modify.
 
-\item[Change the duration for a given Array Configuration] This is considered a soft-change, increasing the duration will affect positively to the solution because will allow to more Scheduling Blocks be observed, even more of them can be completed. The proposed SAA implements this, selecting randomly the Array Configuration and the start or end time to modify. But first, for the selected array configuration whether it is feasible to extend its duration checking, if there are no conflicting array configurations in the surroundings or not.
+\item[Change the duration for a given Array Configuration] This is considered a mild-change, increasing the duration will affect positively to the solution because will allow to more Scheduling Blocks be observed, even more of them can be completed. The proposed SAA implements this, selecting randomly the Array Configuration and the start or end time to modify. But first, for the selected array configuration it is checked whether it is feasible to extend its duration or not, checking if there are no conflicting array configurations in the surroundings.
 
 \item[Swap two conflicting Array Configurations for given dates] This is the harshest modification for the solution. The SAA proposed will not implement it, since relies completely on the proposed greedy algorithm for this. This modification cannot be applied if there are not conflicting array configurations in the interval desired to modify. This movement can be seen as a combination of the both movements described above, but also can involve swapping order for the array configurations in a clever way to see whether the new solution is better or not.
 \end{description}
