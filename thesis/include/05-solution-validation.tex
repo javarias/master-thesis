@@ -2,16 +2,16 @@
 
 \section{Solution validation}
 
-This section gives to the reader a shallow overview of the software developed and the date used as input to validate the work presented in the previous part. Most of the software is reused from the ALMA's scheduling sub-system software. The work mostly consisted in expanding the available implementations, injecting into the software deployment the algorithms presented before and running experiments to validate the hypothesis introduced in this work. To achieve this a standalone (not requiring ALMA software interfaces and data models) version of the planning simulator was conceived. 
+This section gives to the reader a shallow overview of the software developed, and the data used as input to validate the work presented in the previous chapter of this work. Most of the software is reused from the ALMA's scheduling sub-system software. The work mostly consisted in expanding the available implementations, injecting into the software deployment the algorithms presented before and running experiments to validate the hypothesis introduced in this work. To achieve this, a standalone (not requiring ALMA software interfaces and data models) version of the planning simulator was conceived. 
 
 \subsection {Data model and implementation details}
 
-The model designed for the Observatory project represented in figure~\ref{fig:datamodel-obsproject} is a simplification of the ALMA Project Data Model summarized in section~\ref{sec:apdm} and it is the model used in the ALMA's Dynamic Scheduling Algorithm briefly described in section~\ref{sec:alma-dsa}.
+The model designed for the observation project hierarchy, is represented in figure~\ref{fig:datamodel-obsproject}, this is a simplification of the ALMA Project Data Model summarized in section~\ref{sec:apdm} and it is the model used in the ALMA's Dynamic Scheduling Algorithm, briefly described in section~\ref{sec:alma-dsa}.
 
 The most relevant parts are: 
 \begin{description}
 \item[ObsProject] \hfill \\
-This is top-level container for a subset of observations requested. This container defines the scientific grade and rank, as well particular information of the executive, whom has requested the observation. All this information is shared with the set of scheduling blocks contained within.
+This is top-level container for a group of observations requested. This container defines the scientific grade and rank, as well particular information of the executive, whom has requested the observation. All this information is shared with the set of scheduling blocks contained within.
 \item[SchedBlock] \hfill \\
 This is the atomic scheduling unit for the scheduling algorithm. The SB will contain information related to scheduling constraints, like array type requested, representative band, max/min angular resolution, etc; weather constraints, like, max. opacity, max. wind speed, etc; time constraints, like max. observation time, temporal boundaries; and the sky source.
 \end{description}
@@ -24,7 +24,7 @@ This is the atomic scheduling unit for the scheduling algorithm. The SB will con
 \label{fig:datamodel-obsproject}
 \end{figure}
 
-The model designed for handle the observatory instrumentation is represented in figure~\ref{fig:datamodel-observatory}. This is an over simplification of what is presented in~\cite{avarias11, hoffstadt10}, the \textbf{ArrayConfiguration} class covers the minimal needs to allow to the algorithm to take a decision regarding the array configuration parameters. The simplification was done because the original classes defined did not add any extra value for the algorithm.
+The model designed tp handle the observatory instrumentation is represented in figure~\ref{fig:datamodel-observatory}. This is an over simplification of what is presented in~\cite{avarias11, hoffstadt10}, the \textbf{ArrayConfiguration} class covers the minimal needs to allow to the algorithm to take a decision regarding the array configuration parameters. The simplification was done because the original classes defined did not add any extra value for the algorithm.
 
 \begin{figure}[htbp]	
 \begin{center}
