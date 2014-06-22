@@ -1,9 +1,9 @@
 \chapter{Problem description}
 \section{Radio Astronomy topics related to observations scheduling problem}
 
-The largest single telescopes are antennas having diameters $d\approx 100\,[m]$. The angular resolution of diffraction-limited telescope is $\theta \approx \frac{\lambda}{d}$, where $\lambda$ is the wavelength of the received electromagnetic wave. Therefore, much bigger diameters are required to archive sub-arcsecond resolutions in radio waves. Mechanically these huge dishes are complicated to move with precision to point and track the sky sources to observe.
+``The largest single telescopes are antennas having diameters $d\approx 100\,[m]$. The angular resolution of diffraction-limited telescope is $\theta \approx \frac{\lambda}{d}$, where $\lambda$ is the wavelength of the received electromagnetic wave. Therefore, much bigger diameters are required to archive sub-arcsecond resolutions in radio waves. Mechanically these huge dishes are complicated to move with precision to point and track the sky sources to observe''~\cite{condon10}.
 
-Interferometers comprising $N > 2$ smaller dishes have mitigated many practical problems found in huge single-dishes, increasing the collecting area into the order of $[km]$. Nevertheless, the interferometer requires extra electronic and computing power to correlate all the raw data coming from the antennas in real-time.
+Interferometers comprising $N > 2$ smaller dishes have mitigated many practical problems found in huge single-dishes, increasing the collecting area into the order of $[km]$. Nevertheless, the interferometer requires extra electronic and computing power to correlate all the raw data coming from the antennas in real-time~\cite{condon10}.
 The most basic interferometer is a pair of radio telescopes whose voltage outputs are multiplied and averaged or \textit{correlated}, which has the effect of filtering out high frequencies~\cite{thompson01}. Even the most elaborated interferometers with $N\gg2$ elements are treated as $\frac{N(N-1)}{2}$ independent interferometer pairs, each one of these pairs are called \textit{baselines}. The two antennas basic interferometer is presented in figure~\ref{fig:interferometer}. The wavefront from the source in direction $\theta$ reaches the right-hand antenna at a time $\tau_g = \frac{b}{c}\sin\theta$ before it reaches the left-hand antenna. $\tau_g$ is the geometric delay and $c$ is the speed of light.
 
 \begin{figure}[htbp]
@@ -44,9 +44,9 @@ F(l) = \frac{1}{\Delta\nu}\int_{v_0-\frac{\Delta\nu}{2}}^{v_0+\frac{\Delta\nu}{2
  
 Thus the fringe pattern has an envelope in the form of a $sinc$ function ($sinc(x) = \frac{\sin\pi x}{\pi x}$)
 
-The response of a two-element interferometer with directive antennas is that sinusoid multiplied by the product of the voltage patterns of the individual antennas. Normally the two antennas a re identical, therefore the product is the power pattern of the much wider individual antennas, and is called the \textit{primary beam}. The primary beam is usually a Gaussian much wider than fringe period. The Fourier transform of the product of two functions is the convolution of the Fourier transforms, therefore the interferometer with directive antennas responds to a finite range of angular frequencies centered on $\frac{b\sin\theta}{\lambda}$.
+The response of a two-element interferometer with directive antennas is that sinusoid multiplied by the product of the voltage patterns of the individual antennas. Normally the two antennas a re identical, therefore the product is the power pattern of the much wider individual antennas, and is called the \textit{primary beam}. The primary beam is usually a Gaussian much wider than fringe period. The Fourier transform of the product of two functions is the convolution of the Fourier transforms, therefore the interferometer with directive antennas responds to a finite range of angular frequencies centered on $\frac{b\sin\theta}{\lambda}$~\cite{condon10}.
 
-Improving the instantaneous point-source response requires more Fourier components; which means more baselines. Increasing the number of baselines have an effect over the point-source response obtained by averaging the outputs of all the pairs, which rapidly approaches a Gaussian as the number of antennas increases. The figure~\ref{fig:interf-components} presents the synthesized main beam of the two, three and four-element interferometer, which is nearly Gaussian with \textit{angular resolution} $\sim \frac{\lambda}{b}$, where $b$ is the longest baseline.  
+Improving the instantaneous point-source response requires more Fourier components; which means more baselines. Increasing the number of baselines have an effect over the point-source response obtained by averaging the outputs of all the pairs, which rapidly approaches a Gaussian as the number of antennas increases. The figure~\ref{fig:interf-components} presents the synthesized main beam of the two, three and four-element interferometer, which is nearly Gaussian with \textit{angular resolution} $\sim \frac{\lambda}{b}$, where $b$ is the longest baseline~\cite{condon10}.  
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.5\textwidth]{images/interf4}
@@ -56,7 +56,7 @@ Improving the instantaneous point-source response requires more Fourier componen
 
 \subsubsection{Sensitivity}
 \label{sec:sens}
-The observation total RMS noise could be accumulated over different observation sessions, only if all the observations are done over the same target, with the same observational setup (i.e., same correlator configuration and observing frequency). The accumulated RMS noise over the time for a given setup is known as \textit{sensitivity}.
+The observation total RMS noise could be accumulated over different observation sessions, only if all the observations are done over the same target, with the same observational setup (i.e., same correlator configuration and observing frequency). The accumulated RMS noise over the time for a given setup is known as \textit{sensitivity}~\cite{avarias11}.
 
 The RMS noise for multiple observations $\sigma$ is accumulated as shown in equation \ref{eq:rms-noise}.
 \begin{equation}
@@ -90,7 +90,7 @@ These equations do not cover the case of the combined array, where the antennas 
 
 The Earth atmosphere is a layer of gases surrounding the solid mass of Earth. This layer of gases is maintained in this position due the gravitational effect of the solid mass. Most of the Earth's atmosphere is composed by Nitrogen and Oxygen used by most of the micro-organisms for respiration and some carbon dioxide used by most of the plants and other organism for photosynthesis,	also it serves as protection of ultraviolet radiation for the living organisms. Most of the mass (around $80\%$) of the atmosphere and almost all the weather phenomenon occurs in the lowest layer of the Earth's atmosphere, the \textit{Troposphere}.
 
-The troposphere is extending from Earth's surface to 7 to 10 km of altitude, the temperature decreases with altitude in this layer, clouds form and convection can be significant. The troposphere is composed mainly of $N_2$, $O_2$, trace gases such as water vapor, $N_2O$ and $CO_2$, and particles such as liquid water and dust in clouds. Generally, the troposphere become increasingly opaque with increasing frequency as shown in figure \ref{fig:atmospheric-opacity}, mostly due the absorption by $O_2$ and $H_2O$.
+The troposphere is extending from Earth's surface to 7 to 10 km of altitude, the temperature decreases with altitude in this layer, clouds form and convection can be significant. The troposphere is composed mainly of $N_2$, $O_2$, trace gases such as water vapor, $N_2O$ and $CO_2$, and particles such as liquid water and dust in clouds. Generally, the troposphere become increasingly opaque with increasing frequency as shown in figure \ref{fig:atmospheric-opacity}, mostly due the absorption by $O_2$ and $H_2O$~\cite{taylor99}.
 
 \begin{figure}[htbp]
 \includegraphics[width=\textwidth]{images/Atmospheric_electromagnetic_opacity}

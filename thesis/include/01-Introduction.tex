@@ -1,19 +1,19 @@
 \chapter{Introduction}
 
-State-of-the art astronomical facilities are costly to build and operate, it is essential that these facilities be
-operated as efficiently as possible maximizing their scientific output. In modern astronomy has been
-demonstrated the importance to use automatic modes in the operation of the latest and biggest
-telescopes. Over latest decades the problem has attracted more research since new facilities have been
-proved that is unfeasible to try to schedule all the observations manually due the complexity to satisfy
-the astronomical and the instrumental constraints imposed by the problem and the amount of scientific
-proposals to be reviewed. Also due the dynamic nature of some of the constraints like the weather and
-the uncertain when an observation is fully complete make this problem more difficult even.
+State-of-the art astronomical facilities are costly to build and operate, it is essential that these facilities 
+must be operated as efficiently as possible, trying to maximize the scientific output. In modern astronomy has been
+demonstrated the importance to use automatic modes, in the day-to-day operations.
+Over the latest decades the problem has attracted more research, due new facilities have been
+demonstrated that is unfeasible to try to schedule observations manually, given the complexity to satisfy
+the astronomical and instrumental constraints imposed by the problem, and the amount of scientific
+proposals to be reviewed. Also, given the dynamic nature of some of the constraints like the weather and
+the uncertainty when an observation will be fully completed, make this problem more difficult even.
 
 The Atacama Large Millimeter/submillimeter Array (ALMA) is a major collaboration effort between
 European, North American and East Asian countries, under construction on the Chilean Chajnantor
-plateau, at 5.000 meters altitude. Currently it is the largest radio-telescope on Earth, when completed it
-will have 66 antennas of 12 and 7 meters diameter, distributed over a wide extension, with up to 16 kilo-
-meters of baseline separation. The ALMA interferometer will provide the possibility to be used as a single
+plateau, at 5.000 meters of altitude. Currently it is the largest radio-telescope on Earth, when completed it
+will have 66 antennas of 12 and 7 meters diameter, distributed over a wide extension, with up to 16 kilometers
+of baseline separation. The ALMA interferometer will provide the possibility to be used as a single
 array, or as up to six minor independent arrays or groups of antennas. Over the observing season
 multiples arrays configurations will be available changing the antennas position from one place to
 another. These places are already defined positions called pads, during normal operations at least two
@@ -21,32 +21,33 @@ arrays will be available each of one attached to different correlators computers
 observe in the visible spectrum, observations are not limited to night time only, thus a 24/7 operation
 with as small downtime as possible is expected. However during commissioning operations, ALMA will operate on tied schedules having less than the half of the day-time to do science.
 
-Two different problems have been identified: \textit{``Astronomical observation scheduling problem''} consists on determine a
-schedule for the given set of scheduling blocks considering one or more arrays already created in a given
+In the study of the problem, two different sub-problems has been identified: \textit{``Astronomical observation scheduling problem''} 
+consists on determine a schedule for a given set of scheduling blocks, considering an array already created in a given fixed
 period of time. The idea is to try to observe most of the projects with highest priority in the less amount
 of time possible considering all the scientific requirements and constraints; and \textit{``The  Array configuration planning problem''}, what  
-is on top of the scheduling array problem. It consists in try to determine a schedule of
-observations for the observing season (which is a fixed amount of time and it lasts for several months, up
-to 1 year), for given set of the scheduling blocks and the given set the of array configurations. The idea is
-to try to observe most of the projects with highest scientific value considering all the scientific
-requirements during the observing season, however not all the projects could be completed.
+is on top of the scheduling array problem. It consists in to try to determine a plan for the array configurations given as input,
+for the observing season (which is a fixed amount of time and it lasts for several months, up
+to a couple of years) and for a given set of the scheduling blocks, which can be observed in
+multiple array configurations.
 
 \section{Hypothesis}
 
-ALMA software currently has an algorithm, the Dynamic Scheduling Algorithm implemented as
-part of the scheduling subsystem, which does not try optimize the set of selected scheduling unit
-as a function of time for long periods of time. Also the algorithm does not try to come up with an
-optimal program for array configurations, what are given as input for a season. This algorithm suffers of
+Currently, ALMA scheduling software has an algorithm, the Dynamic Scheduling Algorithm (DSA),
+which does not try optimize the set of selected scheduling units
+as a function of time, for long time periods. Also the algorithm does not try to come up with an
+optimal program for array configurations, which are given as input for a given observing season. This algorithm suffers of
 serious problems of fairness, it is possible under certain circumstances, to get as result a
-scheduling unit repeated all over an observation time frame (like a week) letting to starve
-projects with the same or higher priority, but belonging to a different participant.
-In other hand the most recent model proposal lacks of all astronomical analysis of constraints and
-results to decide whether the algorithm could be feasible to adapt to the ALMA scheduling requirements
-and use as part of the ALMA software or not.
-Currently, no methodology deals with the problem of trying to schedule the proposed
+scheduling unit repeated all over an observation time frame (like within a week), letting projects 
+with the same or higher priority, but belonging to a different participant, to starve (never get observed).
+In other hand, the most recent model proposal lacks of astronomical analysis of constraints and
+results, to decide whether the algorithm could be feasible to adapt to the ALMA scheduling requirements,
+and use it as part of the ALMA software or not.
+Currently, no methodology deals with the problem of trying to get a plan for the proposed
 array configurations necessary to solve the ALMA’s long-term scheduling.
 
-Therefore the hypothesis presented is the following: \textbf{``It is feasible to design and implement an algorithm for the ALMA scheduling problem that can meet most of the astronomical, instrument and weather constraints''}.
+Therefore the hypothesis presented is the following:
+\textbf{``It is feasible to design and implement an algorithm for the ALMA scheduling problem 
+that can meet most of the astronomical, instrument and weather constraints''}.
 
 \section{Objectives}
 \label{sec:objectives}
