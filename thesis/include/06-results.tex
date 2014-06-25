@@ -36,7 +36,7 @@ TP & 2014-06-01 & 2015-10-01 \\ \hline
 \label{table:drr-test-array-config}
 \end{table}
 
-The metric to compare both algorithm will be the percentage of time given to each executive every week, every two weeks, every four weeks and for the whole array configuration duration. At the same time, it will be analyzed the impact of the DRR algorithm for the project completion rate at the end of the whole simulation, checking if there is any adverse effect over this parameter. The completion rate will be based at project level, accounting projects completed, started but non-completed and non-started, these categories will be broken down based on the projects science grade given: $A$, $B$ and $C$.
+The metric to compare both algorithm will be the percentage of time given to each executive every simulated week, and for the whole array configuration duration. At the same time, it will be analyzed the impact of the DRR algorithm for the project completion rate at the end of the whole simulation, checking if there is any adverse effect over this parameter. The completion rate will be based at project level, accounting projects completed, started but non-completed and non-started, these categories will be broken down based on the projects science grade given: $A$, $B$ and $C$.
 
 \subsubsection{Fairness comparison analysis}
 The test to benchmark both algorithms will be based on the input data described in section~\ref{sec:input-data}. Although the array configuration planning will be fixed to the one presented in table~\ref{table:drr-test-array-config}
@@ -73,13 +73,13 @@ The total amount of hours that the algorithm were able to schedule is summarized
 \label{table:drr-hours-per-array}
 \end{table}
 
-From these tables it is possible to see, that the DRR algorithm was able to, marginally, use better the array configurations available time. DRR was able to schedule 7892 $[h]$ in comparison with DSA, which scheduled 7820 $[h]$. The main contributor to this difference was the schedule for the $TP$ array, on which the DRR was able to allocate 48 $[h]$ more. 
+From these tables it is possible to see, that the DRR algorithm was able to use, marginally, better the array configurations available time. DRR was able to schedule 7892 $[h]$ in comparison with DSA, which scheduled 7820 $[h]$. The main contributor to this difference was the schedule for the $TP$ array, on which the DRR was able to allocate 48 $[h]$ more. 
 
-Looking at table~\ref{table:requested-time-tp} it is possible to verify that, $TP$ Array Configuration is quite oversubscribed with requests and both algorithms were able to schedule almost the whole available time. This does this array configuration case interesting to further analyze in detail. 
+Looking at table~\ref{table:requested-time-tp} it is possible to verify that, $TP$ Array Configuration is quite oversubscribed with requests, and both algorithms were able to schedule almost the whole available time. This does this array configuration case interesting to further analyze in detail. 
 
 On contrary the $7m$ array configuration, which is also available for the whole observation cycle, clearly lacks of observation requests (see table~\ref{table:requested-time-7m}). This is an extreme case that may be worth to analyze too, to see how algorithms behave in these situations.
 
-In other hand the case of $12m$ configurations, it is possible to appreciate, in the details, cases where it looks like the array configuration was oversubscribed and as well cases where the array configuration was not much requests. The difference between the $12m$ configuration and the $7m$ and $TP$ is that they were available for a much shorter period within the observing season. Also further analysis of the most relevant $12m$ array configuration will be done.
+In other hand the case of $12m$ configurations, it is possible to appreciate, in the details, cases where it looks like the array configuration was oversubscribed and as well cases where the array configuration was not much requests. The difference between the $12m$ configuration and the $7m$ and $TP$ is that they were available for a much shorter period of time within the observing season. Also further analysis of the most relevant $12m$ array configuration will be done.
 
 From tables~\ref{table:dsa-hours-per-array} and~\ref{table:drr-hours-per-array}, it is also possible to infer that somehow the DRR algorithm affected to EA and NA Executives decreasing in around $22.85\%$ and $6.61\%$ the number of hours assigned to them, respectively. At the same time, DRR benefited to CL, EA\_NA and EU executives increasing in $22.86\%$, $15.48\%$ and $21.95\%$ the number of hours assigned to them, respectively.
 
@@ -117,7 +117,7 @@ Note that when EA\_NA executive is considered part of EA and NA then the number 
 
 A qualitative analysis of the time share given to each executive is presented in table~\ref{table:dsa-percentage-per-array} for the DSA, and the same analysis for the DRR is presented in table~\ref{table:drr-percentage-per-array}. 
 
-From these tables it is possible to see a better time sharing among the different executives when DRR is compared with DSA. Comparing with table~\ref{table:input-executive} it is possible to observe that, the time share values are closer with the share yielded by the DRR. Although there is a noticeable difference for NA executive, however adding its NA\_EA share, then NA share become $33.55\%$; the same can be done for EA executive, leaving its share at $25.11\%$.
+From these tables it is possible to see a better time sharing among the different executives when DRR is compared against DSA. Comparing with table~\ref{table:input-executive} it is possible to observe that, the time share values are closer with the share yielded by the DRR. Although there is a noticeable difference for NA executive, however adding its NA\_EA share, then NA share become $33.55\%$; the same can be done for EA executive, leaving its share at $25.11\%$.
 
 \subsubsection{Detailed fairness analysis}
 Particular array configurations will be further analyzed to see how both algorithm behave in time periods of 1 week. The qualitative analysis consists on show how fair perform the particular algorithms within the week for each executive.
@@ -184,9 +184,9 @@ Comparing both figures, it is possible to see at naked eye a much better distrib
 
 The qualitative analysis for $TP$ array configuration is presented in figure~\ref{fig:dsa-tp-exec} for the DSA instance. Figure~\ref{fig:drr-tp-exec} introduced the qualitative analysis for DRR. This is the best array configuration to compare DRR with DSA in weekly basis because of the over-subscription of Scheduling Blocks, which is well-balanced among the executives.
 
-Since most of the available time for observation is used by both algorithm, it is possible to see that the raw data and the normalized charts are almost the same, it only differs near the end of the observing season, where less hours are scheduled mostly due completion of the Observation projects and Scheduling Blocks.
+Since most of the available time for observation is used by both algorithm, it is possible to see that the raw data and the normalized charts are almost the same, it only differs near the end of the observing season, where less hours were scheduled mostly due completion of the Observation projects and Scheduling Blocks.
 
-Comparing the fairness between DSA and DRR, here it is clearly that DRR is fairer than DSA, this is quite evident specially at the beginning of the observation season (first half columns in the charts). When DRR ran, there is a spike for CL executive which is caused by the unfairness accumulation before its spike. In the second half of the DRR chart the distribution is more biased to EU executive, which is opposite to DSA where at the end of the observing season the share is more biased to NA.
+Comparing the fairness between DSA and DRR, here it is clear that DRR is fairer than DSA, this is quite evident specially at the beginning of the observation season (first half columns in the charts). When DRR ran, there is a spike for CL executive which is caused by the unfairness accumulation before its spike. In the second half of the DRR chart, the distribution is biased to EU executive, which is opposite to DSA where at the end of the observing season the share is biased to NA.
 
 \begin{figure}[t]
 \centering
@@ -216,17 +216,17 @@ Comparing the fairness between DSA and DRR, here it is clearly that DRR is faire
     \label{fig:drr-7m-exec}
 \end{figure}
 
-The qualitative analysis for $7m$ array configuration is presented in figure~\ref{fig:dsa-7m-exec} for the DSA instance. Figure~\ref{fig:drr-7m-exec} introduced the qualitative analysis for DRR. This particular array configuration is interesting because it neither is oversubscribed nor well balanced. As can be predicted this array configuration used less than one-third of the available time, the charts only show the total time when it is non-zero.
+The qualitative analysis for $7m$ array configuration is presented in figure~\ref{fig:dsa-7m-exec} for the DSA instance. Figure~\ref{fig:drr-7m-exec} introduced the qualitative analysis for DRR. This particular array configuration is interesting because it is neither oversubscribed nor well balanced. As can be predicted this array configuration used less than one-third of the available time, the charts only show the total used time when it is non-zero.
 
 As expected there is no surprises, looks like DRR balance better the time sharing among all the executives, this is clear at the beginning of the season. 
 
 \subsubsection{Project completion analysis}
 
-Until this point it is possible to acknowledge that DRR algorithm performs much better in terms of global fairness, giving to each participant executive a more equitable time share, in comparison to what has been proposed. Nevertheless this is not the only one parameter to consider the effectiveness of the algorithm, another very important parameter is how much projects the scheduling algorithm is able to complete for the given observing season.
+Until this point it is possible to acknowledge that DRR algorithm performs much better in terms of global fairness, giving to each participant executive a more equitable time share, in comparison to what has been proposed in the DSA. Nevertheless this is not the only one parameter to consider the effectiveness of the algorithm, another very important parameter is how much projects the scheduling algorithm is able to complete for the given observing season.
 
 The summary for DSA algorithm instance is presented in table~\ref{table:dsa-run-summary}. The summary for DRR instance is presented in table~\ref{table:drr-run-summary}.
 
-From the tables it is possible to see that DSA performs better completing projects, specially A-graded projects. This can be explained because DSA can be modeled as a DRR with only one service flow, therefore the better graded Scheduling Blocks will be always on top of the other SBs, having a chance to complete more better graded projects. However, the DRR is able to start more projects, but as well leaves more of these started projects incomplete. Having that in mind a special scorer was introduced to pump-up the score of the started projects. But at the end, the result did not vary significantly from what is presented in the table~\ref{table:drr-run-summary}.
+From the tables it is possible to see that DSA performs better completing projects, specially A-graded projects. This can be explained because DSA can be modeled as a DRR with only one service flow, therefore the better graded Scheduling Blocks will be always on top of the other SBs, having a chance to complete more better graded projects. However, the DRR is able to start more projects, but as well leaves more of these started projects incomplete. Having that in mind, a special scorer was introduced to pump-up the score of the started projects. But at the end, the result did not vary significantly from what is presented in the table~\ref{table:drr-run-summary}.
 
 \begin{table}[t!]
 \centering
@@ -253,11 +253,11 @@ From the tables it is possible to see that DSA performs better completing projec
 \end{table}
 
 \subsection{Testing solution for the Array configuration planning problem}
-This tests will show whether the procedure described in chapter~\ref{sec:array-config-plan} is able to produce valid solutions for the problem or not. Also different instances of the problem will be considered to show how the algorithms behave related to when difficulty of the problem increases. Each problem instance will be defined as as the number of A-graded projects that the algorithm shall complete. The idea behind this is to know how many iterations, in average (due the stochastic nature of the algorithm design), require to get a feasible result for that problem instance.
+This tests will show whether the procedure described in chapter~\ref{sec:array-config-plan} is able to produce valid solutions for the problem or not. Also different instances of the problem will be considered to show how the algorithms behave related to when difficulty of the problem increases. Each problem instance will be defined as the number of A-graded projects that the algorithm is able complete. The idea behind this is to know how many iterations, in average (due the stochastic nature of the algorithm design), require to get a feasible result for that problem instance.
 
-For all the tests done, the DRR algorithm is the one used as the scheduling algorithm to solve the Astronomical observation scheduling problem. The same procedure can be applied using the DSA. The main difference is that using the DSA would solve higher problem instances, due the DSA tends to complete more A-graded projects, however it is no expected a difference in the behavior for difficult problems, when the solution proposed is used to solve the Array configuration planning problem.   
+For all the tests done, the DRR algorithm is the one used as the scheduling algorithm to solve the Astronomical observation scheduling subproblem. The same procedure can be applied using the DSA. The main difference is that using the DSA would solve higher problem instances, due the DSA tends to complete more A-graded projects, however it is no expected a difference in the behavior for difficult problems, when the proposed DRR is used to solve the Array configuration planning problem.   
 
-As explained in section~\ref{sec:acpp-sa-alg-design}, the algorithm will first, narrow the search space based on the A-graded Scheduling blocks.  The visibility for these Scheduling blocks is presented in figure~\ref{fig:results-sb-critical-set}. Once the visibility of the sources, then each SB will be assigned to one or more Array Configurations. For the case of the input data used in this work, each A-graded SB sky source is mapped to just one Array Configuration.
+As explained in section~\ref{sec:acpp-sa-alg-design}, the algorithm will first, narrow the search space based on the A-graded Scheduling blocks.  The visibility for these Scheduling blocks is presented in figure~\ref{fig:results-sb-critical-set}. Once the visibility of the sources is found, then each SB will be assigned to one or more Array Configurations. For the case of the input data used in this work, each A-graded SB sky source is mapped to just one Array Configuration.
 
 \begin{figure}[htbp]
         \centering
@@ -337,12 +337,12 @@ Comparing both, the sources elevation vs LST intervals proposed by the algorithm
 \label{fig:acpp-behavior}
 \end{figure}
 
-Different instances of the problem were tested several times, the summary of the testing can be seen in the graph represented by figure~\ref{fig:acpp-behavior}. A maximum of 1000 iterations are allowed, if a solution is not found within that number of iterations, then the problem will be considered non-solved. A full execution of 1000 iterations takes around $800\,[min]$.
+Different instances of the problem were tested several times, the summary of the testing can be seen in the chart presented in figure~\ref{fig:acpp-behavior}. A maximum of 1000 iterations are allowed, if a solution is not found within that number of iterations, then the problem will be considered non-solved. A full execution of 1000 iterations takes around $800\,[min]$.
 
 
-In the graph, the x axis represents the problem instance to solve, the y axis represents the number of iterations that SA algorithm used, the dots represent the average number of iterations that the SA algorithm requires to find a valid solution for the problem instance and the vertical bars are the error presented as the standard deviation. 
+In the chart, the x axis represents the problem instance to solve, the y axis represents the number of iterations that SA algorithm used, the dots represent the average number of iterations that the SA algorithm requires to find a valid solution for the problem instance and the vertical bars are the error presented as the standard deviation. 
 
-Here is possible the see that, for the instances before 20, the algorithms proposed easily finds a valid solution for the problem, requiring only 1 iteration to find a valid solution. From instance 20 there is an increment on the number of iterations required to find a solution, this increasing in the difficulty looks like exponential until instance 25, which is the most difficult problem instance that the algorithm is able to solve. Even though problem 25 was solved it was not solved always, this is represented by the error bar, which is bigger that the maximum allowed iterations (1000).
+Here is possible to see that, for the instances before 20, the algorithms proposed easily found a valid solution for the problem, requiring only 1 iteration to find a valid solution. From instance 20 there is an increment on the number of iterations required to find a solution, this increasing in the difficulty looks like exponential until instance 25, which is the most difficult problem instance that the algorithm is able to solve. Even though problem 25 was solved, it was not solved always, this is represented by the error bar, which is bigger that the maximum allowed iterations (1000).
 
 \begin{table}[htbp]
 \begin{center}

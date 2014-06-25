@@ -85,7 +85,7 @@ For the development of the validation software prepared for this work, some chan
 In other hand, the algorithm implemented by ALMA software (DSA) was replaced with the modified Deficit Round-Robin algorithm implementation presented in this work (see chapter~\ref{sec:astro-schedule-problem}). The ALMA software design also make provisions at the algorithm level, defining an interface, which, as well as the DAOs, was fairly easy to replace with new classes developed to implement the modified DRR algorithm.
 
 \subsection {Simulation}
-The simulator is the one used in the ALMA's scheduling subsystem. At the time when this document was written it remains mostly unchanged from its original design explained in detail in~\cite{hoffstadt10}. Nevertheless some modifications where done during the development of this work to support the simulation of several scenarios for the solution provided for the ``Array configuration planning problem''. Next a briefly description of the simulator work-flow, shown in figure~\ref{fig:sim-state-machine}, is presented:
+The simulator is the one used in the ALMA's scheduling subsystem. At the time when this document was written it remains mostly unchanged from its original design explained in detail in~\cite{hoffstadt10}. Nevertheless some modifications were done during the development of this work, to support the simulation of several scenarios for the solution provided for the ``Array configuration planning problem''. Next a briefly description of the simulator work-flow, shown in figure~\ref{fig:sim-state-machine}, is presented:
 
 \begin{figure}[h!]	
 \begin{center}
@@ -201,7 +201,7 @@ As input for the validation tests and benchmarking of the software developed in 
 
 At the moment when this document was written, the Observation Projects are not still publicly available, but according to ALMA observatory policy, they will become available at the end of 2014 or beginning of 2015. 
 
-A summary of the Scheduling blocks that the validation will be used is presented in table~\ref{table:requested-time-12m} for $12\,[m]$ array configurations, in table~\ref{table:requested-time-7m} for $7\,[m]$ array configurations and in table~\ref{table:requested-time-tp} for $TP$  array configurations. Each table have in detail the number of hours requested for each executive, broke down the time per science grade. $D$ graded projects are not shown in the tables, although they are available as part of the data set used as input.
+A summary of the Scheduling blocks that the validation will be used is presented in table~\ref{table:requested-time-12m} for $12\,[m]$ array configurations, in table~\ref{table:requested-time-7m} for $7\,[m]$ array configurations and in table~\ref{table:requested-time-tp} for $TP$  array configurations. Each table have in detail the number of hours requested for each executive, broken down the time per science grade. $D$ graded projects are not shown in the tables, although they are available as part of the data set used as input.
 
 \begin{table}
 \begin{center}
