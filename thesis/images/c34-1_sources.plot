@@ -2,9 +2,11 @@ set xrange [0:24]
 set yrange [0:90]
 set term postscript enhanced colour
 set output "c34-1_sources.ps"
-set title "C34-1 sources' visibility"
-set xlabel "LST (h)"
-set ylabel "Altitude (degrees)"
+set title "C34-1 sources' visibility" font ",40"
+set xlabel "LST (h)" font ",30"
+set xtics font ",15"
+set ylabel "Altitude (degrees)" font ",30"
+set ytics font ",15"
 set grid
 set multiplot
 plot asin(sin(-0.40182531139466626)*sin(-0.09022091717239798)+cos(-0.40182531139466626)*cos(-0.09022091717239798)*cos(x*0.2617993877991494-0.6003859904808326))*180/3.141592653589793 notitle;

@@ -430,7 +430,7 @@ The proposed model, algorithms and its implementations have the following featur
 \end{itemize}
 
 \section{Future work}
-The solution given to ``Astronomical observation scheduling problem'' does not try to optimize for periods of time longer than the next period to observe, this is mostly because of the weather constraints that cannot be exactly foreseen. However, having a good weather forecast it may possible to verify whether it is feasible to implement an algorithm than can schedule the observation for longer period, like one day or at most two nights.
+The solution given to ``Astronomical observation scheduling problem'' does not try to optimize for periods of time longer than the next period to observe, this is mostly because of the weather constraints that cannot be exactly foreseen. However, having a good weather forecast it may open the possibility to verify whether it is feasible to implement an algorithm than can schedule the observation for longer period, like one day or at most two nights.
 
 The long-term scheduling problem can be classified as a chicken or the egg dilemma, this is because there are two approaches to define it:
 \begin{itemize}
@@ -441,3 +441,5 @@ The long-term scheduling problem can be classified as a chicken or the egg dilem
 The current approach used in the telescope commissioning stage, is the first. Hence, the problem in this work has been defined accordingly. However, when ALMA observatory reaches full operations and capabilities, it could be that the second approach would be taken. Then, given that, the problem has to be completely redefined, and new a solution must be provided. Therefore, the ALMA scheduling problem, as presented in this document, might not be completely defined yet.
 
 Perhaps another interesting approach to the classification of a critical SB set for an array configuration, is to try to classify the SBs based on weather patterns along the whole observing cycle. So far, it is known that there are certain months in the calendar year that are very bad or quite good, in terms of weather, to carry-on observation, an algorithm might introduce this ``intelligence'' to come with a better array configuration plan, or to come up with a better solution faster than the algorithms presented in this work.
+
+Dynamic sub-arrays are not yet considered as part of the ALMA scheduling problem due lack of hardware and software support. Eventually this also will became part of the problem definition, which will need to be studied and solved according to the requirements. 
