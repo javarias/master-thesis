@@ -3,7 +3,7 @@ set style data histogram
 set style histogram rowstacked
 set style fill solid border -1
 set boxwidth 0.75
-set title 'DSA Executive breakdown normalized for array TP' font ",40"
+set title 'DSA Executive breakdown normalized for array TP' font ",30"
 set xlabel 'Week' font ",30"
 set ylabel 'Percentage [%]' font ",30"
 set xtics  norangelimit font ",8"
