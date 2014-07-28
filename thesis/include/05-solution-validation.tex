@@ -1,142 +1,40 @@
-\chapter{Validation and Results}
+\chapter{Experiments and Results}
 
-\section{Solution validation}
+The proposed algorithms are validated through a simulation to solve the
+multiple array instance of the ALMA scheduling problem, comparing the results obtained with the DSA when applicable.
+These algorithms are tested using as input real ALMA data, intended to be used in observations for the ALMA's cycle 2.
 
-This section gives to the reader a shallow overview of the software developed, and the data used as input to validate the work presented in the previous chapter of this work. Most of the software is reused from the ALMA's scheduling sub-system software. The work mostly consisted in expanding the available implementations, injecting into the software deployment the algorithms presented before and running experiments to validate the hypothesis introduced in this work. To achieve this, a standalone (not requiring ALMA software interfaces and data models) version of the planning simulator was conceived. 
+The DSA does not optimize the allocated time for each executive along the observing season. For this reason, the DSA and the proposed algorithms are compared using the executive balance time, and the project completion rate. This is done only when the ``Astronomical observation scheduling'' problem is simulated.
 
-\subsection {Data model and implementation details}
+The ``Array configuration planning'' is a new problem and there is no methodology on the literature to compare how it behave. The results show the feasibility of the proposed algorithm to solve the problem.
 
-The model designed for the observation project hierarchy, is represented in figure~\ref{fig:datamodel-obsproject}, this is a simplification of the ALMA Project Data Model summarized in section~\ref{sec:apdm} and it is the model used in the ALMA's Dynamic Scheduling Algorithm, briefly described in section~\ref{sec:alma-dsa}.
+\section{Experiments setup}
 
-The most relevant parts are: 
-\begin{description}
-\item[ObsProject] \hfill \\
-This is top-level container for a group of observations requested. This container defines the scientific grade and rank, as well particular information of the executive, whom has requested the observation. All this information is shared with the set of scheduling blocks contained within.
-\item[SchedBlock] \hfill \\
-This is the atomic scheduling unit for the scheduling algorithm. The SB will contain information related to scheduling constraints, like array type requested, representative band, max/min angular resolution, etc; weather constraints, like, max. opacity, max. wind speed, etc; time constraints, like max. observation time, temporal boundaries; and the sky source.
-\end{description}
+The experiment consisted in a simulation of the ALMA's cycle 2 observing season. The simulator used is a modified version of the ALMA's scheduling planning simulator (see appendix~\ref{sec:implementation}). Which is setup with the input data loaded for the observation projects, weather pattern and executives expected time balance. However, it is run in two ways:
+\begin{itemize}
+\item The simulator is setup to load the array configuration data with fixed start and duration, and ran twice using the DSA and DRR, respectively as the scheduling algorithm.
 
-\begin{figure}[htbp]	
-\begin{center}
-\includegraphics[width=1.15\textwidth]{images/Obsproject}
-\end{center}
-\caption{Observation Project data model}
-\label{fig:datamodel-obsproject}
-\end{figure}
+\item A utility is run to determine the array configuration's ``SB critical set'' based on the available configurations given as input, passing these results to the SA algorithm, which calculates the start time and duration of each array configuration. Then, the simulator is run several times, while the SA tries different array configuration setup, until a ``valid'' solution is found.
+\end{itemize}
 
-The model designed tp handle the observatory instrumentation is represented in figure~\ref{fig:datamodel-observatory}. This is an over simplification of what is presented in~\cite{avarias11, hoffstadt10}, the \textbf{ArrayConfiguration} class covers the minimal needs to allow to the algorithm to take a decision regarding the array configuration parameters. The simplification was done because the original classes defined did not add any extra value for the algorithm.
+The metric to compare both algorithm will be the percentage of time given to each executive every simulated week, and for the whole array configuration duration. At the same time, it will be analyzed the impact of the DRR algorithm for the project completion rate at the end of the whole simulation, checking if there is any adverse effect over this parameter. The completion rate will be based at project level, accounting projects completed, started but non-completed and non-started, these categories will be broken down based on the projects science grade given: $A$, $B$ and $C$.
 
-\begin{figure}[htbp]	
-\begin{center}
-\includegraphics[width=0.67\textwidth]{images/Observatory}
-\end{center}
-\caption{Observatory instrumentation data model}
-\label{fig:datamodel-observatory}
-\end{figure}
+To verify that the algorithm is able to produce valid solutions for the Array configuration planning, different instances of the problem are considered to show how the algorithms behave related to when difficulty of the problem increases. Each problem instance is defined as the number of A-graded projects that the algorithm is able complete. The idea behind this is to know how many iterations, in average (due the stochastic nature of the algorithm design), require to get a feasible result for that problem instance.
 
-The model designed for handle the Executive information and the observing season is represented in figure~\ref{fig:datamodel-executive}
-The most relevant parts are: 
-\begin{description}
-\item[Executive] This class holds the information related to each executive provided as input. It saves the percentage and associates each Principal Investigator (class \textbf{PI}). Originally, the model was designed to allow to every PI have assigned percentages to each executive. However in practice, this has not been used.
-
-\item[Observing Season] This class has the information related to the start and end dates for the observing season or observing cycle, also keeps the information relative to the daily schedule, in a \textbf{TimeInterval} class instance.
-\end{description}
-
-\begin{figure}[htbp]	
-\begin{center}
-\includegraphics[width=0.67\textwidth]{images/Executive}
-\end{center}
-\caption{Executive and observing season data model}
-\label{fig:datamodel-executive}
-\end{figure}
-
-The model designed to handle the weather is represented in figure~\ref{fig:datamodel-weather}. The weather model is quite simple, it has several classes holding data for the simulated weather, like precipitable water vapor, temperature, wind speed and phase. Also the model has the class \textbf{AtmParamters}, which contains the interpolation tables to calculate the atmospheric opacity.
-
-\begin{figure}[htbp]	
-\begin{center}
-\includegraphics[width=0.67\textwidth]{images/Weather}
-\end{center}
-\caption{Weather data model}
-\label{fig:datamodel-weather}
-\end{figure}
-
-The model designed to handle the observation progress status is represented in figure~\ref{fig:datamodel-observation}. This model defines the \textbf{ExecBlock}, which keeps the time accounting and progress for each SB, array configuration and Executive. 
-
-\begin{figure}[htbp]	
-\begin{center}
-\includegraphics[width=0.67\textwidth]{images/Observation}
-\end{center}
-\caption{Observation progress status}
-\label{fig:datamodel-observation}
-\end{figure}
-
-The top-level architecture of the ALMA's scheduling planning simulator is represented in diagram~\ref{fig:sim-top-level-architecture}. The software design uses as glue the Spring Core library, using Inversion of Control paradigm is possible to define via a configuration file, the objects to inject into the simulator, this includes Data Access Objects instances and the algorithm instances. It is enough for the software developed in this work to implement the correct interfaces to make them compatible with the rest of the ALMA software.
-
-For the development of the validation software prepared for this work, some changes were done. Essentially the whole DAO's code, presented in the left part and on bottom part of the figure~\ref{fig:sim-top-level-architecture}, which is particular to ALMA software, were replaced with a Data Accessors able to read the XML format defined by the scheduling subsystem software, for data-interchange; and with in-memory data structures provided by the Java API, respectively. The core of the simulator tool and the algorithm does not deal directly with the data, instead a Data Accessors Object (DAO) interface was defined already by the ALMA's scheduling software, which abstracts all the interaction between the simulator and the data. Hence the replacement was fairly easy.
-
-\begin{figure}[h!]	
-\begin{center}
-\includegraphics[width=0.67\textwidth]{images/simulator-arch}
-\end{center}
-\caption{Current top-level ALMA's scheduling simulator tool}
-\label{fig:sim-top-level-architecture}
-\end{figure}
-
-In other hand, the algorithm implemented by ALMA software (DSA) was replaced with the modified Deficit Round-Robin algorithm implementation presented in this work (see chapter~\ref{sec:astro-schedule-problem}). The ALMA software design also make provisions at the algorithm level, defining an interface, which, as well as the DAOs, was fairly easy to replace with new classes developed to implement the modified DRR algorithm.
-
-\subsection {Simulation}
-The simulator is the one used in the ALMA's scheduling subsystem. At the time when this document was written it remains mostly unchanged from its original design explained in detail in~\cite{hoffstadt10}. Nevertheless some modifications were done during the development of this work, to support the simulation of several scenarios for the solution provided for the ``Array configuration planning problem''. Next a briefly description of the simulator work-flow, shown in figure~\ref{fig:sim-state-machine}, is presented:
-
-\begin{figure}[h!]	
-\begin{center}
-\includegraphics[width=0.67\textwidth]{images/simulator-state-machine}
-\end{center}
-\caption{ALMA simulator's state machine}
-\label{fig:sim-state-machine}
-\end{figure}
-
-\begin{description}
-\item[Load static data] \hfill \\
-In this step the simulator will load all the immutable data from data-sources. This includes weather simulation data (temperature, humidity, wind speed, etc) and atmospheric interpolation tables to calculate the atmospheric opacity given the PWV and frequency. This step is separate from the rest of the data given that, the original ALMA's simulator is intended to be run using a relational database as back-end, then the data will be loaded just once.
-
-During the development of this work, the simulator has been modified to work with data loaded completely in memory. Therefore this step add no value to the simulator itself. However it is worth of mention the difference with the original simulator used in ALMA software. 
-
-\item[Load Observation project data] \hfill \\
-In this step the simulator will load the data intended to be modified within the simulation procedure. This includes the whole observation projects, information relative to the executives and observing season.
-
-\item[Load observatory configuration] \hfill \\
-In this step the simulator loads or modifies the array configuration planning for the observing season. Originally, the ALMA's simulator supported only the loading of this data from the data-sources. During the development of this work this step was separated from the previous one, to support the setup of multiple scenarios for the, already configured, observing season.
-
-\item[Setup DSA (algorithm for Astronomical observation scheduling problem)] \hfill \\
-In this step the different simulations for each array configuration are scheduled. The simulator, according to its progress, will change among the different array configurations prepared in this step. If the simulator detects that there are no more configurations remaining for the rest of the simulated duration, then it will terminate the simulation execution and it will prepare the results and output them.
-
-\item[Running DSA (DSA-state-machine)] \hfill \\
-In this step the DSA will execute according to the work-flow presented in figure~\ref{fig:sched-dsa-state-machine} and explained in section~\ref{sec:astro-schedule-problem}.
-
-If the DSA returns no result, then the simulator will jump $1\,[h]$ and $20\,[m]$ its simulation and try again checking whether there are selectable scheduling blocks or not. The simulator will do this until the array end time is reached.
-
-\item[Save simulation's result] \hfill \\
-After every simulation is complete, the simulator will dump a XML file containing most of the information for post-analysis.
-
-\item[Clean execution information] \hfill \\
-Since during simulation certain data for the Scheduling blocks are filled (like current number of repetitions and total time duration) and executive accounting is modified. It is necessary to clean-up all the modified data. 
-
-The implementation done for this work will clean the complete context used for simulation, and it will reload all the data from scratch. Although it is known that this produce an overhead for the testing, it is safer to reload all the data to avoid to find programming defects during testing.
-
-\end{description}
+All the tests were run on a 2 x Intel Xeon X5675 running at 3.06 $[GHz]$, with 48 $[GiB]$ of RAM DDR3 1333 $[MHz]$, configured in 6 channels (2 x QPI 6.4 $[GT/s]$). Running Red Hat Enterprise Linux 5.9 (x86 PAE) and Oracle's Java (JRE) 1.7.0\_51.
 
 \subsection {Input Data}
 \label{sec:input-data}
 This section summarizes the data that will be used to validate the solutions. 
 
-\subsection{Observing Season and executives time share}
+\subsubsection{Observing Season and executives time share}
 The executive time share configuration is presented in table~\ref{table:input-executive}
 
 \begin{table}[h!]
 \begin{center}
 \begin{tabular}{|c|c|}
 \hline
-Executive & Time (\%)\\ \hline
+\textbf{Executive} & \textbf{Time (\%)}\\ \hline
 CL & $9.5\%$ \\ \hline
 EA & $21.375\%$ \\ \hline
 EA\_NA & $0.0\%$\tablefootnote{For accounting purposes, the used time is split in equal parts between EA \& NA} \\ \hline
@@ -161,13 +59,39 @@ The following are the details for the observation season:
 
 \subsubsection{Array Configurations}
 
-One specific requirement for the algorithms presented in this work, is that the configurations must be available as part of the input. These array configurations were already discussed by groups internal to the observatory, whom determines what are the capabilities offered to the science community before the announcement of a new observation season.
+The fixed array configuration used to compare DSA vs DRR is presented in table~\ref{table:drr-test-array-config}
+
+\begin{table}[h!]
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Array configuration} & \textbf{Start date (UTC)} & \textbf{End date (UTC)} \\ \hline
+C34-6 & 2014-06-01 & 2014-07-14 \\ \hline
+C34-7 & 2014-07-15 & 2014-08-31 \\ \hline
+C34-6 & 2014-12-01 & 2014-12-31 \\ \hline
+C34-5 & 2015-01-01 & 2015-01-31 \\ \hline
+C34-4 & 2015-03-01 & 2015-03-31 \\ \hline
+C34-3 & 2015-04-01 & 2015-04-30 \\ \hline
+C34-2 & 2015-05-01 & 2015-05-31 \\ \hline
+C34-1 & 2015-06-01 & 2015-06-30 \\ \hline
+C34-4 & 2015-07-01 & 2015-07-31 \\ \hline
+C34-6 & 2015-08-01 & 2015-08-30 \\ \hline
+C34-7 & 2015-09-01 & 2015-10-01 \\ \hline
+7m & 2014-06-01 & 2015-10-01 \\ \hline
+TP & 2014-06-01 & 2015-10-01 \\ \hline
+\end{tabular}
+\end{center}
+\caption{Array configuration plan used to compare DRR algorithm vs DSA algorithm}
+\label{table:drr-test-array-config}
+\end{table}
+
+For ALMA' s cycle 2, the list of the array configurations is presented in table~\ref{table:input-array-configs}. Although the table does not introduce the starting and ending dates for any of the configurations, which are part of the problems presented in this work, and solved by the algorithms introduced in this document.
 
 \begin{table}[h!]
 \begin{center}
 \begin{tabular}{|c|c|c|c|}
 \hline
-Configuration name & Array type & Min. Baseline $[m]$ & Max. Baseline $[m]$\\
+\textbf{Configuration name} & \textbf{Array type} & \textbf{Min. Baseline $[m]$} & \textbf{Max. Baseline $[m]$}\\
 \hline
 C34-1 & $12\,[m]$ & $14.2$ & $165.6$ \\
 \hline
@@ -193,9 +117,6 @@ TP    & $TP$      & $-$    & $-$ \\
 \label{table:input-array-configs}
 \end{table}
 
-For ALMA' s cycle 2, the list of the array configurations is presented in table~\ref{table:input-array-configs}. Although the table does not introduce the starting and ending dates for any of the configurations, which are part of the problems presented in this work, and solved by the algorithms introduced in this document.
-
-
 \subsubsection{Observation projects}
 As input for the validation tests and benchmarking of the software developed in this work, there will be used the cycle 2 proposals submitted to ALMA observatory, although these proposals have been already processed and converted into APDM Observation projects and APDM Scheduling Blocks, the data used for tests is an extract of them, this data contains only the relevant parts for the scheduling simulation.
 
@@ -207,7 +128,7 @@ A summary of the Scheduling blocks that the validation will be used is presented
 \begin{center}
 \begin{tabular}{|c|c|c|c|}
 \hline
-Grade & Executive & Time Requested $[h]$ & Number of Scheduling Blocks \\ \hline
+\textbf{Grade} & \textbf{Executive} & \textbf{Time Requested $[h]$} & \textbf{Number of Scheduling Blocks} \\ \hline
 A &	CL		& 12.0  & 2 \\ \hline
 A &	EA		& 36.0  & 13 \\ \hline
 A &	EA/NA	& 6.0   & 3 \\ \hline
@@ -236,7 +157,7 @@ C  & OTHER  & 34.0      & 13  \\ \hline
 \begin{center}
 \begin{tabular}{|c|c|c|c|}
 \hline
-Grade & Executive & Time Requested $[h]$ & Number of Scheduling Blocks \\ \hline
+\textbf{Grade} & \textbf{Executive} & \textbf{Time Requested $[h]$} & \textbf{Number of Scheduling Blocks} \\ \hline
 A &	CL		& 0  & 0 \\ \hline
 A &	EA		& 24.0  & 1 \\ \hline
 A &	EA/NA	& 6.0   & 12 \\ \hline
@@ -265,7 +186,7 @@ C  & OTHER  & 72.0      & 12  \\ \hline
 \begin{center}
 \begin{tabular}{|c|c|c|c|}
 \hline
-Grade & Executive & Time Requested $[h]$ & Number of Scheduling Blocks \\ \hline
+\textbf{Grade} & \textbf{Executive} & \textbf{Time Requested $[h]$} & \textbf{Number of Scheduling Blocks} \\ \hline
 A &	CL		& 0  & 0 \\ \hline
 A &	EA		& 28.0  & 1 \\ \hline
 A &	EA/NA	& 208.0   & 2 \\ \hline

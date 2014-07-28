@@ -1,54 +1,16 @@
 \newpage
-\section{Tests and results}
+\section{Results}
 
-Two sets of tests will be performed to benchmark the algorithms proposed for both problems presented in this work.
-The first set will show how the solution given to ``Astronomical observation scheduling problem'', focusing the comparison with current DSA implementation done for ALMA.
-The second set will show the feasibility of the proposed algorithm to solve the ``Array configuration planning problem'', focusing in the results for different scenarios.
-
-All the tests will be run on a 2 x Intel Xeon X5675 running at 3.06 $[GHz]$, with 48 $[GiB]$ of RAM DDR3 1333 $[MHz]$, configured in 6 channels (2 x QPI 6.4 $[GT/s]$). Running Red Hat Enterprise Linux 5.9 (x86 PAE) and Oracle's Java (JRE) 1.7.0\_51.
-
-\subsection{Testing the algorithms for the Astronomical observation scheduling problem}
-
-\subsubsection{Setup and objectives}
-The main feature of the DRR algorithm, presented in this work, is to try to keep the observation time given to each Executive, according to the values presented in table~\ref{table:input-executive}, along the time array configuration life. For this reason, a comparison between the ALMA's DSA and the DRR will be done. 
-
-\begin{table}[b]
-\begin{center}
-\begin{tabular}{|c|c|c|}
-\hline
-Array configuration & Start date (UTC) & End date (UTC) \\ \hline
-C34-6 & 2014-06-01 & 2014-07-14 \\ \hline
-C34-7 & 2014-07-15 & 2014-08-31 \\ \hline
-C34-6 & 2014-12-01 & 2014-12-31 \\ \hline
-C34-5 & 2015-01-01 & 2015-01-31 \\ \hline
-C34-4 & 2015-03-01 & 2015-03-31 \\ \hline
-C34-3 & 2015-04-01 & 2015-04-30 \\ \hline
-C34-2 & 2015-05-01 & 2015-05-31 \\ \hline
-C34-1 & 2015-06-01 & 2015-06-30 \\ \hline
-C34-4 & 2015-07-01 & 2015-07-31 \\ \hline
-C34-6 & 2015-08-01 & 2015-08-30 \\ \hline
-C34-7 & 2015-09-01 & 2015-10-01 \\ \hline
-7m & 2014-06-01 & 2015-10-01 \\ \hline
-TP & 2014-06-01 & 2015-10-01 \\ \hline
-\end{tabular}
-\end{center}
-\caption{Array configuration plan used to compare DRR algorithm vs DSA algorithm}
-\label{table:drr-test-array-config}
-\end{table}
-
-The metric to compare both algorithm will be the percentage of time given to each executive every simulated week, and for the whole array configuration duration. At the same time, it will be analyzed the impact of the DRR algorithm for the project completion rate at the end of the whole simulation, checking if there is any adverse effect over this parameter. The completion rate will be based at project level, accounting projects completed, started but non-completed and non-started, these categories will be broken down based on the projects science grade given: $A$, $B$ and $C$.
-
-\subsubsection{Fairness comparison analysis}
-The test to benchmark both algorithms will be based on the input data described in section~\ref{sec:input-data}. Although the array configuration planning will be fixed to the one presented in table~\ref{table:drr-test-array-config}
+\subsection{Astronomical observation scheduling}
 
 The total amount of hours that the algorithm were able to schedule is summarized in table~\ref{table:dsa-hours-per-array} for the DSA execution, and in table~\ref{table:drr-hours-per-array}. Every DSA and DRR execution takes little less than $1\,[min]$
 
-\begin{table}[t]
+\begin{table}[h!]
 \centering
 \begin{tabular}{c|c|c|c|c|c|c|c|} 
 \cline{2-8}
- & \multicolumn{7}{c|}{Executive observation time $[h]$} \\ \hline
-\multicolumn{1}{|r|}{Array Type} & CL	& EA & EA\_NA &	EU & NA & OTHER & Total \\ \hline
+ & \multicolumn{7}{c|}{\textbf{Executive observation time $[h]$}} \\ \hline
+\multicolumn{1}{|r|}{\textbf{Array Type}} & \textbf{CL}	& \textbf{EA} & \textbf{EA\_NA} & \textbf{EU} & \textbf{NA} & \textbf{OTHER} & \textbf{Total} \\ \hline
 \multicolumn{1}{|r|}{12m} & 186 & 444 & 90 & 804 & 786 & 42 & 2352 \\ \hline
 \multicolumn{1}{|r|}{TP} & 64 & 1444 & 548 & 1214 & 1416 & 0 & 4686 \\ \hline
 \multicolumn{1}{|r|}{7m} & 74 & 178 & 34 & 278 & 218 & 0 & 782 \\ \hline
@@ -58,12 +20,12 @@ The total amount of hours that the algorithm were able to schedule is summarized
 \label{table:dsa-hours-per-array}
 \end{table}
 
-\begin{table}[t]
+\begin{table}[h!]
 \centering
 \begin{tabular}{c|c|c|c|c|c|c|c|} 
 \cline{2-8}
- & \multicolumn{7}{c|}{Executive observation time $[h]$} \\ \hline
- \multicolumn{1}{|r|}{Array Type} & CL	& EA & EA\_NA &	EU & NA & OTHER & Total \\ \hline
+ & \multicolumn{7}{c|}{\textbf{Executive observation time $[h]$}} \\ \hline
+ \multicolumn{1}{|r|}{\textbf{Array Type}} & \textbf{CL}	& \textbf{EA} & \textbf{EA\_NA} & \textbf{EU} & \textbf{NA} & \textbf{OTHER} & \textbf{Total} \\ \hline
  \multicolumn{1}{|r|}{12m} &	230 & 	472 &	110 &	778 & 	746 &	42 & 2378 \\ \hline
  \multicolumn{1}{|r|}{TP} & 116 & 944 & 632 &	1744 &	1298 & 	0 &	4734 \\ \hline
  \multicolumn{1}{|r|}{7m} & 74	& 178 & 34 & 278 & 216 & 0 & 780 \\ \hline
@@ -75,22 +37,16 @@ The total amount of hours that the algorithm were able to schedule is summarized
 
 From these tables it is possible to see, that the DRR algorithm was able to use, marginally, better the array configurations available time. DRR was able to schedule 7892 $[h]$ in comparison with DSA, which scheduled 7820 $[h]$. The main contributor to this difference was the schedule for the $TP$ array, on which the DRR was able to allocate 48 $[h]$ more. 
 
-Looking at table~\ref{table:requested-time-tp} it is possible to verify that, $TP$ Array Configuration is quite oversubscribed with requests, and both algorithms were able to schedule almost the whole available time. This does this array configuration case interesting to further analyze in detail. 
-
-On contrary the $7m$ array configuration, which is also available for the whole observation cycle, clearly lacks of observation requests (see table~\ref{table:requested-time-7m}). This is an extreme case that may be worth to analyze too, to see how algorithms behave in these situations.
-
-In other hand the case of $12m$ configurations, it is possible to appreciate, in the details, cases where it looks like the array configuration was oversubscribed and as well cases where the array configuration was not much requests. The difference between the $12m$ configuration and the $7m$ and $TP$ is that they were available for a much shorter period of time within the observing season. Also further analysis of the most relevant $12m$ array configuration will be done.
-
 From tables~\ref{table:dsa-hours-per-array} and~\ref{table:drr-hours-per-array}, it is also possible to infer that somehow the DRR algorithm affected to EA and NA Executives decreasing in around $22.85\%$ and $6.61\%$ the number of hours assigned to them, respectively. At the same time, DRR benefited to CL, EA\_NA and EU executives increasing in $22.86\%$, $15.48\%$ and $21.95\%$ the number of hours assigned to them, respectively.
 
-Note that when EA\_NA executive is considered part of EA and NA then the number of hours for the EA and NA will be: $2402\,[h]$ and $2756\,[h]$, respectively for the DSA run; $1982\,[h]$ and $2648\,[h]$ respectively for DRR run. Leaving the decreasing of the time assigned to EA and NA to $17.48\%$ and $3.92\%$ respectively.  
+Note that when EA\_NA executive is considered part of EA and NA then the number of hours for the EA and NA are: $2402\,[h]$ and $2756\,[h]$, respectively for the DSA run; $1982\,[h]$ and $2648\,[h]$ respectively for DRR run. Leaving the decreasing of the time assigned to EA and NA to $17.48\%$ and $3.92\%$ respectively.  
 
 \begin{table}[t]
 \centering
 \begin{tabular}{c|c|c|c|c|c|c|} 
 \cline{2-7}
- & \multicolumn{6}{c|}{Executive observation time $[\%]$} \\ \hline
-\multicolumn{1}{|r|}{Array Type} & CL	& EA & EA\_NA &	EU & NA & OTHER \\ \hline
+ & \multicolumn{6}{c|}{\textbf{Executive observation time $[\%]$}} \\ \hline
+\multicolumn{1}{|r|}{\textbf{Array Type}} & \textbf{CL}	& \textbf{EA} & \textbf{EA\_NA} & \textbf{EU} & \textbf{NA} & \textbf{OTHER} \\ \hline
 \multicolumn{1}{|r|}{12m} & 7.908 & 18.878 & 3.827 & 34.184 & 33.418 & 1.786 \\ \hline
 \multicolumn{1}{|r|}{TP} & 1.366 & 30.815 & 11.694 & 25.907 & 30.218 & 0 \\ \hline
 \multicolumn{1}{|r|}{7m} & 9.463 & 22.762 & 4.348 & 35.55 & 27.877 & 0 \\ \hline
@@ -104,8 +60,8 @@ Note that when EA\_NA executive is considered part of EA and NA then the number 
 \centering
 \begin{tabular}{c|c|c|c|c|c|c|} 
 \cline{2-7}
- & \multicolumn{6}{c|}{Executive observation time $[\%]$} \\ \hline
-\multicolumn{1}{|r|}{Array Type} & CL	& EA & EA\_NA &	EU & NA & OTHER \\ \hline
+ & \multicolumn{6}{c|}{\textbf{Executive observation time $[\%]$}} \\ \hline
+\multicolumn{1}{|r|}{\textbf{Array Type}} & \textbf{CL}	& \textbf{EA} & \textbf{EA\_NA} & \textbf{EU} & \textbf{NA} & \textbf{OTHER} \\ \hline
 \multicolumn{1}{|r|}{12m} & 9.672 & 19.849 & 4.626 & 32.717 & 31.371 & 1.766 \\ \hline
 \multicolumn{1}{|r|}{TP} & 2.45 & 19.941 & 13.35 & 36.84 & 27.419 & 0 \\ \hline
 \multicolumn{1}{|r|}{7m} & 9.487 & 22.821 & 4.359 & 35.641 & 27.692 & 0 \\ \hline
@@ -119,8 +75,12 @@ A qualitative analysis of the time share given to each executive is presented in
 
 From these tables it is possible to see a better time sharing among the different executives when DRR is compared against DSA. Comparing with table~\ref{table:input-executive} it is possible to observe that, the time share values are closer with the share yielded by the DRR. Although there is a noticeable difference for NA executive, however adding its NA\_EA share, then NA share become $33.55\%$; the same can be done for EA executive, leaving its share at $25.11\%$.
 
-\subsubsection{Detailed fairness analysis}
-Particular array configurations will be further analyzed to see how both algorithm behave in time periods of 1 week. The qualitative analysis consists on show how fair perform the particular algorithms within the week for each executive.
+\subsubsection{Detailed executive balance analysis}
+Looking at table~\ref{table:requested-time-tp} it is possible to verify that, $TP$ Array Configuration is quite oversubscribed with requests, and both algorithms were able to schedule almost the whole available time. This does this array configuration case interesting to further analyze in detail. 
+
+On contrary the $7m$ array configuration, which is also available for the whole observation cycle, clearly lacks of observation requests (see table~\ref{table:requested-time-7m}). This is an extreme case that may be worth to analyze too, to see how algorithms behave in these situations.
+
+In other hand the case of $12m$ configurations, it is possible to appreciate, in the details, cases where it looks like the array configuration was oversubscribed and as well cases where the array configuration was not much requests. The difference between the $12m$ configuration and the $7m$ and $TP$ is that they were available for a much shorter period of time within the observing season. Also further analysis of the most relevant $12m$ array configuration is done.
 
 \begin{figure}[t]
 \centering
@@ -231,7 +191,7 @@ From the tables it is possible to see that DSA performs better completing projec
 \begin{table}[t!]
 \centering
 \begin{tabular}{|r|c|c|c|} \hline
- N Projects & A-graded & B-graded & C-graded \\ \hline
+ \textbf{N Projects} & \textbf{A-graded} & \textbf{B-graded} & \textbf{C-graded} \\ \hline
  Completed & 24 & 126 & 43 \\ \hline
  Incomplete & 7 & 118 & 76 \\ \hline
  Non-Started & 2 & 58 & 472 \\ \hline
@@ -243,7 +203,7 @@ From the tables it is possible to see that DSA performs better completing projec
 \begin{table}[t!]
 \centering
 \begin{tabular}{|r|c|c|c|} \hline
- N Projects & A-graded & B-graded & C-graded \\ \hline
+ \textbf{N Projects} & \textbf{A-graded} & \textbf{B-graded} & \textbf{C-graded} \\ \hline
  Completed & 20 & 125 & 47 \\ \hline
  Incomplete & 11 & 123 & 81 \\ \hline
  Non-Started & 2 & 55 & 472 \\ \hline
@@ -252,82 +212,8 @@ From the tables it is possible to see that DSA performs better completing projec
 \label{table:drr-run-summary}
 \end{table}
 
-\subsection{Testing solution for the Array configuration planning problem}
-This tests will show whether the procedure described in chapter~\ref{sec:array-config-plan} is able to produce valid solutions for the problem or not. Also different instances of the problem will be considered to show how the algorithms behave related to when difficulty of the problem increases. Each problem instance will be defined as the number of A-graded projects that the algorithm is able complete. The idea behind this is to know how many iterations, in average (due the stochastic nature of the algorithm design), require to get a feasible result for that problem instance.
-
-For all the tests done, the DRR algorithm is the one used as the scheduling algorithm to solve the Astronomical observation scheduling subproblem. The same procedure can be applied using the DSA. The main difference is that using the DSA would solve higher problem instances, due the DSA tends to complete more A-graded projects, however it is no expected a difference in the behavior for difficult problems, when the proposed DRR is used to solve the Array configuration planning problem.   
-
-As explained in section~\ref{sec:acpp-sa-alg-design}, the algorithm will first, narrow the search space based on the A-graded Scheduling blocks.  The visibility for these Scheduling blocks is presented in figure~\ref{fig:results-sb-critical-set}. Once the visibility of the sources is found, then each SB will be assigned to one or more Array Configurations. For the case of the input data used in this work, each A-graded SB sky source is mapped to just one Array Configuration.
-
-\begin{figure}[htbp]
-        \centering
-        \begin{subfigure}[b]{0.45\textwidth}
-                \includegraphics[width=\textwidth]{images/c34-1_sources}
-                \caption{C34-1} 
-        \end{subfigure} 
-        ~ %
-%
-        \begin{subfigure}[b]{0.45\textwidth}
-                \includegraphics[width=\textwidth]{images/c34-2_sources}
-                \caption{C34-2}
-        \end{subfigure}
-
-        \begin{subfigure}[b]{0.45\textwidth}
-                \includegraphics[width=\textwidth]{images/c34-3_sources}
-                \caption{C34-3}
-        \end{subfigure}
-        ~ 
-        \begin{subfigure}[b]{0.45\textwidth}
-                \includegraphics[width=\textwidth]{images/c34-4_sources}
-                \caption{C34-4}
-        \end{subfigure}% 
-        
-        \begin{subfigure}[b]{0.45\textwidth}
-                \includegraphics[width=\textwidth]{images/c34-5_sources}
-                \caption{C34-5}
-        \end{subfigure}
-        ~
-        \begin{subfigure}[b]{0.45\textwidth}
-                \includegraphics[width=\textwidth]{images/c34-6_sources}
-                \caption{C34-6}
-        \end{subfigure}
-        
-        \begin{subfigure}[b]{0.45\textwidth}
-                \includegraphics[width=\textwidth]{images/c34-7_sources}
-                \caption{C34-7}
-        \end{subfigure}           
-        \caption{Visibility of A-graded Scheduling Blocks for $12\,[m]$ Array Configurations}
-		\label{fig:results-sb-critical-set}
-\end{figure}
-
-Then the LST intervals proposed by the Scheduling Block classification software can be seen in table~\ref{table:lst-int-prop}.
-
-\begin{table}[htbp]
-\begin{center}
-\begin{tabular}{|c|c|c|}
-\hline
-Array configuration & Start time (LST) & End time (LST) \\ \hline
-C34-1 & 5.61692 & 15.45551 \\ \hline
-C34-1 & 13.30675 & 23.14534 \\ \hline
-C34-2 & 9.86519 & 19.703777 \\ \hline
-C34-2 & 13.22811 & 23.06670 \\ \hline
-C34-3 & 4.44851 & 14.28710 \\ \hline
-C34-3 & 9.76941 & 19.60800 \\ \hline
-C34-3 & 12.97411 & 22.81270 \\ \hline
-C34-4 & 5.61692 & 15.45551 \\ \hline
-C34-5 & 9.93925 & 19.77784 \\ \hline
-C34-6 & 21.92851 & 7.76710 \\ \hline
-C34-7 & 2.77808 & 12.61667 \\ \hline
-C34-7 & 4.94547 & 14.78406 \\ \hline
-C34-7 & 9.76941 & 19.60800 \\ \hline
-\end{tabular}
-\end{center}
-\caption[LST intervals proposed by the Scheduling Blocks categorization]
-{LST intervals proposed by the Scheduling blocks categorization described in section~\ref{sec:array-sb-classification}}
-\label{table:lst-int-prop}
-\end{table}
-
-Comparing both, the sources elevation vs LST intervals proposed by the algorithm, it is possible to see that most of A-graded SB's sky sources are covered on those proposed LST intervals.
+\subsection{Array configuration planning}
+For all the experiments done, the DRR algorithm is the one used as the scheduling algorithm to solve the Astronomical observation scheduling subproblem. The same procedure can be applied using the DSA. The main difference is that using the DSA would solve higher problem instances, due the DSA tends to complete more A-graded projects, however it is no expected a difference in the behavior for difficult problems, when the proposed DRR is used to solve the Array configuration planning problem.   
 
 \begin{figure}[htbp]
 \begin{center}
@@ -337,18 +223,18 @@ Comparing both, the sources elevation vs LST intervals proposed by the algorithm
 \label{fig:acpp-behavior}
 \end{figure}
 
-Different instances of the problem were tested several times, the summary of the testing can be seen in the chart presented in figure~\ref{fig:acpp-behavior}. A maximum of 1000 iterations are allowed, if a solution is not found within that number of iterations, then the problem will be considered non-solved. A full execution of 1000 iterations takes around $800\,[min]$.
+Different instances of the problem were tested several times, the summary of the testing can be seen in the chart presented in figure~\ref{fig:acpp-behavior}. A maximum of 1000 iterations were allowed, if a solution is not found within that number of iterations, then the problem will be considered non-solved. A full execution of 1000 iterations takes around $800\,[min]$.
 
 
 In the chart, the x axis represents the problem instance to solve, the y axis represents the number of iterations that SA algorithm used, the dots represent the average number of iterations that the SA algorithm requires to find a valid solution for the problem instance and the vertical bars are the error presented as the standard deviation. 
 
-Here is possible to see that, for the instances before 20, the algorithms proposed easily found a valid solution for the problem, requiring only 1 iteration to find a valid solution. From instance 20 there is an increment on the number of iterations required to find a solution, this increasing in the difficulty looks like exponential until instance 25, which is the most difficult problem instance that the algorithm is able to solve. Even though problem 25 was solved, it was not solved always, this is represented by the error bar, which is bigger that the maximum allowed iterations (1000).
+Here is possible to see that, for the instances before 20, the proposed algorithms easily found a valid solution for the problem, requiring only 1 iteration to find a valid solution. From instance 20 there is an increment on the number of iterations required to find a solution, this increasing in the difficulty looks like exponential until instance 25, which is the most difficult problem instance that the algorithm is able to solve. Even though problem 25 was solved, it was not always solved.
 
 \begin{table}[htbp]
 \begin{center}
 \begin{tabular}{|c|c|c|}
 \hline
-Array configuration & Start date (UTC) & End date (UTC) \\ \hline
+\textbf{Array configuration} & \textbf{Start date (UTC)} & \textbf{End date (UTC)} \\ \hline
 C34-2 & 2014-06-01 & 2014-06-29  \\ \hline
 C34-3 & 2014-06-29 & 2014-07-27 \\ \hline
 C34-1 & 2014-07-27 & 2014-08-24 \\ \hline
@@ -369,12 +255,12 @@ TP & 2014-06-01 & 2015-10-01 \\ \hline
 \label{table:best-arr-conf}
 \end{table}
 
-Until now the best array configuration found by the SA algorithm is detailed in table~\ref{table:best-arr-conf}. Which it yields the project completion presented in table~\ref{table:best-solution-found} when the DRR algorithm is used.
+The best array configuration found by the SA algorithm is detailed in table~\ref{table:best-arr-conf}. Which yields the project completion presented in table~\ref{table:best-solution-found} when the DRR algorithm is used.
 
 \begin{table}[htbp]
 \centering
 \begin{tabular}{|r|c|c|c|} \hline
- N Projects & A-graded & B-graded & C-graded \\ \hline
+\textbf{N Projects} & \textbf{A-graded} & \textbf{B-graded} & \textbf{C-graded} \\ \hline
  Completed & 25 & 148 & 66 \\ \hline
  Incomplete & 6 & 116 & 61 \\ \hline
  Non-Started & 2 & 38 & 31 \\ \hline
@@ -383,23 +269,7 @@ Until now the best array configuration found by the SA algorithm is detailed in 
 \label{table:best-solution-found}
 \end{table}
 
-\chapter{Conclusions}
-This document has presented the ALMA's scheduling problem, analyzing in details the particularities found during the study of this problem. This problem has been separated in two different subproblems: the ``Astronomical observation scheduling problem'' describing the short and medium term scheduling subproblems proposed by ALMA; and the ``Array configuration planning problem'' detailing the long-term scheduling subproblem proposed by ALMA.
-
-Solutions were discussed, implemented and validated for both problems presented in this work, although some simplifications were done during the discussion of these problems, all (or most of) the constraints presented, are currently used in ALMA scheduling subsystem. Therefore, given the final results, the algorithms discussed in this work, can be used directly in ALMA observatory, however small modifications are required in the current ALMA scheduling software, in particular for the solution for the Astronomical observation scheduling problem, where DRR needs to save the round robin pointers and deficit values.
-
-The objectives (see section~\ref{sec:objectives}) were fulfilled as follows:
-\begin{enumerate}
-\item \textbf{To develop a new scheduling algorithm that meets the ALMA’s scientific, instrument and
-weather constraints, and requirements; and successfully integrate it within ALMA software.
-The development will be focused in try to solve the long-term scheduling problem, where
-the algorithm shall provide a schedule for different array configurations within an
-observing season.} The whole problem was introduced and discussed considering the constraints and requirements currently in use by the ALMA scheduling subsystem, the mathematical models and the algorithms proposed as solutions covers the short, medium and long term ALMA scheduling problem. A new approach is considered for the ``Astronomical observation scheduling problem'' a solution modeled after a fair scheduling algorithm, a modified deficit Round-Robin. But also, this work introduces the analysis and solution for the ``Array configuration planning problem'', which is the long-term problem proposed by ALMA.
-\item \textbf{Define metrics to evaluate the algorithm performance in terms of idle-time or instrument
-usage, scientific throughput and completed projects.} To validate the solutions proposed to the specific problem presented in ALMA, new metrics were introduced based on participant executive fairness within a fixed period of time, this work also considers previous defined metrics, such as number of projects completed, but including ALMA specific details, such as the scientific grade given to the projects and SBs. The software developed is based on the current simulator tools used in ALMA, therefore the adaptation to make the new algorithms developed in this work available for ALMA software is easy. 
-\end{enumerate}
-
-Therefore, the initial hypothesis was successfully proven, as \textit{it is possible to design and implement an algorithm for the ALMA scheduling problem, considering most of its particular constraints}.
+\section{Summary and conclusions}
 
 The proposed model, algorithms and its implementations have the following features, for the ``Astronomical observation scheduling problem'':
 \begin{itemize}
@@ -427,6 +297,38 @@ The proposed model, algorithms and its implementations have the following featur
 
 \item The model proposed is much more static in nature than the Astronomical observation scheduling problem, however, given the dependency on this last problem, all the characteristics are inherited and expanded in the Array configuration planning problem. Even though, is possible to have accurate simulation of weather patterns within the simulation, the problem may not be solved without the dependency on the Astronomical observation scheduling problem, given that it is very important to know how the sort-term solution behaves in medium and long-term simulations.
 
+\end{itemize}
+
+
+\chapter{Conclusions}
+This thesis has proposed a new scheduling for ALMA observatory, analyzing in details the particularities found during the study of this problem. This problem has been separated in two different subproblems: the ``Astronomical observation scheduling problem'' describing the single-array scheduling subproblem; and the ``Array configuration planning problem'' detailing the multiple-array scheduling subproblem proposed by ALMA.
+
+Solutions were discussed, implemented and validated for both problems presented in this work, all (or most of) the constraints presented, are currently used in ALMA scheduling subsystem. Therefore, given the final results, the algorithms discussed in this work, can be used directly in ALMA observatory, however small modifications are required in the current ALMA scheduling software, in particular for the solution for the Astronomical observation scheduling problem, where DRR needs to save the round robin pointers and deficit values.
+
+The objectives (see section~\ref{sec:objectives}) were fulfilled as follows:
+\begin{enumerate}
+\item \textbf{To develop a new scheduling algorithm that meets the ALMA’s scientific, instrument and
+weather constraints, and requirements; and successfully integrate it within ALMA software.
+The development will be focused in try to solve the long-term scheduling problem, where
+the algorithm shall provide a schedule for different array configurations within an
+observing season.} The whole problem was introduced and discussed considering the constraints and requirements currently in use by the ALMA scheduling subsystem, the mathematical models and the algorithms proposed as solutions covers the single and multiple array(s) ALMA scheduling problem. A new approach is considered for the ``Astronomical observation scheduling'', where a single array is scheduled, a solution modeled after a fair scheduling algorithm, a modified deficit Round-Robin. The analysis and solution is presented for the ``Array configuration planning'', which is the multiple arrays problem proposed by ALMA.
+\item \textbf{Define metrics to evaluate the algorithm performance in terms of idle-time or instrument
+usage, scientific throughput and completed projects.} To validate the solutions proposed to the specific problem presented in ALMA, new metrics were introduced based on participant executive balancing within a fixed period of time, this work also considers previous defined metrics, such as number of projects completed, but including ALMA specific details, such as the scientific grade given to the projects and SBs. The software developed is based on the current simulator tools used in ALMA, therefore the adaptation to make the new algorithms developed in this work available for ALMA software is easy. 
+\end{enumerate}
+
+Therefore, the initial hypothesis was successfully proven, as \textit{it is possible to design and implement an algorithm for the ALMA scheduling problem, considering most of its particular constraints}.
+
+The following main conclusions were derived during the development of this thesis:
+\begin{itemize}
+\item The astronomical observations scheduling problem introduces new conditions to the traditional 
+job-shop problem that have not yet been extensively treated in the Computer Science community.
+
+\item Efficient scheduling of astronomical observations are becoming more critical as observation
+facilities get more complex and more expensive. Automatic observations scheduling plays an
+important (while not unique) role in this efficiency.
+
+\item Astronomical observations are subjected to permanently changing parameters, which need to
+be efficiently handled by an automated algorithm. But, at the same time the automated algorithm must try to optimize the observations for longer time periods. 
 \end{itemize}
 
 \section{Future work}

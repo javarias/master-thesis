@@ -1,13 +1,13 @@
 \chapter{Introduction}
 
-State-of-the art astronomical facilities are costly to build and operate, it is essential that these facilities 
+State-of-the art astronomical facilities are costly to build and operate, so it is essential that these facilities 
 must be operated as efficiently as possible, trying to maximize the scientific output. In modern astronomy has been
 demonstrated the importance to use automatic modes, in the day-to-day operations.
 Over the latest decades the problem has attracted more research, due new facilities have been
 demonstrated that is unfeasible to try to schedule observations manually, given the complexity to satisfy
-the astronomical and instrumental constraints imposed by the problem, and the amount of scientific
-proposals to be reviewed. Also, given the dynamic nature of some of the constraints like the weather and
-the uncertainty when an observation will be fully completed, make this problem even more difficult.
+the astronomical and instrumental constraints imposed by the problem, and the number of scientific
+proposals to be reviewed. In addition the dynamic nature of some constraints (i.e. the weather and
+the uncertainty of completing an observation) make this problem even more difficult.
 
 The Atacama Large Millimeter/submillimeter Array (ALMA) is a major collaboration effort between
 European, North American and East Asian countries, under construction on the Chilean Chajnantor
@@ -17,33 +17,29 @@ of baseline separation. The ALMA interferometer will provide the possibility to 
 array, or as up to six minor independent arrays or groups of antennas. Over the observing season
 multiples arrays configurations will be available changing the antennas position from one place to
 another. These places are already defined positions called pads, during normal operations at least two
-arrays will be available each of one attached to different correlators computers. As ALMA does not
+arrays will be available each of one attached to different correlators computers. Since ALMA does not
 observe in the visible spectrum, observations are not limited to night time only, thus a 24/7 operation
-with as small downtime as possible is expected. However during commissioning operations, ALMA will operate on tied schedules having less than the half of the day-time to do science.
+with as small downtime as possible is expected. However during commissioning operations, ALMA will operate on tied schedules having less than the half of the day-time to conduct observations.
 
-In the study of the problem, two different sub-problems has been identified: \textit{``Astronomical observation scheduling problem''} 
+Two different sub-problems have been identified: 
+\begin{enumerate}
+\item \textit{``Astronomical observation scheduling problem''}  \hfill \\
 consists on determine a schedule for a given set of scheduling blocks, considering an array already created in a given fixed
-period of time. The idea is to try to observe most of the projects with highest priority in the less amount
-of time possible considering all the scientific requirements and constraints; and \textit{``The  Array configuration planning problem''}, what  
-is on top of the scheduling array problem. It consists in to try to determine a plan for the array configurations given as input,
-for the observing season (which is a fixed amount of time and it lasts for several months, up
-to a couple of years) and for a given set of the scheduling blocks, which can be observed in
-multiple array configurations.
+period of time. This aims to complete most of the observation projects with highest priority. This is single-array problem instance;
+
+\item \textit{``Array configuration planning problem''} \hfill \\
+is on top of the Astronomical observation scheduling problem. It aims to determine a plan for the array configurations given as input,
+for the observing season and for a given set of the scheduling blocks. This is the multiple-array problem instance.
+\end{enumerate}
 
 \section{Hypothesis}
-
-Currently, ALMA scheduling software has an algorithm, the Dynamic Scheduling Algorithm (DSA),
+The existing astronomical observation scheduling bibliography considers only the single-array (or telescope) problem instances,
+treating the problem as a constraint satisfaction problem instead of an optimization problem.
+ALMA scheduling software has an algorithm, the Dynamic Scheduling Algorithm
 which does not try optimize the set of selected scheduling units
-as a function of time, for long time periods. Also the algorithm does not try to come up with an
-optimal program for array configurations, which are given as input for a given observing season. This algorithm suffers of
-serious problems of fairness, it is possible under certain circumstances, to get as result a
-scheduling unit repeated all over an observation time frame (like within a week), letting projects 
-with the same or higher priority, but belonging to a different participant, to starve (never get observed).
-In other hand, the most recent model proposal lacks of astronomical analysis of constraints and
-results, to decide whether the algorithm could be feasible to adapt to the ALMA scheduling requirements,
-and use it as part of the ALMA software or not.
-Currently, no methodology deals with the problem of trying to get a plan for the proposed
-array configurations necessary to solve the ALMA’s long-term scheduling.
+as a function of time. This algorithm suffers of
+serious problems of executive time assignment, letting projects 
+with the same or higher priority, but belonging to a different executive, to starve (never get observed).
 
 Therefore the hypothesis presented is the following:
 \textbf{``It is feasible to design and implement an algorithm for the ALMA scheduling problem 
@@ -70,8 +66,7 @@ The specific goals for this objective are:
 scheduling problem. Focusing in the long-term problem.
 \item Define and develop an algorithm that satisfy the ALMA’s scheduling problem requirements
 studied prior.
-\item The algorithm must minimize array configuration time, at the same time the number of source
-must be maximize. This should minimize the array idle-time.
+\item Minimize array configuration idle time, at the same time maximize the number completed observation projects.
 \end{itemize}
 \item Define metrics to evaluate the algorithm performance in terms of idle-time or instrument
 usage, scientific throughput and completed projects.
@@ -85,9 +80,7 @@ The specific goals for this objective are:
 \end{enumerate}
 
 \section{Expected results and validation}
-The main contribution expected by this work is the implemented algorithm which will be used as
-part of the ALMA software for the next years. This would be a significant contribution to the
-ALMA project and in general to the astronomical community.
+The main contribution expected is to provide a model and a algorithm to solve the multiple array configuration problem and the implemented new algorithm which will be used as part of the ALMA software for the next years.
 The specific expected results are:
 \begin{itemize}
 \item An implemented algorithm ready to use in ALMA
@@ -104,12 +97,12 @@ scheduling algorithm hence a full comparison with previous studies could not app
 The performance tests will be carried over a simulation platform which has been already
 developed for ALMA software. The observation projects considered for the test will be real
 projects taken from the ALMA’s cycle 2 observing season, however these projects are not publicly
-available after a period of time (2 years).
+available after a period of time (1 year).
 
 Even when the projects are not publicly available, this shall not affect the thesis results due the
 results does not show in detail what project have more chance to be completely observed, the
 restriction imposed by ALMA is related to the ability to identify a particularly project and this is
 not the purpose of the results that this work will present.
 
-\section{Document structure}
-This document is divided into 4 chapters. Chapter 2 presents the relevant state of the art, starting with classical scheduling problems and providing an overview of some of the current schedulers used in observatories. Chapter 3 discusses the problem to solve, describes necessary concepts to understand the problem, focusing in the ALMA observatory. Chapter 4 introduces the mathematical description of the solution given to the problem, and the details of the algorithms to be used to solve the problem. Chapter 5 presents the validation done to the algorithms proposed, the software to used to validate the solution is quite close to the one used in ALMA software. Finally, chapter 6 presents the conclusions of the work and how the work developed in this document fulfills the hypothesis and completes the objectives, some future work is proposed also.
+\section{Thesis structure}
+This thesis is divided into 4 chapters: Chapter 2 discusses the relevant state of the art, for scheduling methods and providing an overview of some of the current schedulers used in observatories. Chapter 3 discusses the target problem to solve, describes necessary concepts to understand the problem, focusing in the ALMA observatory. Chapter 4 introduces the mathematical description of the solution given to the problem, and the details of the algorithms to be used to solve the problem. Chapter 5 presents the validation for the proposed algorithms. Finally, chapter 6 presents the conclusions of the work and some future work.
