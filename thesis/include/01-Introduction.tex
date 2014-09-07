@@ -25,7 +25,7 @@ Two different sub-problems have been identified:
 \begin{enumerate}
 \item \textit{``Astronomical observation scheduling problem''}  \hfill \\
 consists on determine a schedule for a given set of scheduling blocks, considering an array already created in a given fixed
-period of time. This aims to complete most of the observation projects with highest priority. This is single-array problem instance;
+period of time. This aims to complete most of the observation projects with highest priority. This is the single-array problem instance;
 
 \item \textit{``Array configuration planning problem''} \hfill \\
 is on top of the Astronomical observation scheduling problem. It aims to determine a plan for the array configurations given as input,
@@ -41,9 +41,11 @@ as a function of time. This algorithm suffers of
 serious problems of executive time assignment, letting projects 
 with the same or higher priority, but belonging to a different executive, to starve (never get observed).
 
-Therefore the hypothesis presented is the following:
-\textbf{``It is feasible to design and implement an algorithm for the ALMA scheduling problem 
-that can meet most of the astronomical, instrument and weather constraints''}.
+Therefore two hypothesis are introduced as follows:
+\begin{enumerate}
+\item \textbf{``It is possible to design and implement an algorithm, for a radio-telescope single-array problem instance, that distribute better the time given to each participant executive along the observing season, while completes a good number of top priority observation projects''}.
+\item \textbf{``It is possible to design and implement an algorithm, for a radio-telescope multiple-arrays instance, and generate sufficiently fast feasible solutions''}
+\end{enumerate}
 
 \section{Objectives}
 \label{sec:objectives}
@@ -52,47 +54,38 @@ The following are the general objectives to accomplish at the end of this work:
 
 \begin{enumerate}
 
-\item To develop a new scheduling algorithm that meets the ALMA’s scientific, instrument and
-weather constraints, and requirements; and successfully integrate it within ALMA software.
-The development will be focused in try to solve the long-term scheduling problem, where
-the algorithm shall provide a schedule for different array configurations within an
+\item Develop a new scheduling algorithm that meets the ALMA’s scientific, instrument and
+weather constraints, and requirements; and integrate it within ALMA software.
+The new development will be focused in try to solve multiple-arrays planning problem, where
+the algorithm will provide a schedule for different array configurations within an
 observing season.
 
-The specific goals for this objective are:
-\begin{itemize}
-\item Study real world constraints gathered from ALMA scheduling requirements.
-\item Implement the algorithm in a suitable programming language.
-\item Design a model to be applied to the short-term, medium-term and long-term ALMA’s
-scheduling problem. Focusing in the long-term problem.
-\item Define and develop an algorithm that satisfy the ALMA’s scheduling problem requirements
-studied prior.
-\item Minimize array configuration idle time, at the same time maximize the number completed observation projects.
-\end{itemize}
-\item Define metrics to evaluate the algorithm performance in terms of idle-time or instrument
-usage, scientific throughput and completed projects.
+\item Define metrics to evaluate the algorithm performance.
+\end{enumerate}
 
-The specific goals for this objective are:
-\begin{itemize}
-\item Metrics must consider idle observatory time and executive time fairness.
+The underlying specific goals are:
+\begin{enumerate}
+\item Study real world constraints gathered from ALMA scheduling requirements.
+\item Design a model for the single-array problem and for the multiple-arrays ALMA’s
+scheduling problem.
+\item Define and develop, in a suitable programming language, an algorithm that satisfy the ALMA’s scheduling problem requirements
+studied prior.
 \item Develop a suitable test-bench software to evaluate the algorithm.
-\item Validate the algorithm using the test-bench.
-\end{itemize}
+\item Evaluate the proposed algorithm results and compare it against the current ALMA's algorithm considering project completion, and executive time balance.
 \end{enumerate}
 
 \section{Expected results and validation}
-The main contribution expected is to provide a model and a algorithm to solve the multiple array configuration problem and the implemented new algorithm which will be used as part of the ALMA software for the next years.
+The main contribution expected is to provide a model and a algorithm to solve the multiple arrays configuration problem, and the implemented new algorithm, which will be used as part of the ALMA software for the next years.
 The specific expected results are:
 \begin{itemize}
-\item An implemented algorithm ready to use in ALMA
-\item A suitable test bench to benchmark the performance of the algorithm
+\item A model for the multiple-arrays planning.
+\item An implemented algorithm ready to use in ALMA.
 \item The output values of the tests done during the validation process. Also the comparison with
-another algorithms whenever is possible
+the current ALMA algorithm whenever is possible
 \end{itemize}
 
 Since this work mainly considers the performance of an algorithm implementation, the algorithm will be validated
-executing performance measurements tests and then comparing these results against previous
-studies. This work proposes a new methodology to validate the performance of an observatory
-scheduling algorithm hence a full comparison with previous studies could not apply.
+executing performance measurements tests and then comparing these results against the current ALMA's algorithm, only for an ``'Astronomical observations scheduling'' instance. Since there is no other algorithms implementation for ``Array configuration planning`` exist, it cannot be attempted to compare the results with any other algorithms.
 
 The performance tests will be carried over a simulation platform which has been already
 developed for ALMA software. The observation projects considered for the test will be real

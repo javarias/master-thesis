@@ -1,5 +1,6 @@
 \chapter{State of the art}
 
+\section{Job-shop problem}
 The scheduling problem is an optimization problem in which ideal jobs, also called tasks, are assigned to resources at particular times to execute these jobs, the execution of the jobs must satisfy all the constraints, this should be done in a way that the resulting schedule, the solution, is the best possible.
 
 The most well known problem is the \textit{job-shop} scheduling problem presented by first time in 1966 by Graham \cite{graham66}. The objective of this problem is to complete a set jobs, each of which consists of a sequence of actions, where each action has a given duration and might require some resources. The problem is to determine a schedule that minimized the total time required to complete all the jobs, while respecting the resource constraints~\cite{russell03}.
@@ -10,21 +11,21 @@ The job-shop dynamic scheduling problem has been researched in the recent years,
 
 Another approach to scheduling problem is the proportional fair scheduling studied at level of processor sharing, this problem is very common in computer science and developing of Operating System's kernels~\cite{li09} including real-time systems and in the past, in the 90's was studied in network sharing~\cite{parekh93}. 
 
-In this problem fairness is an essential requirement of the scheduler designed for the operating system. The conventional approach is to assign to each task a weight and the scheduler ensures that each task receive time proportional to its weight~\cite{katevenis91, parekh93}. Since perfect fairness requires infinitesimal small scheduling quanta, which is unfeasible, all practical schedulers approximate it with the goal of obtaining small error bounds. Although this method to achieve fairness, requires that the task to be preemptible, which is always not feasible to do. In case that the jobs must be serviced as whole units, the Deficit Round-Robin algorithm can be applied~\cite{shreedhar96}. 
+In this problem fairness is an essential requirement of the scheduler designed for the operating system. The conventional approach is to assign to each task a weight and the scheduler ensures that each task receive time proportional to its weight~\cite{katevenis91, parekh93}. Since perfect fairness requires infinitesimal small scheduling quanta, which is unfeasible, all practical schedulers approximate it with the goal of obtaining small error bounds. Another approach is the deficit Round Robin~\cite{shreedhar96}, where he tasks are considered as a whole that cannot be preempt once the start to be executed.
 
-Most of the modern operating system have been adopted an imprecise notion of fairness that seeks prevention of the starvation and be ``reasonable'' fair at the same time~\cite{li09}. In these designs the scheduler dispatches threads in the order of threat priorities. For each thread, it assigns the threads a time slice that determines how long the thread can run once the thread dispatched. A higher priority thread receives a larger time slice, how much larger is often determined empirically, not a proportional function of the thread's priority. To facilitate fairness the scheduler also dynamically adjusts priorities, allowing the priority of a thread to decay over time or boosting it if the thread have not run for a while. Similar to time slices, the parameters of these adjustments are determined empirically using heuristic methods. 
+Most of the modern operating systems have been adopted an imprecise notion of fairness that seeks prevention of the starvation and be ``reasonable'' fair at the same time~\cite{li09}. In these designs the scheduler dispatches threads in the order of threat priorities. For each thread, it assigns the threads a time slice that determines how long the thread can run once the thread dispatched. A higher priority thread receives a larger time slice, how much larger is often determined empirically, not a proportional function of the thread's priority. To facilitate fairness the scheduler also dynamically adjusts priorities, allowing the priority of a thread to decay over time or boosting it if the thread have not run for a while. Similar to time slices, the parameters of these adjustments are determined empirically using heuristic methods. 
 
 The most recent work have used different kind of techniques to achieve a fairer algorithm than previous one e.g. Virtual-time-based algorithm, lottery algorithms. However most of the recent work has been done used the Round-Robin algorithm technique. Round-Robin algorithms have $O(1)$ time complexity and thus are highly efficient~\cite{li09}. However they have weak fairness with $O(N)$ lag bounds in general. Currently Linux kernel is using the Completely Fair Scheduler~\cite{jones09}, which could it be a misleading name because it guarantees a unfair level less than $O(n)$ which is not completely fair. 
 
 \subsection{Fair scheduling theory}
-Generalized Processor Sharing (GPS) is an idealized scheduling algorithm that achieves perfect fairness. All practical schedulers approximate GPS and use it as reference to measure fairness.
+Generalized Processor Sharing (GPS)~\cite{parekh93} is an idealized scheduling algorithm that achieves perfect fairness. All practical schedulers approximate GPS and use it as reference to measure fairness.
 
 Consider a system with $P$ CPUs and $N$ threads. Each thread $i$, $1 \leq i \leq N$, has a weight $w_i$. A scheduler is perfectly fair if:
 \begin{enumerate}
-	\item It is work conservative i.e., it never leaves a CPU idle if there are runnable threads.
-	\item it allocates CPU time to threads in exact proportion to their weights.
+	\item Is work conservative i.e., it never leaves a CPU idle if there are runnable threads.
+	\item It allocates CPU time to threads in exact proportion to their weights.
 \end{enumerate}
-Such scheduler is common referred as GPS~\cite{parekh93}.
+Such scheduler is common referred as GPS.
 
 \newtheorem{gps-model}{Definition}
 \begin{gps-model}
